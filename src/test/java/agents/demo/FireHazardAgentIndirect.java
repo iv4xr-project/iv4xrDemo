@@ -51,9 +51,7 @@ public class FireHazardAgentIndirect {
     }
 
     /**
-     * This demo will tests if an agent can escape the fire hazard level.
-     * First of the issues is that hazard overwrite each other, so only one
-     * is visible to the agent. Working on this.
+     * This demo will tests if an agent can escape the fire hazard level
      * 
      * BROKEN fix this!
      */
