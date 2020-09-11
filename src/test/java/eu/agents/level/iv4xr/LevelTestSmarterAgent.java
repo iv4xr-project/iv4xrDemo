@@ -87,7 +87,7 @@ public class LevelTestSmarterAgent {
     	//GameLevel2_2020_08_24_14.24.15 - non-exist door  invalid
     	//GameLevel2_2020_08_24_17.24.47-original - non-exist door
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new EnvironmentConfig("GameLevel1_2020_08_07_10.42.26 - Copy",Platform.LEVEL_PATH+"\\GameLevel1"));
+        var environment = new LabRecruitsEnvironment(new EnvironmentConfig("GameLevel2_2020_08_24_14.24.15 - with-problem",Platform.LEVEL_PATH+"\\GameLevel2"));
         if(USE_INSTRUMENT) instrument(environment) ;
 
         try {
