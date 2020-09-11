@@ -13,6 +13,7 @@ import nl.uu.cs.aplib.agents.MiniMemory;
 import nl.uu.cs.aplib.mainConcepts.Goal;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.Tactic;
+import nl.uu.cs.aplib.mainConcepts.GoalStructure.GoalsCombinator;
 import world.BeliefState;
 import world.LabEntity;
 import world.LegacyEntity;
@@ -105,12 +106,14 @@ public class GoalLib {
         		    . toSolve((BeliefState belief) -> {
                         //check if the agent is close to the goal position
         		    	var e = belief.worldmodel.getElement(entityId) ;
+        		    	System.out.println("entityInCloseRange e" + e.getFloorPosition());
+        		    	System.out.println("entityInCloseRange return value: " + (belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) <= 1));
         		    	if (e == null) return false ;
                         return belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) <= 1 ;
                     });
         //define the goal structure
         return goal.withTactic(
-        		 FIRSTof(//the tactic used to solve the goal
+        		 FIRSTof( //the tactic used to solve the goal
                    TacticLib.navigateToCloseByPosition(entityId),//move to the goal position
                    TacticLib.explore(), //explore if the goal position is unknown
                    ABORT())) 
@@ -135,7 +138,7 @@ public class GoalLib {
         //the first goal is to navigate to the entity:
         var goal1 = 
         	  goal(String.format("This entity is in interaction distance: [%s]", entityId))
-        	  . toSolve((BeliefState belief) -> belief.canInteract(entityId))
+        	  . toSolve((BeliefState belief) ->  belief.canInteract(entityId))
         	  . withTactic(
                     FIRSTof( //the tactic used to solve the goal
                     TacticLib.navigateTo(entityId), //try to move to the entity
@@ -146,7 +149,7 @@ public class GoalLib {
         // then, the 2nd goal is to interact with the object:
         var goal2 = 
         	  goal(String.format("This entity is interacted: [%s]", entityId))
-        	  . toSolve((BeliefState belief) -> true) 
+        	  . toSolve((BeliefState belief) -> {System.out.print("interacted" + entityId); return true;}) 
               . withTactic(
         		   FIRSTof( //the tactic used to solve the goal
                    TacticLib.interact(entityId),// interact with the entity
@@ -166,7 +169,17 @@ public class GoalLib {
 	 */
     public static GoalStructure entityStateRefreshed(String id){
         return goal("The belief on this entity is refreshed: " + id)
-                .toSolve((BeliefState b) -> b.evaluateEntity(id, e -> b.age(e) == 0))
+                .toSolve((BeliefState b) -> {
+                	System.out.println("entityStateRefreshed id" + id); 
+                              System.out.println(">> entity timest:" + b.worldmodel.getElement(id).timestamp) ;
+                              var compare = b.evaluateEntity(id, e -> b.age(e) == 0L);
+                              System.out.println(">> entity age:" + compare ) ;
+                              System.out.println(">> world timest" + b.worldmodel.timestamp);
+                              return compare ;
+                              
+                              
+                             // return b.evaluateEntity(id, e -> b.age(e) == 0L);
+                              })
                 .withTactic(FIRSTof(
                         TacticLib.navigateToClosestReachableNode(id),
                         TacticLib.explore(),
@@ -273,4 +286,231 @@ public class GoalLib {
                 TacticLib.sendPing(idFrom, idTo)
         );
     }
+    
+    /**
+     * Use this goal to approach a door which according to the current belief is closed,
+     * but the agent has a reason to suspect that it might be open now (e.g. because
+     * it just pushed on a button that it thinks might open the door).
+     * The agent cannot literally navigate to the door, because this would be prohibited
+     * by its current navigation graph (which will say that the door is unreachable, and
+     * therefore cannot provide a path to it).
+     * Instead, this goal will try to find a neighboring navigation node N that is reachable.
+     * If such N can be found, the agent will first navigate to N, hoping that this will
+     * update its observation on the door (which it suspects to be open); and then it will
+     * proceed to navigate to the door.
+     * 
+     * This goal fails if either no such N can be found, or if the agent cannot find witness
+     * that the door is open (e.g. if it is indeed actuallu still closed).
+     */
+    
+    
+    public static GoalStructure navigate_toNearestNode_toDoor(String doorId) {
+    	var memo = new MiniMemory("") ;
+    	memo.memorize(new Vec3(1,0,1)) ; // dummy location 
+    	Goal neighboringNodeIsFound = goal("A reachable node close to the door " + doorId + " is found.")
+    	     . toSolve((BeliefState belief) -> {System.out.print("navigate_toNearestNode_toDoor: true always \n"); return true;}) 
+    		 . withTactic(
+    			 action("Finding a reachable neighbor to door " + doorId)
+    			   . do1( (BeliefState belief) -> {
+    				   var door = (LabEntity) belief.worldmodel.getElement(doorId) ;
+    				   if (door == null) ABORT() ;
+    				   var p = door.getFloorPosition() ;
+    				   var containingNode = belief.mentalMap.pathFinder.graph.vecToNode(p) ;
+    				   var knownNeighbors = belief.mentalMap.pathFinder.graph.getKnownNeighbours(
+    						     containingNode, 
+    						     belief.mentalMap.getKnownVertices(), 
+    						     belief.blockedNodes) ;
+    				   Double minDist = Double.MAX_VALUE ;
+    				   Vec3 nearestNeighbor = null ;
+    				   Vec3[] pathToNearestNeighbor = null ;
+    				   for (var k : knownNeighbors) {
+    					   Vec3 q = belief.mentalMap.pathFinder.graph.toVec3(k) ;
+    					   var path = belief.canReach(q) ;
+    					   if (path != null && path.length>0) {
+    						   var dist = p.distance(q) ;
+    						   if (dist < minDist)  {
+    							   minDist = dist ;
+    							   nearestNeighbor = q ;
+    							   pathToNearestNeighbor = path ;
+    						   } 
+    					   } 
+    				   }	
+    				   if (nearestNeighbor == null) ABORT() ;
+    				   Vec3 r = (Vec3) memo.memorized.get(0) ;
+    				   r.x = nearestNeighbor.x ;
+    				   r.y = nearestNeighbor.y ;
+    				   r.z = nearestNeighbor.z ;
+    				   //memo.memorize(pathToNearestNeighbor);
+    				   
+    				   return belief ;
+    			   })
+    			   .lift() 	
+    					
+    		   ) ;
+    	
+    	Goal neighboringNodeIsReached = goal("A reachable node close to the door " + doorId + " is reached.")
+       	     . toSolve((BeliefState belief) -> {
+       	    	   var q =(Vec3)  memo.memorized.get(0) ; 
+       	    	   return belief.worldmodel.getFloorPosition().distance(q) <= 0.25 ;
+       	       }) 
+       		 . withTactic(TacticLib.dynamicNavigateTo(
+       			   "Navigating to a reachable node close to the door " + doorId,
+       			   (Vec3) memo.memorized.get(0))) ;
+    			
+    	var goal = SEQ(neighboringNodeIsFound.lift(),
+    			       neighboringNodeIsReached.lift()) ;
+    	
+    	return goal ;
+    }
+    
+
+    
+    public static GoalStructure findingNewButtonAndInteracte(TestAgent agent){
+    	return goal("find new inactive button and interact with it")
+    			.toSolve( 				
+    					(Tuple<String,BeliefState> s) -> { 				
+//    						System.out.print("there is #####" + s.object1);
+    						if(s.object1 == null) {
+    							System.out.print("there is no button to find");
+    							return true;
+    							}
+    						System.out.print("find new inactive button and interact with it");
+    						return false;
+    						}
+    					)
+    				.withTactic(SEQ(
+                        TacticLib.interactToNextButton(agent),
+                        ABORT()
+                        )
+    				)
+    			.lift();
+    }
+ 
+    public static GoalStructure checkDoorState(String id, Predicate<WorldEntity> predicate) {
+    	Goal goal =  goal("Ckecking door state")
+        		.toSolve(
+        				(BeliefState belief) -> { 
+        					System.out.print("Ckecking door state : " + belief.isOpen(id) + "id of the door : " +id);
+        	       	    	   if(belief.isOpen(id)) {
+        	       	    		System.out.print(" it is open \n");
+        	       	    		  return true; 
+        	       	    	   }
+        	       	    	   return false;
+        	       	       }
+        				)
+        		.withTactic(
+        				SEQ(
+                        TacticLib.observe(),
+                        ABORT()))
+        	
+        		;  
+    	
+    	return goal.lift();
+    }
+    
+ public static GoalStructure checkButtonState(String id) {
+    	
+    	//move to the object
+    	Goal goal1 = goal(String.format("This entity is in interaction distance: [%s]", id))
+        		. toSolve((BeliefState belief) -> {return belief.canInteract(id);});
+    	
+    	Goal goal2 =  goal("check button state")
+    			.toSolve((BeliefState b)-> {
+    					if(b.isOn(id)) {
+    						return true;
+    						}
+    					return false;}
+    					)
+    			;
+    			
+    			 //Set the tactics with which the goals will be solved
+    	        GoalStructure g1 = goal1.withTactic(
+    	        		FIRSTof( //the tactic used to solve the goal
+    	                   TacticLib.navigateTo(id), //try to move to the entity
+    	                   TacticLib.explore(), //find the entity
+    	                   ABORT()
+    	                   )) 
+    	                .lift();
+    	        GoalStructure g2 = goal2.withTactic(SEQ(
+                        TacticLib.observe(),
+                        ABORT())).lift();
+    return SEQ(g1,g2);
+    }
+ 
+ public static GoalStructure success() {
+	 return goal(String.format("success"))
+     		. toSolve((BeliefState belief) -> { return true;})
+     		.withTactic(TacticLib.observe())
+     		.lift();
+	
+ }
+ 
+ public static <State> GoalStructure success__() {
+	 return goal(String.format("success"))
+     		. toSolve((State belief) -> { return true;})
+     		. withTactic(action("").do1((State state) -> state).lift()) 
+     		.lift();
+	
+ }
+ 
+ public static GoalStructure activeButtonPredicateed() {
+	 return goal(String.format("active Button Predicateed"))
+			 .toSolve( 				
+ 					(Tuple<String,BeliefState> s) -> { 		
+ 						if(s.object1.contains("equal")) {
+ 							return true;
+ 						}
+     			return false;
+     			})
+     		.withTactic(SEQ(
+     				action("check number of inactive button: solved means there is something wrong").do1((BeliefState belief)-> {
+     						var knownsButtons = belief.knownButtons(); 
+     						int countActiveButton = 0;
+     						for(int j=0; j<knownsButtons.size(); j++) {
+                   			 if(knownsButtons.get(j).getBooleanProperty("isOn")) {
+                   				 countActiveButton = countActiveButton +1;
+                   			 }
+                   			if(countActiveButton == knownsButtons.size()) {return new Tuple("equal",belief) ;} 
+                   		 }
+							return new Tuple("notEqual",belief) ;
+     						}
+     						).lift(),
+     				ABORT()
+     				))
+     		
+     		.lift();
+	
+ }
+ 
+ 
+ public static <State>GoalStructure lift____(Predicate<State> p) {
+	 return testgoal("Evaluate goal predicate ")
+	            .toSolve((Boolean b) ->  b ) 
+	           
+	            .withTactic(
+	            		SEQ(
+	            		action("check number of inactive button: solved means there is something wrong").do1((State belief)-> {
+     						return p.test(belief) ;
+     						}
+     						).lift()
+	            		,
+	                    ABORT()))
+	            .lift() ;
+	
+ }
+ 
+ //try to define new repeat
+ public static <State>GoalStructure NEWREPEAT(Predicate<State> p, GoalStructure subgoal) {
+	 GoalStructure[] subgoals = new GoalStructure[2];
+	 subgoals[0] =  lift____(p);
+	 subgoals[1] = success__();
+		return new GoalStructure(GoalsCombinator.REPEAT, 
+						new GoalStructure (GoalsCombinator.FIRSTOF,
+						new GoalStructure (GoalsCombinator.SEQ , subgoals)
+						,subgoal
+						)
+						
+				) ;
+	}
+
 }

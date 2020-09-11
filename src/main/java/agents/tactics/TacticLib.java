@@ -8,6 +8,7 @@ at Utrecht University within the Software and Game project course.
 package agents.tactics;
 
 import communication.agent.AgentCommandType;
+import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.world.WorldEntity;
 import helperclasses.datastructures.Tuple;
 import helperclasses.datastructures.Vec3;
@@ -100,7 +101,7 @@ public class TacticLib {
 				  rawNavigateTo_("Navigate to a position nearby " + id, null)
 				  
 				. on((BeliefState belief) -> {
-					
+					System.out.println("first of navigateToCloseByPosition which calles by entityInCloseRange");
 					var e = (LabEntity) belief.worldmodel.getElement(id) ;
     			    if (e==null) return null ;
     			    
@@ -126,7 +127,7 @@ public class TacticLib {
 	    			    candidates.add(Vec3.sum(entity_location, new Vec3(delta,0,0))) ;
 	    			    candidates.add(Vec3.sum(entity_location, new Vec3(-delta,0,0))) ;
 	    			    
-	    			    // iterate over the candidates, if one would be reachable:
+	    			    System.out.println(">>> iterate over the candidates, if one would be reachable:") ;
 	    			    for (var c : candidates) {
 	    			    	// if c (a candidate point near the entity) is on the navigable,
 	    			    	// we should ignore it:
@@ -171,9 +172,9 @@ public class TacticLib {
 				  rawNavigateTo_("Navigate to a navigation vertex nearby " + id, null)
 				  
 				. on((BeliefState belief) -> {
-					
+					System.out.println("first of navigateToClosestReachableNode");
 					var e = (LabEntity) belief.worldmodel.getElement(id) ;
-    			    if (e==null) return null ;
+    			    if (e==null) {System.out.println("e==null"); return null ;}
     			    
 					Vec3 nodeLocation = null ;
 					if (!memory.memorized.isEmpty()) {
@@ -189,7 +190,7 @@ public class TacticLib {
 						var agent_location = belief.worldmodel.getFloorPosition() ;
 	    			    var entity_location = e.getFloorPosition() ;
 	    			    var knownVertices = belief.mentalMap.getKnownVerticesById() ;
-	    			    if (knownVertices.length == 0) return null ;
+	    			    if (knownVertices.length == 0) { System.out.println("knownVertices.length"); return null ;}
 	    			    // candidate list if pairs (position,distance-to-e)
 	    			    List<Tuple<Vec3,Float>> candidates = new LinkedList<>() ;
 	    			    for (var k : knownVertices) {
@@ -200,7 +201,7 @@ public class TacticLib {
 	    			    	if (dist>10) continue ;
 	    			    	candidates.add(new Tuple(k_location,dist)) ;
 	    			    }
-	    			    if (candidates.isEmpty()) return null ;
+	    			    if (candidates.isEmpty()) { System.out.println("candidates.isEmpty()"); return null ;}
 	    			    // sort the candidates according to how close they are to the entity e (closest first)
 	    			    candidates.sort((c1,c2) -> c1.object2.compareTo(c2.object2));
 	    			    // now find the first one that is reachable:
@@ -221,6 +222,7 @@ public class TacticLib {
 	    			    System.out.println(">>> no reachable neighboring nodes :|") ;
 	    			    // no reachable node can be found. We will clear the memory, and declare the tactic as disabled
 	    			    memory.memorized.clear() ;
+	    			    System.out.println("memory.memorized.clear()");
 	    			    return null ;
 					}
 					else {
@@ -308,7 +310,7 @@ public class TacticLib {
                 	var destination = q.object1 ;
                 	var path = q.object2 ;
                 	
-                	//System.out.println("### tactic NavigateTo " + destination) ;
+                	System.out.println("### tactic NavigateTo " + destination) ;
                     
                 	//if a new path is received, memorize it as the current path to follow:
                 	if (path!= null) {
@@ -663,7 +665,7 @@ public class TacticLib {
     	
     	var exploreInTransit = rawNavigateTo_("Explore: traveling to current exploration target",null)
     		   . on((BeliefState belief) -> {
-   				     if(!memo.stateIs("inTransit")) return null ;
+   				     if(!memo.stateIs("inTransit")) { System.out.print("inTransit return null"); return null ;}
                      Vec3 exploration_target = (Vec3) memo.memorized.get(0) ;
                      // note that exploration_target won't be null because we are in the state
                      // in-Transit
@@ -744,5 +746,72 @@ public class TacticLib {
 				 selectExplorationTarget,
 				 exploreInTransit) ;
     }
+    
+    /**
+	 * If the position is not statically known up front, but decided at the runtime.
+	 * Relying on position being passed on as a reference..
+	 */
+	public static Tactic dynamicNavigateTo(String tacticname, Vec3 position) {
+		return FIRSTof(
+				 forceReplanPath(), 
+				 tryToUnstuck(),
+				 rawNavigateTo_(tacticname,position).lift()
+			   )  ;
+	}
+	
+ public static Tactic interactToNextButton(TestAgent agent) {
+    	
+    	var nextInactiveButton = action("Find: setting next button"+"\n")
+                . do2((BeliefState belief) -> (String q) -> {
+                	
+                	var buttonId = q;  
+                	if(buttonId.contains("nothing")) {return new Tuple(null,belief) ;}
+                	agent.addAfter(GoalLib.entityInteracted(buttonId));
+                	return new Tuple(buttonId,belief) ;
+                  })
+    			. on((BeliefState belief) -> {
+                     var knownsButtons = belief.knownButtons(); 
+                     
+                     for(int i=0; i<knownsButtons.size(); i++) {
+                    	var inactive = knownsButtons.get(i).getBooleanProperty("isOn");
+                    	var buttonId = knownsButtons.get(i).id; 
+                    	if(!inactive) {
+                    		
+                    		System.out.println("#### find a new inactive button " + buttonId +"\n") ;
+                    		
+                    		
+                    		var e = (LabEntity) belief.worldmodel.getElement(buttonId) ;
+             			    if (e==null) return null ;
+             			    //get the location of the next inactive button
+             			    var p = e.getFloorPosition() ;
+             			    //get the path of the next inactive button
+             			    var path = belief.findPathTo(p) ;
+                         	if (path==null) {
+                         		System.out.println("#### cant find a path to " + buttonId) ;
+                         	} 
+                    		 return buttonId ;
+                    	 }else {
+                    		 int countActiveButton = 0;
+                    		// System.out.println("#### could not find new button") ;
+                    		 for(int j=0; j<knownsButtons.size(); j++) {
+                    			 if(knownsButtons.get(j).getBooleanProperty("isOn")) {
+                    				 countActiveButton = countActiveButton +1;
+                    			 }
+                    				 
+                    		 }
+                    		 
+//                    		 System.out.println("#### size of button " + knownsButtons.size()) ;
+//                     		 System.out.println("#### size of active button " + countActiveButton) ;
+                     		
+                     		if(countActiveButton == knownsButtons.size()) { return "nothing";}
+                    	 }
+                     }
+                    
 
+                     return null ;
+                 })
+                
+               . lift();
+		return nextInactiveButton; 
+    }
 }

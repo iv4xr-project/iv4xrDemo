@@ -60,7 +60,6 @@ import static nl.uu.cs.aplib.AplibEDSL.*;
 public class LevelTest {
 
     private static LabRecruitsTestServer labRecruitsTestServer;
-
     @BeforeAll
     static void start() {
     	// Uncomment this to make the game's graphic visible:
@@ -70,10 +69,8 @@ public class LevelTest {
     }
 
 	/*Get connection between buttons and doors*/
-    public List<List<String>> getData() {	
-		//String csvFile = "E:\\Ph.D\\iv4xrDemo2-mutation\\src\\test\\resources\\levels\\GameLevel3\\GameLevel3_2020_07_30_09.41.26.csv";
-    	//String csvFile = "E:\\Ph.D\\iv4xrDemo2-mutation\\src\\test\\resources\\levels\\GameLevel2_2020_08_03_16.59.20.csv";
-    	String csvFile = Platform.LEVEL_PATH +"\\GameLevel3\\GameLevel3_2020_08_06_09.56.16.csv";
+    public List<List<String>> getData(String levelName, String fileName) {	
+    	String csvFile = Platform.LEVEL_PATH +"\\"+levelName+"\\"+fileName+".csv";
     	List<List<String>> records = new ArrayList<>();
 		String delimiter = ",";
 		try {
@@ -81,6 +78,7 @@ public class LevelTest {
 	         Scanner sc = new Scanner(file);
 	         String line = "";
 	         boolean isValid = true;
+	        
 	         String[] tempArr;
 	         while(sc.hasNext() && isValid) {
 	            tempArr = sc.next().split(delimiter);
@@ -118,9 +116,20 @@ public class LevelTest {
     @Test
     public void closetReachableTest() throws InterruptedException {
     	
-
+    	// read files in each level
+    	String levelName = "GameLevel1\\isola paper";
+    	String fileName = "GameLevel1_2020_09_10_19.29.24 - Copy";
+    	File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
+    	File fileCount[] = directory.listFiles();
+    	//read file's name
+//    	for(int s = 0; s < fileCount.length; s++) {
+//        String fileName = fileCount[s].getName();
+//        fileName = fileName.replaceFirst("[.][^.]+$", "");
+//    	System.out.print("----------file name------------");
+//    	System.out.print(fileName);
+    	
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new EnvironmentConfig("GameLevel3_2020_08_06_09.56.16",Platform.LEVEL_PATH+"\\GameLevel3"));
+        var environment = new LabRecruitsEnvironment(new EnvironmentConfig(fileName,Platform.LEVEL_PATH+"\\" + levelName));
         if(USE_INSTRUMENT) instrument(environment) ;
 
         try {
@@ -136,22 +145,21 @@ public class LevelTest {
 	        // define the testing-task:
 
 	        /*Automatically creating testing task based on the CSV files*/ 
-	       LinkedList<GoalStructure> list=new LinkedList<GoalStructure>();
+	       LinkedList<GoalStructure> list = new LinkedList<GoalStructure>();
 	       int j = 0;
-	       
-	        GoalStructure[] subGoals = new GoalStructure[getData().size()*3];
+	       var getDataConection = getData(levelName, fileName);
+	        GoalStructure[] subGoals = new GoalStructure[getDataConection.size()*5];
 	        int NumberOfPassVerdicts = 0;
-	        for(int i=0; i<getData().size(); i++) {
+	        for(int i=0; i<getDataConection.size(); i++) {
 	        	NumberOfPassVerdicts++;
-	    		var buttonToTest = getData().get(i).get(0)  ;
-	        	var doorToTest = getData().get(i).get(1) ;        	
-	        	subGoals[j] = GoalLib.entityIsInteracted(buttonToTest);
-	        	subGoals[j+1] = GoalLib.entityIsInRange(doorToTest).lift();
-	        	subGoals[j+2] = GoalLib.entityInvariantChecked(testAgent,
-	        			doorToTest, 
-	            		doorToTest+"should be open", 
-	            		(WorldEntity e) -> e.getBooleanProperty("isOpen"));
-	        	j= j+3;        	
+	    		var buttonToTest = getDataConection.get(i).get(0)  ;
+	        	var doorToTest = getDataConection.get(i).get(1) ;        	
+	        	subGoals[j] = GoalLib.entityInteracted(buttonToTest);
+	        	subGoals[j+1] = GoalLib.entityStateRefreshed(doorToTest);
+	        	subGoals[j+2] = GoalLib.entityInCloseRange(doorToTest);
+	        	subGoals[j+3] = GoalLib.checkDoorState(doorToTest,(WorldEntity e) -> e.getBooleanProperty("isOpen"));
+	        	subGoals[j+4] = GoalLib.entityInvariantChecked(testAgent, doorToTest, doorToTest+" should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"));
+	        	j= j+5;        	
 
 	        }
 	        var testingTask = SEQ(subGoals);
@@ -177,13 +185,20 @@ public class LevelTest {
 	            Thread.sleep(50);
 	            i++ ; 
 	        	testAgent.update();
-                System.out.println(beliefState);
+                //System.out.println(beliefState);
 	        	if (i>400) {
 	        		break ;
 	        	}
 	        }
 	        testingTask.printGoalStructureStatus();
-	
+	        
+	        //Print result
+	        System.out.println("******FINAL RESULT******"); 
+		       if(testAgent.getTestDataCollector().getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) {
+		    	   System.out.println("Goal successfully acheived");
+		       }else {
+		    	  System.out.println("Goal failed, " + testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen()+ " number of doors has not opened, the total number of doors is:" + NumberOfPassVerdicts);
+		       }
 	        // check that we have passed both tests above:
 	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) ;
 	        // goal status should be success
@@ -192,6 +207,7 @@ public class LevelTest {
 	        testAgent.printStatus();
         }
         finally { environment.close(); }
+    	
     }
 
 
