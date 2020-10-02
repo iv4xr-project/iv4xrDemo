@@ -18,6 +18,7 @@ import world.BeliefState;
 import world.LabEntity;
 import world.LegacyEntity;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static nl.uu.cs.aplib.AplibEDSL.*;
@@ -149,7 +150,7 @@ public class GoalLib {
         // then, the 2nd goal is to interact with the object:
         var goal2 = 
         	  goal(String.format("This entity is interacted: [%s]", entityId))
-        	  . toSolve((BeliefState belief) -> {System.out.print("interacted" + entityId); return true;}) 
+        	  . toSolve((BeliefState belief) -> {System.out.println("interacted " + entityId); return true;}) 
               . withTactic(
         		   FIRSTof( //the tactic used to solve the goal
                    TacticLib.interact(entityId),// interact with the entity
@@ -170,15 +171,15 @@ public class GoalLib {
     public static GoalStructure entityStateRefreshed(String id){
         return goal("The belief on this entity is refreshed: " + id)
                 .toSolve((BeliefState b) -> {
-                	System.out.println("entityStateRefreshed id" + id); 
-                              System.out.println(">> entity timest:" + b.worldmodel.getElement(id).timestamp) ;
+                	System.out.println("entityStateRefreshed id " + id); 
+                    System.out.println(">> entity timest:" + b.worldmodel.getElement(id).timestamp) ;
                               var compare = b.evaluateEntity(id, e -> b.age(e) == 0L);
-                              System.out.println(">> entity age:" + compare ) ;
-                              System.out.println(">> world timest" + b.worldmodel.timestamp);
+                              //System.out.println(">> entity age:" + compare ) ;
+                              //System.out.println(">> world timest" + b.worldmodel.timestamp);
                               return compare ;
                               
                               
-                             // return b.evaluateEntity(id, e -> b.age(e) == 0L);
+                             //return b.evaluateEntity(id, e -> b.age(e) == 0);
                               })
                 .withTactic(FIRSTof(
                         TacticLib.navigateToClosestReachableNode(id),
@@ -386,7 +387,7 @@ public class GoalLib {
     			.lift();
     }
  
-    public static GoalStructure checkDoorState(String id, Predicate<WorldEntity> predicate) {
+    public static GoalStructure checkDoorState(String id) {
     	Goal goal =  goal("Ckecking door state")
         		.toSolve(
         				(BeliefState belief) -> { 
@@ -421,13 +422,11 @@ public class GoalLib {
     						}
     					return false;}
     					)
-    			;
-    			
-    			 //Set the tactics with which the goals will be solved
+    			;			
     	        GoalStructure g1 = goal1.withTactic(
-    	        		FIRSTof( //the tactic used to solve the goal
-    	                   TacticLib.navigateTo(id), //try to move to the entity
-    	                   TacticLib.explore(), //find the entity
+    	        		FIRSTof( 
+    	                   TacticLib.navigateTo(id), 
+    	                   TacticLib.explore(), 
     	                   ABORT()
     	                   )) 
     	                .lift();
@@ -436,12 +435,33 @@ public class GoalLib {
                         ABORT())).lift();
     return SEQ(g1,g2);
     }
+
  
- public static GoalStructure success() {
-	 return goal(String.format("success"))
-     		. toSolve((BeliefState belief) -> { return true;})
-     		.withTactic(TacticLib.observe())
-     		.lift();
+ public static  Boolean  activeButtonPredicate(BeliefState belief) {
+	 	var knownsButtons = belief.knownButtons(); 
+		int countActiveButton = 0;
+		for(int j=0; j<knownsButtons.size(); j++) {
+		 if(knownsButtons.get(j).getBooleanProperty("isOn")) {
+			 countActiveButton = countActiveButton +1;
+		 }
+		if(countActiveButton == knownsButtons.size()) 
+			return true ;	
+	 }
+		return false;
+ }
+ 
+ public static <State>GoalStructure lift____(Predicate<State> p) {
+	 return goal("Lifting predicate to goal")
+	            .toSolve((Boolean b) ->  b ) 
+	            .withTactic(
+	            		SEQ(
+	            		action("lifting a predicate").do1((State belief)-> {
+     						return p.test(belief) ;
+     						}
+     						).lift()
+	            		,
+	                    ABORT()))
+	            .lift() ;
 	
  }
  
@@ -453,53 +473,7 @@ public class GoalLib {
 	
  }
  
- public static GoalStructure activeButtonPredicateed() {
-	 return goal(String.format("active Button Predicateed"))
-			 .toSolve( 				
- 					(Tuple<String,BeliefState> s) -> { 		
- 						if(s.object1.contains("equal")) {
- 							return true;
- 						}
-     			return false;
-     			})
-     		.withTactic(SEQ(
-     				action("check number of inactive button: solved means there is something wrong").do1((BeliefState belief)-> {
-     						var knownsButtons = belief.knownButtons(); 
-     						int countActiveButton = 0;
-     						for(int j=0; j<knownsButtons.size(); j++) {
-                   			 if(knownsButtons.get(j).getBooleanProperty("isOn")) {
-                   				 countActiveButton = countActiveButton +1;
-                   			 }
-                   			if(countActiveButton == knownsButtons.size()) {return new Tuple("equal",belief) ;} 
-                   		 }
-							return new Tuple("notEqual",belief) ;
-     						}
-     						).lift(),
-     				ABORT()
-     				))
-     		
-     		.lift();
-	
- }
- 
- 
- public static <State>GoalStructure lift____(Predicate<State> p) {
-	 return testgoal("Evaluate goal predicate ")
-	            .toSolve((Boolean b) ->  b ) 
-	           
-	            .withTactic(
-	            		SEQ(
-	            		action("check number of inactive button: solved means there is something wrong").do1((State belief)-> {
-     						return p.test(belief) ;
-     						}
-     						).lift()
-	            		,
-	                    ABORT()))
-	            .lift() ;
-	
- }
- 
- //try to define new repeat
+ //new Repeat structure
  public static <State>GoalStructure NEWREPEAT(Predicate<State> p, GoalStructure subgoal) {
 	 GoalStructure[] subgoals = new GoalStructure[2];
 	 subgoals[0] =  lift____(p);

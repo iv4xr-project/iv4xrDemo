@@ -29,9 +29,12 @@ public class GameLevel1 extends GameLevelAbstract {
 				
 				List<String> randomPicksDoors = GameLevelUtility.pickNRandom(subArrDoorsName, 1);	
 				List<String> randomPicksbuttons = GameLevelUtility.pickNRandom(subArrButtonsName, 1);
-				
-				connections.add(new String[] {randomPicksbuttons.get(0), randomPicksDoors.get(0)});
-				subArrDoorsName.remove(randomPicksDoors.get(0));
+				//select doors sorted by id
+				connections.add(new String[] {randomPicksbuttons.get(0), subArrDoorsName.get(0).toString()});
+				subArrDoorsName.remove(subArrDoorsName.get(0));
+				//select doors randomly
+				//connections.add(new String[] {randomPicksbuttons.get(0), randomPicksDoors.get(0)});
+				//subArrDoorsName.remove(randomPicksDoors.get(0));
 
 				subArrButtonsName.remove(randomPicksbuttons.get(0));
 			}

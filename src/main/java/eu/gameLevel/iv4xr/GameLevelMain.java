@@ -83,7 +83,6 @@ public class GameLevelMain {
 		
 		/*Create more than one room if there is more*/
 		if(game.numberOfRooms >= 1) { 
-			//? how to call , it is in abstract
 			game.setRooms();
 		}
 		
@@ -96,7 +95,6 @@ public class GameLevelMain {
 
 		/*Adding blocks randomly in each room*/
 			if(gameLevel == 3) {
-				System.out.print("if");
 				game.setBlocks();
 			}
 		/* this for create the main structure of the goal room */
@@ -129,7 +127,7 @@ public class GameLevelMain {
 //		}
 
 		/* Write in the CSV file */	
-		String folderPath = "C:\\Samira\\Ph.D\\iv4xrDemo2\\src\\test\\resources\\levels\\"+ name;
+		String folderPath = "C:\\Samira\\Ph.D\\iv4xrDemo2\\src\\test\\resources\\levels\\"+ name+"\\result";
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
@@ -149,7 +147,7 @@ public class GameLevelMain {
 				}
 				sb.append("\n"); 
 			}	
-		sb.append("\n");
+		//sb.append("\n");
 		
 		/* Apply the final structure to the CSV file */
 		for(String[][] list : game.finalStructure) {

@@ -63,7 +63,7 @@ public class LevelTest {
     @BeforeAll
     static void start() {
     	// Uncomment this to make the game's graphic visible:
-    	TestSettings.USE_GRAPHICS = true ;
+    	//TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -117,8 +117,8 @@ public class LevelTest {
     public void closetReachableTest() throws InterruptedException {
     	
     	// read files in each level
-    	String levelName = "GameLevel1\\isola paper";
-    	String fileName = "GameLevel1_2020_09_10_19.29.24 - Copy";
+    	String levelName = "GameLevel1\\result";
+    	String fileName = "GameLevel1_2020_10_02_18.39.12";
     	File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
     	File fileCount[] = directory.listFiles();
     	//read file's name
@@ -153,11 +153,11 @@ public class LevelTest {
 	        for(int i=0; i<getDataConection.size(); i++) {
 	        	NumberOfPassVerdicts++;
 	    		var buttonToTest = getDataConection.get(i).get(0)  ;
-	        	var doorToTest = getDataConection.get(i).get(1) ;        	
+	        	var doorToTest = getDataConection.get(i).get(1) ;    
 	        	subGoals[j] = GoalLib.entityInteracted(buttonToTest);
 	        	subGoals[j+1] = GoalLib.entityStateRefreshed(doorToTest);
 	        	subGoals[j+2] = GoalLib.entityInCloseRange(doorToTest);
-	        	subGoals[j+3] = GoalLib.checkDoorState(doorToTest,(WorldEntity e) -> e.getBooleanProperty("isOpen"));
+	        	subGoals[j+3] = GoalLib.checkDoorState(doorToTest);
 	        	subGoals[j+4] = GoalLib.entityInvariantChecked(testAgent, doorToTest, doorToTest+" should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"));
 	        	j= j+5;        	
 
@@ -192,19 +192,19 @@ public class LevelTest {
 	        }
 	        testingTask.printGoalStructureStatus();
 	        
-	        //Print result
-	        System.out.println("******FINAL RESULT******"); 
-		       if(testAgent.getTestDataCollector().getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) {
-		    	   System.out.println("Goal successfully acheived");
-		       }else {
-		    	  System.out.println("Goal failed, " + testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen()+ " number of doors has not opened, the total number of doors is:" + NumberOfPassVerdicts);
-		       }
 	        // check that we have passed both tests above:
 	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) ;
 	        // goal status should be success
 	        assertTrue(testAgent.success());
 	        // close
 	        testAgent.printStatus();
+	      //Print result
+	        System.out.println("******FINAL RESULT******"); 
+		       if(testAgent.getTestDataCollector().getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) {
+		    	   System.out.println("Goal successfully acheived");
+		       }else {
+		    	  System.out.println("Goal failed, " + testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen()+ " number of doors has not opened, the total number of doors is:" + NumberOfPassVerdicts);
+		       }
         }
         finally { environment.close(); }
     	

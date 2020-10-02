@@ -1,5 +1,6 @@
 button3,door1,,,,,,
 button5,door2,,,,,,
+
 |w,w,w,w,w,w,w,w
 w,f,f,f,f,f:bc>s,f,w
 w,f,f:a^agent1,f,f,f:b>n^button1,f,w
