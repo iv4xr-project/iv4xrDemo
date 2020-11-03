@@ -173,7 +173,8 @@ public class TacticLib {
 				. on((BeliefState belief) -> {
 					
 					var e = (LabEntity) belief.worldmodel.getElement(id) ;
-    			    if (e==null) return null ;
+					
+					if (e==null) return null ;
     			    
 					Vec3 nodeLocation = null ;
 					if (!memory.memorized.isEmpty()) {
@@ -189,6 +190,7 @@ public class TacticLib {
 						var agent_location = belief.worldmodel.getFloorPosition() ;
 	    			    var entity_location = e.getFloorPosition() ;
 	    			    var knownVertices = belief.mentalMap.getKnownVerticesById() ;
+	    			    System.out.println("navigateToClosestReachableNode "+ " id " +id +" position " + e.getFloorPosition() + " agent location " + agent_location);
 	    			    if (knownVertices.length == 0) return null ;
 	    			    // candidate list if pairs (position,distance-to-e)
 	    			    List<Tuple<Vec3,Float>> candidates = new LinkedList<>() ;
@@ -250,9 +252,14 @@ public class TacticLib {
     			      // replacing its guard with this new one:
 		              . on((BeliefState belief) -> {
 		                	var e = (LabEntity) belief.worldmodel.getElement(id) ;
+		                	//System.out.println("rawNavigateTo: e.getFloorPosition()");
+		                	//System.out.println(" e " + e + " id " + id);
+		                	//System.out.println("end");
 		    			    if (e==null) return null ;
+		    			    //System.out.println(" e.getFloorPosition() " + e.getFloorPosition());
 		    			    var p = e.getFloorPosition() ;
 		                	Vec3 currentDestination = belief.getGoalLocation() ;
+		                	//System.out.println(" currentDestination " + belief.getGoalLocation());
 		                	//System.out.println(">>> navigating to " + id) ;
 		                	if (currentDestination==null || currentDestination.distance(p) >= 0.05) {
 		                		// the agent has no current location to go to, or the new goal location

@@ -68,12 +68,55 @@
             <artifactId>commons-io</artifactId>
             <version>1.3.2</version>
         </dependency>
-
-        <!-- dependencies on iv4xr Agent Framework -->
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-io</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.0-jre</version>
+        </dependency>
+        <dependency>
+       		<groupId>org.slf4j</groupId>
+       		<artifactId>slf4j-simple</artifactId>
+       		<version>1.7.21</version>
+       		<scope>compile</scope>
+    	</dependency>
+        <!-- dependencies on iv4xr Agent Framework -->
+        <!--<dependency>
             <groupId>com.github.iv4XR-project</groupId>
             <artifactId>aplib</artifactId>
             <version>0.0_alpha.1.5</version>
-        </dependency>
+        </dependency>-->
+        <dependency>
+			<groupId>nl.uu.cs.aplib</groupId>
+			<artifactId>aplib</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.fbk.iv4xr</groupId>
+			<artifactId>mbt</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>E:\Ph.D\iv4xr-mbt-master\mbt-0.0.1-SNAPSHOT.jar </systemPath>
+		</dependency>
     </dependencies>
 </project>

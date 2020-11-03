@@ -106,6 +106,9 @@ public class GoalLib {
                         //check if the agent is close to the goal position
         		    	var e = belief.worldmodel.getElement(entityId) ;
         		    	if (e == null) return false ;
+        		    	//System.out.println("InCloseRange: " + " distance " + 
+        		    	//belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) +
+        		    	//"boolean result "+ (belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) <= 1));
                         return belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) <= 1 ;
                     });
         //define the goal structure
@@ -272,5 +275,31 @@ public class GoalLib {
         return new Goal("Send ping").toSolve((BeliefState belief) -> true).withTactic(
                 TacticLib.sendPing(idFrom, idTo)
         );
+    }
+    
+    /**
+     * This goal structure will cause the agent to check a door state
+     * @param id: The id of a door to be checked
+     * @return a boolean that shows the state of a door. 
+     */
+    public static GoalStructure checkDoorState(String id) {
+    	Goal goal =  goal("Ckecking door state")
+        		.toSolve(
+        				(BeliefState belief) -> { 
+        					System.out.print("Ckecking door state : " + belief.isOpen(id) + " id of the door : " +id);
+        	       	    	   if(belief.isOpen(id)) {
+        	       	    		  return true; 
+        	       	    	   }
+        	       	    	   return false;
+        	       	       }
+        				)
+        		.withTactic(
+        				SEQ(
+                        TacticLib.observe(),
+                        ABORT()))
+        	
+        		;  
+    	
+    	return goal.lift();
     }
 }
