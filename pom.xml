@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>nl.uu.cs.muscleai.labrecruits</groupId>
-    <artifactId>lab-recruits-api</artifactId>
+    <artifactId>lab-recruits-MBT-concretization</artifactId>
     <version>1.0</version>
     <build>
         <plugins>
@@ -41,7 +41,7 @@
         </repository>
     </repositories>
 
-    <dependencies>
+    <dependencies>    
          <!-- dependencies on JUnit-5 for unit testing -->
          <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -98,7 +98,7 @@
        		<artifactId>slf4j-simple</artifactId>
        		<version>1.7.21</version>
        		<scope>compile</scope>
-    	</dependency>
+    	</dependency> 
         <!-- dependencies on iv4xr Agent Framework -->
         <!--<dependency>
             <groupId>com.github.iv4XR-project</groupId>
@@ -112,11 +112,27 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+            <groupId>com.github.EvoSuite</groupId>
+            <artifactId>evosuite</artifactId>
+            <!--version>master-SNAPSHOT</version-->
+            <version>1.0.6</version>
+            <exclusions>
+              <exclusion>
+              <artifactId>tools</artifactId>
+              <groupId>com.sun</groupId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+		<dependency>
 			<groupId>eu.fbk.iv4xr</groupId>
 			<artifactId>mbt</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope> 
+			<!--  
 			<scope>system</scope>
-			<systemPath>E:\Ph.D\iv4xr-mbt-master\mbt-0.0.1-SNAPSHOT.jar </systemPath>
+			<systemPath>/Users/iswbprasetya/workshop/projects/iv4xr/fbkmbt/translationToConcrete/iv4xrDemoForMBT/libs/mbt-0.0.1-SNAPSHOT.jar</systemPath>
+			-->
 		</dependency>
+		
     </dependencies>
 </project>
