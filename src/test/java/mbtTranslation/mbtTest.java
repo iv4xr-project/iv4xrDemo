@@ -319,24 +319,24 @@ public class mbtTest {
 	
 	
 	// generating a single test-case using GA-MBT, then turn it to a testing-task for the agent.
-	Pair<GoalStructure,Integer>  generateWithGA(TestAgent agent) {
+	List<Pair<GoalStructure,Integer>>  generateWithGA(TestAgent agent) {
 		// Setup a simple example of generating a single test-case using MBT:
         
+		List<Pair<GoalStructure, Integer>> pairs = new ArrayList<>();
+		
     	MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1" ;
     	//MBTProperties.STRATEGY = MBTProperties.Strategy.RANDOM ;
     	GenerationStrategy generationStrategy = new SearchBasedStrategy<Chromosome>();
 		SuiteChromosome solution = generationStrategy.generateTests();
     	
 		// get a single (abstract) testcase ... let's pick the longest one then:
-	    Testcase testcase = solution.getTestChromosome(0).getTestcase();
-	    int longest = 0 ;
 	    for(int k=0; k < solution.getTestChromosomes().size(); k++) {
-	    	if (solution.getTestChromosome(k).size() > longest) {
-	    		testcase = solution.getTestChromosome(k).getTestcase();
-	    	}
+	    	Testcase testcase = solution.getTestChromosome(k).getTestcase();
+	    	Pair<GoalStructure, Integer> pair = convertTestcase_to_Testingtask(agent,testcase);
+	    	pairs.add(pair);
 	    }
 	    // invoke the translator here:
-	    return  convertTestcase_to_Testingtask(agent,testcase);
+	    return  pairs;
 	}
     
 
@@ -347,63 +347,71 @@ public class mbtTest {
     public void treasureDoorWorkingTest() throws InterruptedException {
     	
 
-        // Create an environment
-        var environment = new LabRecruitsEnvironment(new EnvironmentConfig("buttons_doors_1_FBK",Platform.LEVEL_PATH));
-        if(USE_INSTRUMENT) instrument(environment) ;
         
-        try {
+//        try {
         	if(TestSettings.USE_GRAPHICS) {
         		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
         		new Scanner(System.in). nextLine() ;
         	}
-        	   
-
-    		// create a test agent:
-    		var beliefState = new BeliefState();
-            var testAgent = new LabRecruitsTestAgent("agent1") // matches the ID in the CSV file
-        		    . attachState(beliefState)
-        		    . attachEnvironment(environment);
+        	TestSettings.USE_SERVER_FOR_TEST = false;  
+    		var testAgent = new LabRecruitsTestAgent("agent1");
             
 	        // convert the MBT-testcase to a testing-task:
             //Pair<GoalStructure,Integer> tt = sample3(testAgent);
-            Pair<GoalStructure,Integer> tt = generateWithGA(testAgent);
-            GoalStructure testingtask = tt.fst ;
-            int numberOfInvariants = tt.snd ;
-            
-	        // attaching the goal/testing-task and test data-collector
-	        var dataCollector = new TestDataCollector();
-	        testAgent . setTestDataCollector(dataCollector) . setGoal(testingtask) ;
-	
-	        // Ok.. let's now run the test. This will auto-steer the test-agent. At each invariant-checking,
-	        // the result of the checking will be added into the above data-collector.
-	        
-	        environment.startSimulation(); // this will press the "Play" button in the game for you
-	        //goal not achieved yet
-	        assertFalse(testAgent.success());
+            List<Pair<GoalStructure,Integer>> tts = generateWithGA(testAgent);
+            // loop over all tts
+            for (Pair<GoalStructure, Integer> tt : tts) {
+            	// Create an environment
+            	var environment = new LabRecruitsEnvironment(new EnvironmentConfig("buttons_doors_1_FBK",Platform.LEVEL_PATH));
+            	if(USE_INSTRUMENT) instrument(environment) ;
 
-	        int i = 0 ;
-	        // keep updating the agent
-	        while (testingtask.getStatus().inProgress()) {
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
-	            Thread.sleep(30);
-	            i++ ; 
-	        	testAgent.update();               
-	        	if (i>800) {
-	        		break ;
-	        	}
-	        } 
-	        
-	        // just printing the goals' status for information:
-	        testingtask.printGoalStructureStatus();
-	        
-	        // Inspecting the test findings:
-	        System.out.println("** #invariants to pass: " + numberOfInvariants) ; 
-	        // check that we have passed all invariants:
-	        assertEquals(numberOfInvariants,dataCollector.getNumberOfPassVerdictsSeen()) ;
-	        // and also check that goal status is success
-	        assertTrue(testAgent.success());
-        }
-        finally { environment.close(); }
+            	// create a test agent:
+            	var beliefState = new BeliefState();
+            	testAgent. attachState(beliefState)
+            			. attachEnvironment(environment);
+
+            	GoalStructure testingtask = tt.fst ;
+	            int numberOfInvariants = tt.snd ;
+	            
+		        // attaching the goal/testing-task and test data-collector
+		        var dataCollector = new TestDataCollector();
+		        testAgent . setTestDataCollector(dataCollector) . setGoal(testingtask) ;
+		        
+		        
+		
+		        // Ok.. let's now run the test. This will auto-steer the test-agent. At each invariant-checking,
+		        // the result of the checking will be added into the above data-collector.
+		        
+		        environment.startSimulation(); // this will press the "Play" button in the game for you
+		        //goal not achieved yet
+		        assertFalse(testAgent.success());
+	
+		        int i = 0 ;
+		        // keep updating the agent
+		        while (testingtask.getStatus().inProgress()) {
+		        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+		            Thread.sleep(30);
+		            i++ ; 
+		        	testAgent.update();               
+		        	if (i>800) {
+		        		break ;
+		        	}
+		        } 
+		        
+		        // just printing the goals' status for information:
+		        testingtask.printGoalStructureStatus();
+		        
+		        // Inspecting the test findings:
+		        System.out.println("** #invariants to pass: " + numberOfInvariants) ; 
+		        // check that we have passed all invariants:
+		        assertEquals(numberOfInvariants,dataCollector.getNumberOfPassVerdictsSeen()) ;
+		        // and also check that goal status is success
+		        assertTrue(testAgent.success());
+		        
+		        environment.close();
+            }
+       // }
+//        finally { environment.close(); }
     }
 
 
