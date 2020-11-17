@@ -318,14 +318,17 @@ public class mbtTest {
 	}
 	
 	
-	// generating a single test-case using GA-MBT, then turn it to a testing-task for the agent.
+	/**
+	 * Generating a test-suite using GA-MBT, then turn each to a testing-task for the agent.
+	 * This returns a list of pairs (tt,k) where tt is a testing-task and k is the number
+	 * of invariant-checks injected into tt (so, we expect them all to be passed).
+	 */
 	List<Pair<GoalStructure,Integer>>  generateWithGA(TestAgent agent) {
 		// Setup a simple example of generating a single test-case using MBT:
         
 		List<Pair<GoalStructure, Integer>> pairs = new ArrayList<>();
 		
     	MBTProperties.SUT_EFSM = "labrecruits.buttons_doors_1" ;
-    	//MBTProperties.STRATEGY = MBTProperties.Strategy.RANDOM ;
     	GenerationStrategy generationStrategy = new SearchBasedStrategy<Chromosome>();
 		SuiteChromosome solution = generationStrategy.generateTests();
     	
@@ -356,7 +359,7 @@ public class mbtTest {
         	TestSettings.USE_SERVER_FOR_TEST = false;  
     		var testAgent = new LabRecruitsTestAgent("agent1");
             
-	        // convert the MBT-testcase to a testing-task:
+	        // convert the MBT-testsuite to testing-tasks:
             //Pair<GoalStructure,Integer> tt = sample3(testAgent);
             List<Pair<GoalStructure,Integer>> tts = generateWithGA(testAgent);
             // loop over all tts
@@ -376,9 +379,7 @@ public class mbtTest {
 		        // attaching the goal/testing-task and test data-collector
 		        var dataCollector = new TestDataCollector();
 		        testAgent . setTestDataCollector(dataCollector) . setGoal(testingtask) ;
-		        
-		        
-		
+
 		        // Ok.. let's now run the test. This will auto-steer the test-agent. At each invariant-checking,
 		        // the result of the checking will be added into the above data-collector.
 		        
@@ -410,6 +411,7 @@ public class mbtTest {
 		        
 		        environment.close();
             }
+            System.out.println("** Nunber of test-cases: " + tts.size()) ;
        // }
 //        finally { environment.close(); }
     }
