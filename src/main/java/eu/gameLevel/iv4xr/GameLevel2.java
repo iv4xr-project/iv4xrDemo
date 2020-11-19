@@ -44,13 +44,20 @@ public class GameLevel2 extends GameLevelAbstract {
 					}	
 				}
 				List<String> randomPicksbuttons = GameLevelUtility.pickNRandom(copySubArraybuttonsName, 1);
-
-				connections.add(new String[] {randomPicksbuttons.get(0), randomPicksDoors.get(0)});
+				
+				/*add connection between doors and buttons randomly*/
+				//connections.add(new String[] {randomPicksbuttons.get(0), randomPicksDoors.get(0)});
+		
 				subArrDoorsName.remove(randomPicksDoors.get(0));
 
 				subArrButtonsName.remove(randomPicksbuttons.get(0));
 			}
+			
 		}
+		/*add connection between doors and buttons manually*/
+		connections.add(new String[] {"button3", "door1"});
+		connections.add(new String[] {"button6", "door2"});
+		connections.add(new String[] {"button4", "door4"});
 	}
 
 	@Override

@@ -125,26 +125,39 @@ public abstract class GameLevelAbstract {
 	
 	/* Adding blocks randomly in each room */
 	public void setBlocks() {
-		for (int i = 0; i < numberOfRooms; i++) {
-			/* firstly, we get the structure of each room */
-			String[][] button = finalStructure.get(i);
-			boolean isValid = false;
-			for(int j=0; j<numberofBlocks; j++) {
-				while(isValid == false) {
-					/*Blocks should not be at front of or back of doors therefore we should set specific range for them*/
-					int rnd1 = new Random().nextInt(lenghtOfRoom - 4) + 2;
-					int rnd2 = new Random().nextInt(lenghtOfRoom - 4) + 2;
-
-					if (button[rnd1][rnd2] == "f" && button[rnd1][rnd2+1]== "f") {
-						button[rnd1][rnd2] = "w";
-						button[rnd1][rnd2+1] = "w";
-						isValid = true;
-				    }
-
-				}
-				isValid = false;
-			}	
-	   }
+		/*create block manually*/
+		String[][] button0 = finalStructure.get(0);
+		String[][] button1 = finalStructure.get(1);
+		button0[6][3] = "w";
+		button0[6][4] = "w";
+		button0[7][6] = "w";
+		button0[7][7] = "w";
+		button1[4][3] = "w";
+		button1[4][4] = "w";
+		button1[7][5] = "w";
+		button1[7][6] = "w";
+		/*create blocks randomly*/
+//		for (int i = 0; i < numberOfRooms; i++) {
+//			/* firstly, we get the structure of each room */
+//			String[][] button = finalStructure.get(i);
+//
+//			boolean isValid = false;
+//			for(int j=0; j<numberofBlocks; j++) {
+//				while(isValid == false) {
+//					/*Blocks should not be at front of or back of doors therefore we should set specific range for them*/
+//					int rnd1 = new Random().nextInt(lenghtOfRoom - 4) + 2;
+//					int rnd2 = new Random().nextInt(lenghtOfRoom - 4) + 2;
+//
+//					if (button[rnd1][rnd2] == "f" && button[rnd1][rnd2+1]== "f") {
+//						button[rnd1][rnd2] = "w";
+//						button[rnd1][rnd2+1] = "w";
+//						isValid = true;
+//				    }
+//
+//				}
+//				isValid = false;
+//			}	
+//	   }
 	};
 	public void setGoalRoom() {
 		for (int i = 0; i < 2; i++) {

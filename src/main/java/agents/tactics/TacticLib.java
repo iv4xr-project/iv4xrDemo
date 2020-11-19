@@ -22,6 +22,7 @@ import world.*;
 import world.LegacyObservation;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class TacticLib {
 						nodeLocation = (Vec3) memory.memorized.get(0) ;
 					}
 					Vec3 currentGoalLocation = belief.getGoalLocation() ;
-					
+					//System.out.println("navigateToCloseByPosition *** currentGoalLocation first " +currentGoalLocation);
 					if (nodeLocation == null 
 					    || currentGoalLocation == null
 					    || nodeLocation.distance(currentGoalLocation) >= 0.05) {
@@ -119,6 +120,8 @@ public class TacticLib {
 						var agent_location = belief.worldmodel.getFloorPosition() ;
 	    			    var entity_location = e.getFloorPosition() ;
 	    			    List<Vec3> candidates = new LinkedList<>() ;
+	    			    //System.out.println("navigateToCloseByPosition *** agent_location " +agent_location);
+	    			    //System.out.println("navigateToCloseByPosition *** entity_location " + entity_location);
 	    			    float delta = 0.7f ;
 	    			    // adding North and south candidates
 	    			    candidates.add(Vec3.sum(entity_location, new Vec3(0,0,delta))) ;
@@ -127,12 +130,20 @@ public class TacticLib {
 	    			    candidates.add(Vec3.sum(entity_location, new Vec3(delta,0,0))) ;
 	    			    candidates.add(Vec3.sum(entity_location, new Vec3(-delta,0,0))) ;
 	    			    
-	    			    System.out.println(">>> iterate over the candidates, if one would be reachable:") ;
+	    			    //System.out.println(">>> iterate over the candidates, if one would be reachable:") ;
 	    			    for (var c : candidates) {
+	    			    	//System.out.println(">>> iterate over the candidates*****" + c);
 	    			    	// if c (a candidate point near the entity) is on the navigable,
 	    			    	// we should ignore it:
 	    			    	if (belief.mentalMap.getContainingPolygon(c) == null) continue ;
+	    			    	System.out.println(">>> iterate over the candidates***** " + c) ;
+	    			    	for (var corner : belief.mentalMap.getContainingPolygon(c)) {
+	    			    		System.out.println("     >>> containing triangle corner: " + corner) ;
+	    			    	}
 	    			    	var path = belief.mentalMap.navigateForce(agent_location,c,belief.blockedNodes) ;
+	    			    	//var path = belief.mentalMap.navigateForce(agent_location,c, new HashSet<Integer>()) ;
+	    			    	
+	    			    	System.out.println(">>> iterate over the candidates***** path " + path);
 	    			    	if (path != null) {
 	    			    		// found our target
 	    			    		System.out.println(">>> a reachable closeby position found :" + c + ", path: " + Arrays.toString(path)) ;
@@ -173,6 +184,7 @@ public class TacticLib {
 				  
 				. on((BeliefState belief) -> {
 					System.out.println("first of navigateToClosestReachableNode");
+					System.out.println("id"  + id);
 					var e = (LabEntity) belief.worldmodel.getElement(id) ;
     			    if (e==null) {System.out.println("e==null"); return null ;}
     			    
@@ -309,25 +321,30 @@ public class TacticLib {
                 	// part for other similar navigation-like tactics
                 	var destination = q.object1 ;
                 	var path = q.object2 ;
+                	System.out.println("### tactic NavigateTo destination" + destination) ;
                 	
-                	System.out.println("### tactic NavigateTo " + destination) ;
                     
                 	//if a new path is received, memorize it as the current path to follow:
                 	if (path!= null) {
+                		//System.out.println("### tactic NavigateTo if a new path is received" + destination) ;
                 		belief.mentalMap.applyPath(belief.worldmodel.timestamp, destination, path) ;
                 	}               
                     //move towards the next way point of whatever the current path is:
                     belief.worldmodel.moveToward(belief.env(),belief.getNextWayPoint());
+                    
                     return belief; 
                     })
                 .on((BeliefState belief) -> {
                 	Vec3 currentDestination = belief.getGoalLocation() ;
+                	
                 	if (currentDestination==null || currentDestination.distance(position) >= 0.05) {
                 		// the agent has no current location to go to, or the new goal location
                 		// is quite different from the current goal location, we will then calculate
                 		// a new path:
+                		
                 		var path = belief.findPathTo(position) ;
                 		if (path==null || path.length==0) return null ;
+               	
                 		return new Tuple(position,path) ;
                 	}
                 	else {
@@ -335,7 +352,9 @@ public class TacticLib {
                 		// no need to calculate a new path. We will return a pair(position,null)
                 		// to signal this.
                 		return new Tuple(position,null) ;
-                	}}) ;
+                	}
+                	
+                }) ;
     	return move ;
     }
     
@@ -665,23 +684,29 @@ public class TacticLib {
     	
     	var exploreInTransit = rawNavigateTo_("Explore: traveling to current exploration target",null)
     		   . on((BeliefState belief) -> {
-   				     if(!memo.stateIs("inTransit")) { System.out.print("inTransit return null"); return null ;}
+    			   System.out.println("exploreInTransit");
+   				     if(!memo.stateIs("inTransit")) { System.out.println("inTransit return null"); return null ;}
                      Vec3 exploration_target = (Vec3) memo.memorized.get(0) ;
+                     
                      // note that exploration_target won't be null because we are in the state
                      // in-Transit
                      Vec3 agentLocation = belief.worldmodel.getFloorPosition() ;
                      Vec3 currentDestination = belief.getGoalLocation() ;
+                     System.out.println("agentLocation " + agentLocation);
+                     
                      if (agentLocation.distance(exploration_target) <= 0.3 // current exploration target is reached
                          || currentDestination==null 
                          || currentDestination.distance(exploration_target) > 0.3) {
+                 
+                    	 System.out.println(">>> agentLocation.distance: " + agentLocation.distance(exploration_target)) ;
                     	 // in all these cases we need to give the control back to selectExplorationTarget
                     	 // to select a new exploration target.
                     	 // This is done by moving back the exploration state
                     	 // to S0.
+                    	 
                     	 memo.moveState("S0");
                      }
-                     // System.out.println(">>> explore in-transit: " + memo.stateIs("inTransit")) ;
-                     // System.out.println(">>> exploration target: " + exploration_target) ;
+                      //System.out.println(">>> exploration target: " + exploration_target) ;
                      // We should not need to re-calculate the path. If we are "inTransit" the path is
                      // already in the agent's memory
                      // return new Tuple(g, belief.findPathTo(g));

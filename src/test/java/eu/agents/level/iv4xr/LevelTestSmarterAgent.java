@@ -66,7 +66,8 @@ public class LevelTestSmarterAgent {
     @BeforeAll
     static void start() {
     	// Uncomment this to make the game's graphic visible:
-    	TestSettings.USE_GRAPHICS = true ;
+    	//TestSettings.USE_SERVER_FOR_TEST = false ;
+    	//TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -80,17 +81,35 @@ public class LevelTestSmarterAgent {
 
     /**
      * A test to verify that the east closet is reachable.
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
      */
     @Test
-    public void closetReachableTest() throws InterruptedException {
+    public List<Object> closetReachableTest(String levelName, String fileName) throws InterruptedException {
     	
     	//GameLevel2_2020_08_24_14.24.15 - non-exist door  invalid
     	//GameLevel2_2020_08_24_17.24.47-original - non-exist door
     	//GameLevel3_2020_08_24_16.41.23
+    	//String levelName = "GameLevel3\\faulty samples\\M_loc_logic";
+    	//String fileName = "GameLevel3_2020_11_17_10.14.37-non-b";
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new EnvironmentConfig("GameLevel3_2020_08_24_16.41.23",Platform.LEVEL_PATH+"\\GameLevel3"));
+        var environment = new LabRecruitsEnvironment(new EnvironmentConfig(fileName,Platform.LEVEL_PATH+"\\" + levelName));
         if(USE_INSTRUMENT) instrument(environment) ;
-
+        int cycleNumber = 0 ;
+        long totalTime = 0;
+        String finalResult = "null";
         try {
         	if(TestSettings.USE_GRAPHICS) {
         		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
@@ -105,109 +124,109 @@ public class LevelTestSmarterAgent {
 	    	
 	        
 
-//	  	  var testingTask = SEQ( //Checking the door of room one, if it can not be open
-//	   	 
-//	   		SEQ(
-//	   		  GoalLib.entityInteracted("button3") , // button1 works because of the block can not see door
-//	   		  GoalLib.entityStateRefreshed("door1"),
-//	   		  GoalLib.entityInCloseRange("door1"),
-//	   		  
-//	   		  // try to find new button which can open the door of the room one
-//	   		  FIRSTof(GoalLib.checkDoorState("door1"),
-//	   				GoalLib.NEWREPEAT(
-//	   						(BeliefState b) -> GoalLib.activeButtonPredicate(b),
-//	   						  SEQ(
-//	   								  FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
-//	   								  GoalLib.entityStateRefreshed("door1"),
-//	   								  GoalLib.entityInCloseRange("door1"),
-//	   								  GoalLib.checkDoorState("door1")
-//	   								  )
-//	   						  )
-//	   				  ) 
-//	   		,GoalLib.entityInvariantChecked(testAgent, "door1", "door1 should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))
-//	   		  ),
-//	   	  
-//	   		SEQ( 
-//	   				FIRSTof(GoalLib.checkButtonState("button1"),GoalLib.entityInteracted("button1")), 
-//	   				GoalLib.entityStateRefreshed("door2"),
-//	   				GoalLib.entityInCloseRange("door2"),
-//	   				FIRSTof(
-//	   						GoalLib.checkDoorState("door2"),
-//	   						GoalLib.NEWREPEAT(
-//	   								(BeliefState b) -> GoalLib.activeButtonPredicate(b),
-//	   								SEQ(
-//	   										FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
-//	   										GoalLib.entityStateRefreshed("door2"),
-//	   										GoalLib.entityInCloseRange("door2"),
-//	   										GoalLib.checkDoorState("door2")
-//	   										)
-//	   								)
-//	   						) 
-//	   										
-//	   				,GoalLib.entityInvariantChecked(testAgent, "door2", "door2 should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))
-//	   			),
-//	   		SEQ( 
-//	   				FIRSTof(GoalLib.checkButtonState("button6"),GoalLib.entityInteracted("button6")), 
-//	   				GoalLib.entityStateRefreshed("door4"),
-//	   				GoalLib.entityInCloseRange("door4"),
-//	   				FIRSTof(
-//	   						GoalLib.checkDoorState("door4"),
-//	   						GoalLib.NEWREPEAT(
-//	   								(BeliefState b) -> GoalLib.activeButtonPredicate(b),
-//	   								SEQ(
-//	   										FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
-//	   										GoalLib.entityStateRefreshed("door4"),
-//	   										GoalLib.entityInCloseRange("door4"),
-//	   										GoalLib.checkDoorState("door4")
-//	   										)
-//	   								)
-//	   						) 
-//	   				,GoalLib.entityInvariantChecked(testAgent, "door4", "door4 should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))
-//	   				)
-//		  	);
-//	        
+	  	  var testingTask = SEQ( //Checking the door of room one, if it can not be open
+	   	 
+	   		SEQ(
+	   		  GoalLib.entityInteracted("button3") , // button1 works because of the block can not see door
+	   		  GoalLib.entityStateRefreshed("door1"),
+	   		  GoalLib.entityInCloseRange("door1"),
+	   		  
+	   		  // try to find new button which can open the door of the room one
+	   		  FIRSTof(GoalLib.checkDoorState("door1"),
+	   				GoalLib.NEWREPEAT(
+	   						(BeliefState b) -> GoalLib.activeButtonPredicate(b),
+	   						  SEQ(
+	   								  FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
+	   								  GoalLib.entityStateRefreshed("door1"),
+	   								  GoalLib.entityInCloseRange("door1"),
+	   								  GoalLib.checkDoorState("door1")
+	   								  )
+	   						  )
+	   				  ) 
+	   		,GoalLib.entityInvariantChecked(testAgent, "door1", "door1 should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))
+	   		  ),
+	   	  
+	   		SEQ( 
+	   				FIRSTof(GoalLib.checkButtonState("button1"),GoalLib.entityInteracted("button1")), 
+	   				GoalLib.entityStateRefreshed("door2"),
+	   				GoalLib.entityInCloseRange("door2"),
+	   				FIRSTof(
+	   						GoalLib.checkDoorState("door2"),
+	   						GoalLib.NEWREPEAT(
+	   								(BeliefState b) -> GoalLib.activeButtonPredicate(b),
+	   								SEQ(
+	   										FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
+	   										GoalLib.entityStateRefreshed("door2"),
+	   										GoalLib.entityInCloseRange("door2"),
+	   										GoalLib.checkDoorState("door2")
+	   										)
+	   								)
+	   						) 
+	   										
+	   				,GoalLib.entityInvariantChecked(testAgent, "door2", "door2 should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))
+	   			),
+	   		SEQ( 
+	   				FIRSTof(GoalLib.checkButtonState("button6"),GoalLib.entityInteracted("button6")), 
+	   				GoalLib.entityStateRefreshed("door4"),
+	   				GoalLib.entityInCloseRange("door4"),
+	   				FIRSTof(
+	   						GoalLib.checkDoorState("door4"),
+	   						GoalLib.NEWREPEAT(
+	   								(BeliefState b) -> GoalLib.activeButtonPredicate(b),
+	   								SEQ(
+	   										FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
+	   										GoalLib.entityStateRefreshed("door4"),
+	   										GoalLib.entityInCloseRange("door4"),
+	   										GoalLib.checkDoorState("door4")
+	   										)
+	   								)
+	   						) 
+	   				,GoalLib.entityInvariantChecked(testAgent, "door4", "door4 should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"))
+	   				)
+		  	);
+	        
 	        
 	    	// test for third level : GameLevel3_2020_08_24_16.41.23 //2 doors active
-	    	var testingTask = SEQ(
-	    			//Checking the door of room one, if it can not be open by the set button try to find another button
-	    			SEQ(
-	    				GoalLib.entityInteracted("button2"), // button1 works because of the block can not see door
-	        			GoalLib.entityStateRefreshed("door1"),
-	        			GoalLib.entityInCloseRange("door1"),
-	        			
-	        			// try to find new button which can open the door of the room one 
-	        			FIRSTof(GoalLib.checkDoorState("door1"),
-	        					REPEAT(
-	        							SEQ(
-	        									FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
-	        									GoalLib.entityStateRefreshed("door1"),
-	        									GoalLib.entityInCloseRange("door1"),
-	        									GoalLib.checkDoorState("door1")
-	        									)
-	        							)
-	        					)
-	    			),
-	    			
-	    			SEQ(
-	    					FIRSTof(GoalLib.checkButtonState("button4"),GoalLib.entityInteracted("button4")),
-	    	    			GoalLib.entityStateRefreshed("door2"),
-	    	    			GoalLib.entityInCloseRange("door2"),
-	    	    		
-	    	    			// try to find new button which can open the door of the room one 
-	    	    			FIRSTof(GoalLib.checkDoorState("door2"),REPEAT(SEQ(REPEAT(FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent))),GoalLib.entityStateRefreshed("door2"),
-	    	    	    			GoalLib.entityInCloseRange("door2"),GoalLib.checkDoorState("door2"))))
-	        			),
-	    			SEQ(
-	    					FIRSTof(GoalLib.checkButtonState("button7"),GoalLib.entityInteracted("button7")),
-	        			GoalLib.entityStateRefreshed("door4"),
-	        			GoalLib.entityInCloseRange("door4"),
-	        			FIRSTof(
-	        					GoalLib.checkDoorState("door4"),
-	        					REPEAT(SEQ(REPEAT(FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent))),GoalLib.entityStateRefreshed("door4"),
-	        			    			GoalLib.entityInCloseRange("door4"),GoalLib.checkDoorState("door4")))
-	        					)
-	    			)
-	    		);
+//	    	var testingTask = SEQ(
+//	    			//Checking the door of room one, if it can not be open by the set button try to find another button
+//	    			SEQ(
+//	    				GoalLib.entityInteracted("button2"), // button1 works because of the block can not see door
+//	        			GoalLib.entityStateRefreshed("door1"),
+//	        			GoalLib.entityInCloseRange("door1"),
+//	        			
+//	        			// try to find new button which can open the door of the room one 
+//	        			FIRSTof(GoalLib.checkDoorState("door1"),
+//	        					REPEAT(
+//	        							SEQ(
+//	        									FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent)),
+//	        									GoalLib.entityStateRefreshed("door1"),
+//	        									GoalLib.entityInCloseRange("door1"),
+//	        									GoalLib.checkDoorState("door1")
+//	        									)
+//	        							)
+//	        					)
+//	    			),
+//	    			
+//	    			SEQ(
+//	    					FIRSTof(GoalLib.checkButtonState("button4"),GoalLib.entityInteracted("button4")),
+//	    	    			GoalLib.entityStateRefreshed("door2"),
+//	    	    			GoalLib.entityInCloseRange("door2"),
+//	    	    		
+//	    	    			// try to find new button which can open the door of the room one 
+//	    	    			FIRSTof(GoalLib.checkDoorState("door2"),REPEAT(SEQ(REPEAT(FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent))),GoalLib.entityStateRefreshed("door2"),
+//	    	    	    			GoalLib.entityInCloseRange("door2"),GoalLib.checkDoorState("door2"))))
+//	        			),
+//	    			SEQ(
+//	    					FIRSTof(GoalLib.checkButtonState("button7"),GoalLib.entityInteracted("button7")),
+//	        			GoalLib.entityStateRefreshed("door4"),
+//	        			GoalLib.entityInCloseRange("door4"),
+//	        			FIRSTof(
+//	        					GoalLib.checkDoorState("door4"),
+//	        					REPEAT(SEQ(REPEAT(FIRSTof(GoalLib.findingNewButtonAndInteracte(testAgent))),GoalLib.entityStateRefreshed("door4"),
+//	        			    			GoalLib.entityInCloseRange("door4"),GoalLib.checkDoorState("door4")))
+//	        					)
+//	    			)
+//	    		);
 	    	
 	  	  //------------------------
 	        //this has some problem to find a door GameLevel2_2020_08_21_17.54.52
@@ -471,43 +490,55 @@ public class LevelTestSmarterAgent {
 	
 	      
 
-	        int i = 0 ;
+	        
 	        // keep updating the agent
-     
+	        long startTime = System.currentTimeMillis();
 	        while (testingTask.getStatus().inProgress()) {
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+	        	System.out.println("*** " + cycleNumber + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
 	            Thread.sleep(50);
 	            
-	            i++ ; 
+	            cycleNumber++ ; 
 	        	testAgent.update();
 	        	
 //	        	if (i>=206) {
 //	        	   System.out.println(">>>>>") ;
 //	        	}
 	        	
-	        	if (i>400) {
+	        	if (cycleNumber>800) {
 	        		break ;
 	        	}
 	        }
-	       testingTask.printGoalStructureStatus();
-	       System.out.println("FINAL RESULT"); 
+	        long endTime = System.currentTimeMillis();
+	        totalTime = endTime - startTime;
+	       //testingTask.printGoalStructureStatus();
+	       System.out.println("******run time******");
+	       System.out.println(totalTime/1000);
+	       System.out.println("******cycle number******");
+	       System.out.println(cycleNumber);
 	       int numberOfDoors = 3;
 	       if(testAgent.getTestDataCollector().getNumberOfPassVerdictsSeen() == numberOfDoors) {
 	    	   System.out.println("Goal successfully acheived");
+	    	   finalResult = "success";
 	       }else {
 	    	  System.out.println("Goal failed, " + testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen()+ " number of doors has not opened, the total number of doors is:" + numberOfDoors);
+	    	  finalResult = "failed";
 	       }
 
 
 	        
 	        // check that we have passed both tests above:
-	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == 1) ;
+	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == 3) ;
 	        // goal status should be success
 	        assertTrue(testAgent.success());
 	        // close
 	        testAgent.printStatus();
         }
         finally { environment.close(); }
+        List<Object> myList = new ArrayList<Object>();
+        myList.add(cycleNumber);
+        myList.add(totalTime/1000);
+        myList.add(finalResult);
+        return myList;
     }
 
 

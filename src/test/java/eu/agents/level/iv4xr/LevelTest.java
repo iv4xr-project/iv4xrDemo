@@ -58,11 +58,13 @@ import static nl.uu.cs.aplib.AplibEDSL.*;
  *    * Agent can get stuck in a bending corner!
  */
 public class LevelTest {
-
+	
+	
     private static LabRecruitsTestServer labRecruitsTestServer;
     @BeforeAll
-    static void start() {
+    static public void start() {
     	// Uncomment this to make the game's graphic visible:
+    	//TestSettings.USE_SERVER_FOR_TEST = false ;
     	//TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
@@ -112,26 +114,35 @@ public class LevelTest {
 
     /**
      * A test to verify that the east closet is reachable.
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
+     * @return 
      */
     @Test
     public void closetReachableTest() throws InterruptedException {
     	
     	// read files in each level
-    	String levelName = "GameLevel1\\result";
-    	String fileName = "GameLevel1_2020_10_02_18.39.12";
-    	File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
-    	File fileCount[] = directory.listFiles();
-    	//read file's name
-//    	for(int s = 0; s < fileCount.length; s++) {
-//        String fileName = fileCount[s].getName();
-//        fileName = fileName.replaceFirst("[.][^.]+$", "");
-//    	System.out.print("----------file name------------");
-//    	System.out.print(fileName);
+    	String levelName = "GameLevel3\\result_loc";
+    	String fileName = "GameLevel3_2020_11_17_10.20.58";
+    	//File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
+    	//File fileCount[] = directory.listFiles();
+
     	
         // Create an environment
         var environment = new LabRecruitsEnvironment(new EnvironmentConfig(fileName,Platform.LEVEL_PATH+"\\" + levelName));
         if(USE_INSTRUMENT) instrument(environment) ;
-
+        int cycleNumber = 0 ;
+        long totalTime = 0;
+        String finalResult = "null";
         try {
         	if(TestSettings.USE_GRAPHICS) {
         		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
@@ -176,21 +187,23 @@ public class LevelTest {
 	        assertFalse(testAgent.success());
 	
 	      
-
-	        int i = 0 ;
 	        // keep updating the agent
-	       
+	        long startTime = System.currentTimeMillis();
 	        while (testingTask.getStatus().inProgress()) {
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+
+	        	System.out.println("*** " + cycleNumber + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
 	            Thread.sleep(50);
-	            i++ ; 
+	            
+	            cycleNumber++ ; 
 	        	testAgent.update();
-                //System.out.println(beliefState);
-	        	if (i>400) {
+                
+	        	if (cycleNumber>400) {
 	        		break ;
 	        	}
 	        }
-	        testingTask.printGoalStructureStatus();
+	        long endTime = System.currentTimeMillis();
+	        totalTime = endTime - startTime;
+	        //testingTask.printGoalStructureStatus();
 	        
 	        // check that we have passed both tests above:
 	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) ;
@@ -198,16 +211,27 @@ public class LevelTest {
 	        assertTrue(testAgent.success());
 	        // close
 	        testAgent.printStatus();
+	        
+	        System.out.println("******run time******");
+		    System.out.println(totalTime/1000);
+		    System.out.println("******cycle number******");
+		    System.out.println(cycleNumber);
 	      //Print result
 	        System.out.println("******FINAL RESULT******"); 
 		       if(testAgent.getTestDataCollector().getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) {
 		    	   System.out.println("Goal successfully acheived");
+		    	   finalResult = "success";
 		       }else {
 		    	  System.out.println("Goal failed, " + testAgent.getTestDataCollector().getNumberOfFailVerdictsSeen()+ " number of doors has not opened, the total number of doors is:" + NumberOfPassVerdicts);
+		    	  finalResult = "faild";
 		       }
         }
         finally { environment.close(); }
-    	
+        List<Object> myList = new ArrayList<Object>();
+        myList.add(cycleNumber);
+        myList.add(totalTime/1000);
+        myList.add(finalResult);
+       //return myList;
     }
 
 

@@ -13,19 +13,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 public class GameLevelMain {
-
+ 
 	
 	public static void main(String[] args) throws IOException {
 		
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Which level would you like to create:"
-				+"\n"+ "(1) First level is connectiong each door to the button at the same room. enter 1 for selecting this level"
-				+"\n"+"(2) Second level is connecting each door to the button at the previous room(exept for the first room)(number of "
-						+ "button in each room shoulb be two times of number of active doors) "
-						+"\n"+"(3) Third level is the same as the second level by adding blocks in each room"
-				+"\n"+ "Enter the game level: ");
+	//	Scanner sc = new Scanner(System.in);
+//		System.out.print("Which level would you like to create:"
+//				+"\n"+ "(1) First level is connectiong each door to the button at the same room. enter 1 for selecting this level"
+//				+"\n"+"(2) Second level is connecting each door to the button at the previous room(exept for the first room)(number of "
+//						+ "button in each room shoulb be two times of number of active doors) "
+//						+"\n"+"(3) Third level is the same as the second level by adding blocks in each room"
+//				+"\n"+ "Enter the game level: ");
 		
-		int gameLevel = GameLevelUtility.getInt(sc, "level", 3);
+		//int gameLevel = GameLevelUtility.getInt(sc, "level", 3);
+
+		for(int d = 0; d< 50; d++) {
+		int gameLevel = 3;
 		//create it automatically
 		String name = "GameLevel"+gameLevel;
 		GameLevelAbstract game = new GameLevel1();
@@ -37,24 +40,32 @@ public class GameLevelMain {
 		else if(gameLevel == 3) {
 			game = new GameLevel3();
 		}
-		game.lenghtOfRoom = GameLevelUtility.getInt(sc, "lenght of rooms", GameLevelAbstract.maximumNumberOfLenght);
+		//game.lenghtOfRoom = GameLevelUtility.getInt(sc, "lenght of rooms", GameLevelAbstract.maximumNumberOfLenght);
 		/*
 		 * maximumNumberOfButtons is based on the space that we have in our room depends
 		 * on length of room, I decided to decrease 10 number of it too. there is no
 		 * reason:)
 		 */
 		game.maximumNumberOfButtons = (game.lenghtOfRoom -1)*(game.lenghtOfRoom -1) - 10;
-		game.numberOfRooms = GameLevelUtility.getInt(sc, "rooms", GameLevelAbstract.maximumNumberOfRooms);
+		//game.numberOfRooms = GameLevelUtility.getInt(sc, "rooms", GameLevelAbstract.maximumNumberOfRooms);
 		game.maximumnumberOfDoors = (game.lenghtOfRoom - 2)/2;
-		game.numberOfDoors = GameLevelUtility.getInt(sc, "doors", game.maximumnumberOfDoors);
+		//game.numberOfDoors = GameLevelUtility.getInt(sc, "doors", game.maximumnumberOfDoors);
 		game.maximumNumberOfActiveDoors = game.numberOfDoors;
-		game.numberOfActiveDoors = GameLevelUtility.getInt(sc, "active doors", game.maximumNumberOfActiveDoors);
-		game.numberOfButtons = GameLevelUtility.getInt(sc, "buttons",game.maximumNumberOfButtons);
+		//game.numberOfActiveDoors = GameLevelUtility.getInt(sc, "active doors", game.maximumNumberOfActiveDoors);
+		//game.numberOfButtons = GameLevelUtility.getInt(sc, "buttons",game.maximumNumberOfButtons);
+		
+		game.lenghtOfRoom = 10;
+		game.numberOfRooms = 2;
+		game.numberOfDoors = 2;
+		game.numberOfActiveDoors = 2;
+		game.numberOfButtons =  6;
 		
 		if(gameLevel == 3) {
 			/*I decided to limit the number of blocks based on the number of active doors, there is no reason*/
-			game.numberofBlocks =  GameLevelUtility.getInt(sc, "blocks",game.numberOfActiveDoors);
+			//game.numberofBlocks =  GameLevelUtility.getInt(sc, "blocks",game.numberOfActiveDoors);
+			game.numberofBlocks = 2;
 		}
+		
 		//game.initial(numberOfActiveDoors);
 		// does it work or not
 		game.goalRoomStructure = new String[2][game.lenghtOfRoom];
@@ -90,13 +101,15 @@ public class GameLevelMain {
 		/* Adding agent in a specific place */
 		game.finalStructure.get(0)[1][1] = "f:a^agent1";
 		
+		/*Adding blocks randomly in each room*/
+		if(gameLevel == 3) {
+			game.setBlocks();
+		}
+		
 		/* Adding buttons randomly in one place */
 			game.setButtons();
 
-		/*Adding blocks randomly in each room*/
-			if(gameLevel == 3) {
-				game.setBlocks();
-			}
+
 		/* this for create the main structure of the goal room */
 		game.setGoalRoom();
 
@@ -109,14 +122,14 @@ public class GameLevelMain {
 
 		/* Print arrayList in console */
 		
-		  for (String[][] strArr : game.finalStructure) {
-			  for(int i = 0 ; i <strArr.length; i++){
-				  System.out.print( Arrays.toString(strArr[i]) + " "); 
-				  }
-		  
-		  System.out.println("\n");
-		  
-		  }
+//		  for (String[][] strArr : game.finalStructure) {
+//			  for(int i = 0 ; i <strArr.length; i++){
+//				  System.out.print( Arrays.toString(strArr[i]) + " "); 
+//				  }
+//		  
+//		  System.out.println("\n");
+//		  
+//		  }
 		 
 		/* Print array in console */
 //		for (String[] a : oneRoomStructure) {
@@ -127,7 +140,7 @@ public class GameLevelMain {
 //		}
 
 		/* Write in the CSV file */	
-		String folderPath = "C:\\Samira\\Ph.D\\iv4xrDemo2\\src\\test\\resources\\levels\\"+ name+"\\result";
+		String folderPath = "C:\\Samira\\Ph.D\\iv4xrDemo2\\src\\test\\resources\\levels\\"+ name+"\\result_Loc";
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
@@ -161,38 +174,8 @@ public class GameLevelMain {
 	
 		br.write(sb.toString());
 		br.close();
-	
-		//public static final String delimiter = ",";
-//		String csvFile = "C:\\Samira\\Ph.D\\iv4xrDemo2\\src\\test\\resources\\levels\\GameLevel3\\GameLevel3_2020_07_30_09.41.26.csv";
-//		List<List<String>> records = new ArrayList<>();
-//		try {
-//	         File file = new File(csvFile);
-//	         Scanner sc = new Scanner(file);
-//	         String line = "";
-//	         boolean isValid = true;
-//	         String[] tempArr;
-//	         while(sc.hasNext() && isValid) {
-//	            tempArr = sc.next().split(delimiter);
-//	            List<String> values = new ArrayList<String>();
-//	            for(String tempStr : tempArr) {
-//	            	if(!tempStr.endsWith("|w")) {
-//	            		values.add(tempStr);
-//	            	}else {
-//	            		isValid = false;
-//	            		break;
-//	            	}
-//	            	
-//	               System.out.print(tempStr + " ");
-//	            }
-//	            if(!values.isEmpty())
-//	        	 records.add(values);
-//	        	 System.out.println();
-//	         }
-//	        
-//	         } catch(IOException ioe) {
-//	            ioe.printStackTrace();
-//	         }
-//		System.out.println(records);
-	}
+		
+		}
+		}
 
 }

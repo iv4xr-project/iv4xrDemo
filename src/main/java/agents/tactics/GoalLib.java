@@ -107,7 +107,10 @@ public class GoalLib {
         		    . toSolve((BeliefState belief) -> {
                         //check if the agent is close to the goal position
         		    	var e = belief.worldmodel.getElement(entityId) ;
-        		    	System.out.println("entityInCloseRange e" + e.getFloorPosition());
+        		    	System.out.println("entityInCloseRange e " + e.getFloorPosition());
+        		    	System.out.println("entityInCloseRange entity id " + e.id);
+        		    	System.out.println("entityInCloseRange belief.worldmodel.getFloorPosition() " + belief.worldmodel.getFloorPosition());
+        		    	System.out.println("entityInCloseRange distance" + belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()));
         		    	System.out.println("entityInCloseRange return value: " + (belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) <= 1));
         		    	if (e == null) return false ;
                         return belief.worldmodel.getFloorPosition().distance(e.getFloorPosition()) <= 1 ;
@@ -171,16 +174,25 @@ public class GoalLib {
     public static GoalStructure entityStateRefreshed(String id){
         return goal("The belief on this entity is refreshed: " + id)
                 .toSolve((BeliefState b) -> {
+                	
+                	//if(id.contains("door1")) {
+                
+                   // 	System.out.println(" id " + b.isOpen(id)); 
+                	//}
                 	System.out.println("entityStateRefreshed id " + id); 
-                    System.out.println(">> entity timest:" + b.worldmodel.getElement(id).timestamp) ;
-                              var compare = b.evaluateEntity(id, e -> b.age(e) == 0L);
-                              //System.out.println(">> entity age:" + compare ) ;
-                              //System.out.println(">> world timest" + b.worldmodel.timestamp);
-                              return compare ;
-                              
-                              
+                	System.out.println(">> world timest" + b.worldmodel.timestamp);
+                	
+                    
+                	 if((b.worldmodel.getElement(id)) != null ) {
+                		 System.out.println(">> b.worldmodel.getElement(id) " + b.worldmodel.getElement(id).timestamp);
+                		 var compare = b.evaluateEntity(id, e -> b.age(e) == 0);
+                		
+                         return compare ;
+                	 }
+                    return false; 
+                                   
                              //return b.evaluateEntity(id, e -> b.age(e) == 0);
-                              })
+                    })
                 .withTactic(FIRSTof(
                         TacticLib.navigateToClosestReachableNode(id),
                         TacticLib.explore(),
@@ -413,10 +425,11 @@ public class GoalLib {
     	
     	//move to the object
     	Goal goal1 = goal(String.format("This entity is in interaction distance: [%s]", id))
-        		. toSolve((BeliefState belief) -> {return belief.canInteract(id);});
+        		. toSolve((BeliefState belief) -> {System.out.println("checkButtonState " + id);return belief.canInteract(id);});
     	
     	Goal goal2 =  goal("check button state")
     			.toSolve((BeliefState b)-> {
+    				System.out.println("check button state " + id);
     					if(b.isOn(id)) {
     						return true;
     						}
