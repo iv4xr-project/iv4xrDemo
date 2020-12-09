@@ -106,10 +106,10 @@
             <version>0.0_alpha.1.5</version>
         </dependency>-->
         <dependency>
-			<groupId>nl.uu.cs.aplib</groupId>
-			<artifactId>aplib</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
+	    	<groupId>com.github.iv4xr-project</groupId>
+	    	<artifactId>aplib</artifactId>
+	    	<version>1.0</version>
+	    	<scope>compile</scope>
 		</dependency>
 		<dependency>
             <groupId>com.github.EvoSuite</groupId>
