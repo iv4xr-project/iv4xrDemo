@@ -12,6 +12,8 @@ import static eu.iv4xr.framework.Iv4xrEDSL.* ;
 import nl.uu.cs.aplib.mainConcepts.Goal;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.Tactic;
+import nl.uu.cs.aplib.utils.Pair;
+import nl.uu.cs.aplib.mainConcepts.GoalStructure.GoalsCombinator;
 import eu.iv4xr.framework.spatial.Vec3;
 import eu.iv4xr.framework.mainConcepts.ObservationEvent.VerdictEvent;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
@@ -274,4 +276,119 @@ public class GoalLib {
                 TacticLib.sendPing(idFrom, idTo)
         );
     }
+    
+    public static GoalStructure findingNewButtonAndInteracte(TestAgent agent){
+    	return goal("find new inactive button and interact with it")
+    			.toSolve( 				
+    					(Pair<String,BeliefState> s) -> { 				
+    						if(s.fst == null) {
+    							return true;
+    							}
+    						return false;
+    						}
+    					)
+    				.withTactic(SEQ(
+                        TacticLib.interactToNextButton(agent),
+                        ABORT()
+                        )
+    				)
+    			.lift();
+    }
+ 
+    public static GoalStructure checkDoorState(String id) {
+    	Goal goal =  goal("Ckecking door state")
+        		.toSolve((BeliefState belief) -> { 
+        	       	       if(belief.isOpen(id)) {
+        	       	    		  return true; 
+        	       	    	   }
+        	       	    	   return false;
+        	       	       }
+        				)
+        		.withTactic(
+        				SEQ(
+                        TacticLib.observe(),
+                        ABORT()))
+        	
+        		;  
+    	
+    	return goal.lift();
+    }
+    
+    public static GoalStructure checkButtonState(String id) {
+    	
+    	//move to the object
+    	Goal goal1 = goal(String.format("This entity is in interaction distance: [%s]", id))
+        		. toSolve((BeliefState belief) -> belief.canInteract(id));
+    	
+    	Goal goal2 =  goal("check button state")
+    			.toSolve((BeliefState b)-> {
+    					if(b.isOn(id)) {
+    						return true;
+    						}
+    					return false;}
+    					)
+    			;			
+    	        GoalStructure g1 = goal1.withTactic(
+    	        		FIRSTof( 
+    	                   TacticLib.navigateTo(id), 
+    	                   TacticLib.explore(), 
+    	                   ABORT()
+    	                   )) 
+    	                .lift();
+    	        GoalStructure g2 = goal2.withTactic(SEQ(
+                        TacticLib.observe(),
+                        ABORT())).lift();
+    return SEQ(g1,g2);
+    }
+
+   public static  Boolean  activeButtonPredicate(BeliefState belief) {
+	 	var knownsButtons = belief.knownButtons(); 
+		int countActiveButton = 0;
+		for(int j=0; j<knownsButtons.size(); j++) {
+		 if(knownsButtons.get(j).getBooleanProperty("isOn")) {
+			 countActiveButton = countActiveButton +1;
+		 }
+		if(countActiveButton == knownsButtons.size()) 
+			return true ;	
+	 }
+		return false;
+ }
+ 
+   public static <State>GoalStructure lift____(Predicate<State> p) {
+	 return goal("Lifting predicate to goal")
+	            .toSolve((Boolean b) ->  b ) 
+	            .withTactic(
+	            		SEQ(
+	            		action("lifting a predicate").do1((State belief)-> {
+     						return p.test(belief) ;
+     						}
+     						).lift()
+	            		,
+	                    ABORT()))
+	            .lift() ;
+	
+ }
+ 
+   public static <State> GoalStructure success__() {
+	 return goal(String.format("success"))
+     		. toSolve((State belief) -> { return true;})
+     		. withTactic(action("").do1((State state) -> state).lift()) 
+     		.lift();
+	
+ }
+ 
+ //new Repeat structure
+ public static <State>GoalStructure NEWREPEAT(Predicate<State> p, GoalStructure subgoal) {
+	 GoalStructure[] subgoals = new GoalStructure[2];
+	 subgoals[0] =  lift____(p);
+	 subgoals[1] = success__();
+		return new GoalStructure(GoalsCombinator.REPEAT, 
+						new GoalStructure (GoalsCombinator.FIRSTOF,
+						new GoalStructure (GoalsCombinator.SEQ , subgoals)
+						,subgoal
+						)
+						
+				) ;
+	}
+
 }

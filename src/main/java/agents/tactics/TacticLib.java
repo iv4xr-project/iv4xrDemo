@@ -14,10 +14,10 @@ import nl.uu.cs.aplib.multiAgentSupport.Acknowledgement;
 import nl.uu.cs.aplib.multiAgentSupport.Message;
 import nl.uu.cs.aplib.agents.MiniMemory;
 import nl.uu.cs.aplib.utils.Pair;
+import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import eu.iv4xr.framework.spatial.Vec3;
 import eu.iv4xr.framework.spatial.meshes.Face;
-
 import world.*;
 
 import java.util.*;
@@ -138,12 +138,16 @@ public class TacticLib {
 						//var agent_location = belief.worldmodel.getFloorPosition() ;
 	    			    var entity_location = e.getFloorPosition() ;
 	    			    // calculate the center of the square on which the target entity is located:
-	    			    var entity_sqcenter = new Vec3((float) Math.floor((double) entity_location.x) + 0.5f,
+	    			    var entity_sqcenter = new Vec3((float) Math.floor((double) entity_location.x - 0.5) + 1f,
 	    			    		entity_location.y,
-	    			    		(float) Math.floor((double) entity_location.z) + 0.5f) ;
+	    			    		(float) Math.floor((double) entity_location.z - 0.5) + 1f) ;
 	    			    
+	    			    //var entity_sqcenter = entity_location; 
+	    			    System.out.println("Entity " + entity_location);
+	    			    
+	    			    System.out.println("sqcenter " + entity_sqcenter);
 	    			    List<Vec3> candidates = new LinkedList<>() ;
-	    			    float delta = 0.5f ;
+	    			    float delta = 1f ;
 	    			    // adding North and south candidates
 	    			    candidates.add(Vec3.add(entity_sqcenter, new Vec3(0,0,delta))) ;
 	    			    candidates.add(Vec3.add(entity_sqcenter, new Vec3(0,0,-delta))) ;
@@ -155,7 +159,9 @@ public class TacticLib {
 	    			    for (var c : candidates) {
 	    			    	// if c (a candidate point near the entity) is on the navigable,
 	    			    	// we should ignore it:
+	    			    	System.out.println("condidates0 " + c);
 	    			    	if (getCoveringFaces(belief,c) == null) continue ;
+	    			    	System.out.println("condidates " + c);
 	    			    	var result = belief.findPathTo(c, true) ; 
 	    			    	if (result != null) {
 	    			    		// found our target
@@ -191,6 +197,13 @@ public class TacticLib {
 	 */
     static Face getCoveringFaces(BeliefState S, Vec3 p) {
     	for(Face face : S.pathfinder.faces) {
+    		/*
+    		System.out.println(">> face:") ;
+    		for (var corner : face.vertices) {
+    			System.out.print(": " + S.pathfinder.vertices.get(corner));
+    		}
+    		System.out.println("") ;
+    		*/
 			if (face.distFromPoint(p, S.pathfinder.vertices) <= 0.1) {
 				// found it
 				return face ;
@@ -778,4 +791,58 @@ public class TacticLib {
 				 explore_) ;
     }
 
+public static Tactic interactToNextButton(TestAgent agent) {
+    	
+    	var nextInactiveButton = action("Find: setting next button"+"\n")
+                . do2((BeliefState belief) -> (String q) -> {
+                	
+                	var buttonId = q;  
+                	if(buttonId.contains("nothing")) {return new Pair(null,belief) ;}
+                	System.out.println("addafter");
+                	System.out.println(buttonId);
+                	agent.addAfter(GoalLib.entityInteracted(buttonId));
+                	
+                	return new Pair(buttonId,belief) ;
+                  })
+    			. on((BeliefState belief) -> {
+                     var knownsButtons = belief.knownButtons(); 
+                     
+                     for(int i=0; i<knownsButtons.size(); i++) {
+                    	var active = knownsButtons.get(i).getBooleanProperty("isOn");
+                    	
+                    	var buttonId = knownsButtons.get(i).id; 
+                    	System.out.println("active " + active + "buttonId " + buttonId);
+                    	if(!active) {
+                    		
+                    		System.out.println("#### find a new inactive button " + buttonId +"\n") ;
+                    		
+                    		var e = (LabEntity) belief.worldmodel.getElement(buttonId) ;
+             			    if (e==null) return null ;
+             			    //get the location of the next inactive button
+             			    var p = e.getFloorPosition() ;
+             			    //get the path of the next inactive button
+             			    var path = belief.findPathTo(p,true) ;
+                         	if (path==null) {
+                         		System.out.println("#### can't find a path to " + buttonId) ;
+                         	} 
+                    		 return buttonId ;
+                    	 }else {
+                    		 int countActiveButton = 0;
+                    		 for(int j=0; j<knownsButtons.size(); j++) {
+                    			 if(knownsButtons.get(j).getBooleanProperty("isOn")) {
+                    				 countActiveButton = countActiveButton +1;
+                    			 }
+                    				 
+                    		 }                   		
+                     		if(countActiveButton == knownsButtons.size()) { return "nothing";}
+                    	 }
+                     }
+                    
+
+                     return null ;
+                 })
+                
+               . lift();
+		return nextInactiveButton; 
+    }
 }
