@@ -106,7 +106,7 @@ public class LevelTestSmarterAgent {
     	//String levelName = "level 1";
     	//String fileName = "GameLevel1_2020_08_28_13.32.04 - Copy";
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(fileName,Platform.LEVEL_PATH+"\\" + levelName));
+        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName));
         if(USE_INSTRUMENT) instrument(environment) ;
         int cycleNumber = 0 ;
         long totalTime = 0;

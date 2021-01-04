@@ -15,15 +15,15 @@ public class RunTest {
 
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
-		String levelName = "GameLevel1\\result_logic_loc";
-		File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
+		String levelName = "GameLevel1"+File.separator+"result_logic_loc";
+		File directory = new File(Platform.LEVEL_PATH +File.separator+ levelName );
 		File fileCount[] = directory.listFiles();
 		
-		String folderPath = "C:\\Samira\\Ph.D\\new version of everythings\\iv4xrDemo-v2.0\\src\\test\\resources\\levels\\GameLevel1";
+		String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel1";
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		String resultFile = folderPath+"\\GameLevel1_result_smart_loc_log3.csv";  
+		String resultFile = folderPath+File.separator+"GameLevel1_result_smart_loc_log4.csv";  
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
 		

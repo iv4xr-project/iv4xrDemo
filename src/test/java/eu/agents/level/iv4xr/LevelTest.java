@@ -70,7 +70,7 @@ public class LevelTest {
 
 	/*Get connection between buttons and doors*/
     public List<List<String>> getData(String levelName, String fileName) {	
-    	String csvFile = Platform.LEVEL_PATH +"\\"+levelName+"\\"+fileName+".csv";
+    	String csvFile = Platform.LEVEL_PATH +File.separator+ levelName+File.separator+ fileName+".csv";
     	List<List<String>> records = new ArrayList<>();
 		String delimiter = ",";
 		try {
@@ -140,7 +140,7 @@ public class LevelTest {
 
     	
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(fileName,Platform.LEVEL_PATH+"\\" + levelName));
+        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(fileName,Platform.LEVEL_PATH+ File.separator + levelName));
         if(USE_INSTRUMENT) instrument(environment) ;
         int cycleNumber = 0 ;
         long totalTime = 0;
