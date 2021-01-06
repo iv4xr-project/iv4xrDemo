@@ -61,8 +61,8 @@ public class LevelTestSmarterAgent {
 
     @BeforeAll
     static void start() {
+    	//TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	TestSettings.USE_SERVER_FOR_TEST = false ;
     	//TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
@@ -77,27 +77,22 @@ public class LevelTestSmarterAgent {
 
     /**
      * A test to verify that the east closet is reachable.
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
-     * @return 
+     */ 
+    @Test
+    public void closetReachableTest() throws InterruptedException {
+    	String levelName = "GameLevel1/result_logic_loc";
+    	String fileName = "GameLevel1_2020_09_30_20.19.14-main";
+    	closetReachableTest(levelName,fileName) ;
+    }
+   
+     
+    /**
+     * A test to verify that the east closet is reachable.
      */
     /*For running this method from the file RunTest, you need to change the method type to List<Object>
      *  and Add "String levelName,String fileName" ad a input. Also, you should comment these to variable
      *  from the beginning of the code and uncomment the return value at the end of it
      * */
-    @Test
     public List<Object> closetReachableTest(String levelName,String fileName) throws InterruptedException {
     	
     	//GameLevel2_2020_08_24_14.24.15 - non-exist door  invalid
@@ -106,7 +101,9 @@ public class LevelTestSmarterAgent {
     	//String levelName = "level 1";
     	//String fileName = "GameLevel1_2020_08_28_13.32.04 - Copy";
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName));
+    	var LRconfig = new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName) ;
+    	LRconfig.agent_speed = 0.1f ;
+        var environment = new LabRecruitsEnvironment(LRconfig);
         if(USE_INSTRUMENT) instrument(environment) ;
         int cycleNumber = 0 ;
         long totalTime = 0;
@@ -505,7 +502,7 @@ public class LevelTestSmarterAgent {
 //	        	   System.out.println(">>>>>") ;
 //	        	}
 	        	
-	        	if (cycleNumber>800) {
+	        	if (cycleNumber>1000) {
 	        		break ;
 	        	}
 	        }
@@ -525,14 +522,14 @@ public class LevelTestSmarterAgent {
 	    	  finalResult = "failed";
 	       }
 
-
+	       testAgent.printStatus();
 	        
 	        // check that we have passed both tests above:
 	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == 3) ;
 	        // goal status should be success
 	        assertTrue(testAgent.success());
 	        // close
-	        testAgent.printStatus();
+	        
         }
         finally { environment.close(); }
         List<Object> myList = new ArrayList<Object>();

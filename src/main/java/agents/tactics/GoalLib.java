@@ -105,7 +105,8 @@ public class GoalLib {
                         //check if the agent is close to the goal position
         		    	var e = belief.worldmodel.getElement(entityId) ;
         		    	if (e == null) return false ;
-                        return Vec3.dist(belief.worldmodel.getFloorPosition(),e.getFloorPosition()) <= 1 ;
+                        //return Vec3.dist(belief.worldmodel.getFloorPosition(),e.getFloorPosition()) <= 1 ;
+                        return Vec3.dist(belief.worldmodel.getFloorPosition(),e.getFloorPosition()) <= 1.55 ;
                     });
         //define the goal structure
         return goal.withTactic(
@@ -136,7 +137,11 @@ public class GoalLib {
         	  goal(String.format("This entity is in interaction distance: [%s]", entityId))
         	  . toSolve((BeliefState belief) -> {
         		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
-       	          return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
+        		  if (e==null) return false ;
+        		  var distsq = Vec3.sub(belief.worldmodel.getFloorPosition(), e.getFloorPosition()).lengthSq() ;
+       	          // bug .. .should be distsq:
+        		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
+        		  return distsq < 0.32 ;
         	    })
         	  . withTactic(
                     FIRSTof( //the tactic used to solve the goal

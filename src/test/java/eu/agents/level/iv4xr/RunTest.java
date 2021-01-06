@@ -15,7 +15,8 @@ public class RunTest {
 
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
-		String levelName = "GameLevel1"+File.separator+"result_logic_loc";
+		String levelName = "GameLevel1"+File.separator+"result_loc";
+		//String levelName = "GameLevel1"+File.separator+"result_logic_loc";
 		File directory = new File(Platform.LEVEL_PATH +File.separator+ levelName );
 		File fileCount[] = directory.listFiles();
 		
@@ -23,9 +24,13 @@ public class RunTest {
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		String resultFile = folderPath+File.separator+"GameLevel1_result_smart_loc_log4.csv";  
+		String resultFile = folderPath+File.separator+"GameLevel1_result_loc_log6.csv";  
+		//String resultFile = folderPath+File.separator+"GameLevel1_result_smart_loc_log6.csv";  
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
+		
+		int numberOfSuccesses = 0 ;
+		int numberOfFails = 0 ;
 		
 		//read file's name
     	for(int s = 0; s < fileCount.length; s++) {
@@ -36,6 +41,7 @@ public class RunTest {
 			
 			
 	    	try {
+	    		
 	    		List<Object> myList = new ArrayList<Object>();
 	    		
 	    		/*normal level test*/
@@ -49,13 +55,22 @@ public class RunTest {
 	    		LevelTestSmarterAgent.start();
 				myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
 				LevelTestSmarterAgent.close();
-			
+				
+	    		Thread.sleep(2000); // add some delay to allow LR run to close?
+
 				for (Object element : myList) {
 					sb.append(element);
 					sb.append(","); 
 					 
 				}
 				sb.append("\n");
+				
+				if(myList.size()==3 && myList.get(2).equals("success")) {
+					numberOfSuccesses++ ;
+				}
+				else numberOfFails++ ;
+				System.out.printf("##== success/fail/number: %d/%d/%d%n", numberOfSuccesses, numberOfFails, s+1 ) ;
+				
 	    	}catch(AssertionFailedError afe){
 	    		sb.append("\n");
 	    		continue;

@@ -449,7 +449,8 @@ public class TacticLib {
 
                 	var someDoorHasChangedState =
                 			belief.knownDoors().stream()
-                	        . anyMatch(door -> door.lastStutterTimestamp < 0
+                	        . anyMatch(door -> /* door.lastStutterTimestamp < 0 */
+                	                           belief.worldmodel.timestamp -  door.lastStutterTimestamp < 5
                 	                           && door.hasPreviousState()
                 	                           && door.hasChangedState())
                 	        ;
@@ -583,10 +584,12 @@ public class TacticLib {
                 	if (belief.worldmodel.canInteract(LabWorldModel.INTERACT, e)) {
                 		return e ;
                 	}
-                	//System.out.println(">>> cannot interact with " + e.id) ;
-            		//System.out.println("    Agent pos: " + belief.worldmodel.getFloorPosition()) ;
-            		//System.out.println("    Entity pos:" + e.getFloorPosition()) ;
-            		//System.out.println("    Entity extent:" + e.extent) ;
+                	System.out.println(">>> cannot interact with " + e.id) ;
+            		System.out.println("    Agent pos: " + belief.worldmodel.getFloorPosition()) ;
+            		System.out.println("    Entity pos:" + e.getFloorPosition()) ;
+            		System.out.println("    Entity extent:" + e.extent) ;
+            		var dist = Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) ;
+            		System.out.println("    Dist: " + dist) ;
             		
                 	return null ;
                     })
