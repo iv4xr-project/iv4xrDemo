@@ -17,20 +17,20 @@ public class RunSingleTestMultipleTimes {
 
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
-		String levelName = "GameLevel1\\result_loc";
+		String levelName = "GameLevel1"+File.separator+"result_loc";
 		File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
 		File fileCount[] = directory.listFiles();
 		
-		String folderPath = "C:\\Samira\\Ph.D\\iv4xrDemo2\\src\\test\\resources\\levels\\GameLevel1\\result_loc";
+		String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel1"+File.separator+ "final_results";
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		String resultFile = folderPath+"\\GameLevel1_result_smarttttt_loc.csv";  
+		String resultFile = folderPath+File.separator+"GameLevel_result_loc1_multi.csv";
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
 		
 		/*Read the result file of whole samples*/
-		String csvFile = Platform.LEVEL_PATH +"\\GameLevel1\\result of unity without connector\\GameLevel1_result_normal_loc_second.csv";
+		String csvFile = Platform.LEVEL_PATH +File.separator+"GameLevel1"+File.separator+"final_results"+File.separator+"result_local"+File.separator+"GameLevel1_result_loc_normal1.csv";
     	List<List<String>> records = new ArrayList<>();
 		String delimiter = ",";
 		File file = new File(csvFile);
@@ -70,16 +70,18 @@ public class RunSingleTestMultipleTimes {
 			    		List<Object> myList = new ArrayList<Object>();
 			    		
 			    		/*normal level test*/
-	//		    		LevelTest objLevelTest = new LevelTest();
-	//					LevelTest.start();
-	//					myList = objLevelTest.closetReachableTest(levelName, fileName );
-	//					LevelTest.close();
+			    		LevelTest objLevelTest = new LevelTest();
+						LevelTest.start();
+						myList = objLevelTest.closetReachableTest(levelName, fileName );
+						LevelTest.close();
 			    		
 			    		/*Level test smarter agent*/
-			    		LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
-			    		LevelTestSmarterAgent.start();
-						myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
-						LevelTestSmarterAgent.close();					
+//			    		LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
+//			    		LevelTestSmarterAgent.start();
+//						myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
+//						LevelTestSmarterAgent.close();
+						
+						
 						for (Object element : myList) {
 							sb.append(element);
 							sb.append(","); 	 

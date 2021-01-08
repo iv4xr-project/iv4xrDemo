@@ -15,16 +15,16 @@ public class RunTest {
 
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
-		String levelName = "GameLevel1"+File.separator+"result_loc";
+		String levelName = "GameLevel2"+File.separator+"result_logic_loc";
 		//String levelName = "GameLevel1"+File.separator+"result_logic_loc";
 		File directory = new File(Platform.LEVEL_PATH +File.separator+ levelName );
 		File fileCount[] = directory.listFiles();
 		
-		String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel1";
+		String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel2"+File.separator+ "final_results\\result_logic_loc";
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		String resultFile = folderPath+File.separator+"GameLevel1_result_loc_log6.csv";  
+		String resultFile = folderPath+File.separator+"GameLevel2_result_logic_loc2.csv";  
 		//String resultFile = folderPath+File.separator+"GameLevel1_result_smart_loc_log6.csv";  
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
