@@ -80,9 +80,34 @@ public class LevelTestSmarterAgent {
      */ 
     @Test
     public void closetReachableTest() throws InterruptedException {
+    	String levelName = "GameLevel1/result_loc";
+    	String[] fileNames = {
+    			"GameLevel1_2020_11_05_17.06.04"  
+    		    ,"GameLevel1_2020_11_05_17.06.57"
+    			
+    	} ;
+    	/*
     	String levelName = "GameLevel1/result_logic_loc";
-    	String fileName = "GameLevel1_2020_09_30_20.19.14-main";
-    	closetReachableTest(levelName,fileName) ;
+    	String[] fileNames = {
+    			"GameLevel1_2020_09_30_20.19.14-main"
+    			,"GameLevel1_2020_09_30_20.45.01"
+    			,"GameLevel1_2020_10_23_15.19.24"
+    			,"GameLevel1_2020_10_23_15.54.35"
+    			,"GameLevel1_2020_10_23_15.54.35"
+    			,"GameLevel1_2020_10_23_15.26.39"
+    			,"GameLevel1_2020_10_23_16.00.56"
+    			
+    	} ;
+    	*/
+    	String summary = "" ;
+    	for(var file : fileNames) {
+    		System.out.println("##== Testing " + file) ;
+    	    var result = closetReachableTest(levelName,file) ;
+    	    summary += file + ": ";
+    	    if(result.size()==3) summary += result.get(2) + "\n" ;			
+    	    else summary += "fail\n" ;
+    	}
+    	System.out.println("##==\n" + summary) ;
     }
    
      
@@ -102,7 +127,7 @@ public class LevelTestSmarterAgent {
     	//String fileName = "GameLevel1_2020_08_28_13.32.04 - Copy";
         // Create an environment
     	var LRconfig = new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName) ;
-    	LRconfig.agent_speed = 0.1f ;
+    	LRconfig.agent_speed = 0.5f ;
         var environment = new LabRecruitsEnvironment(LRconfig);
         if(USE_INSTRUMENT) instrument(environment) ;
         int cycleNumber = 0 ;
@@ -502,7 +527,7 @@ public class LevelTestSmarterAgent {
 //	        	   System.out.println(">>>>>") ;
 //	        	}
 	        	
-	        	if (cycleNumber>1000) {
+	        	if (cycleNumber>1500) {
 	        		break ;
 	        	}
 	        }
