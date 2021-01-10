@@ -80,13 +80,14 @@ public class LevelTestSmarterAgent {
      */ 
     @Test
     public void closetReachableTest() throws InterruptedException {
-    	String levelName = "GameLevel1/result_loc";
+    	/*
+        String levelName = "GameLevel1/result_loc";
     	String[] fileNames = {
     			"GameLevel1_2020_11_05_17.06.04"  
     		    ,"GameLevel1_2020_11_05_17.06.57"
     			
     	} ;
-    	/*
+    	*/
     	String levelName = "GameLevel1/result_logic_loc";
     	String[] fileNames = {
     			"GameLevel1_2020_09_30_20.19.14-main"
@@ -98,7 +99,6 @@ public class LevelTestSmarterAgent {
     			,"GameLevel1_2020_10_23_16.00.56"
     			
     	} ;
-    	*/
     	String summary = "" ;
     	for(var file : fileNames) {
     		System.out.println("##== Testing " + file) ;
@@ -127,7 +127,7 @@ public class LevelTestSmarterAgent {
     	//String fileName = "GameLevel1_2020_08_28_13.32.04 - Copy";
         // Create an environment
     	var LRconfig = new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName) ;
-    	LRconfig.agent_speed = 0.5f ;
+    	LRconfig.agent_speed = 0.1f ;
         var environment = new LabRecruitsEnvironment(LRconfig);
         if(USE_INSTRUMENT) instrument(environment) ;
         int cycleNumber = 0 ;
@@ -510,9 +510,6 @@ public class LevelTestSmarterAgent {
 	        environment.startSimulation(); // this will press the "Play" button in the game for you
 	        //goal not achieved yet
 	        assertFalse(testAgent.success());
-	
-	      
-
 	        
 	        // keep updating the agent
 	        long startTime = System.currentTimeMillis();

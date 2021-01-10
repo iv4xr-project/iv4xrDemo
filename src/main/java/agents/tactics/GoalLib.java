@@ -141,7 +141,7 @@ public class GoalLib {
         		  var distsq = Vec3.sub(belief.worldmodel.getFloorPosition(), e.getFloorPosition()).lengthSq() ;
        	          // bug .. .should be distsq:
         		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
-        		  return distsq < 0.32 ;
+        		  return distsq < 0.2 ;
         	    })
         	  . withTactic(
                     FIRSTof( //the tactic used to solve the goal

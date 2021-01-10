@@ -12,20 +12,39 @@ import org.opentest4j.AssertionFailedError;
 import game.Platform;
 
 public class RunTest {
-
+	
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
-		String levelName = "GameLevel1"+File.separator+"result_loc";
+		LevelTest.start();
+		String levelGroup = "GameLevel1" ;
+		String mutationGroup = "logic_loc" ;
+		String testType = "smart" ;
+		int logfileId = 9 ;
+		runeExperiment(testType, levelGroup, mutationGroup,logfileId) ;
+		
+		LevelTest.close();
+	}
+
+	/**
+	 * 
+	 * @param testType       "simple" or "smart"
+	 * @param levelGroup     e.g. "GameLevel1"
+	 * @param mutationGroup  e.g. "loc" or "logic_loc"
+	 */
+	public static void runeExperiment(String testType, String levelGroup, String mutationGroup, int logId) throws InterruptedException, IOException{
+		
 		//String levelName = "GameLevel1"+File.separator+"result_logic_loc";
+		String levelName = levelGroup + File.separator + "result_" + mutationGroup ;
 		File directory = new File(Platform.LEVEL_PATH +File.separator+ levelName );
 		File fileCount[] = directory.listFiles();
 		
-		String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel1";
+		//String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel1";
+		String folderPath = Platform.LEVEL_PATH + File.separator + levelGroup;
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		String resultFile = folderPath+File.separator+"GameLevel1_result_loc_log6.csv";  
-		//String resultFile = folderPath+File.separator+"GameLevel1_result_smart_loc_log6.csv";  
+		//String resultFile = folderPath+File.separator+"GameLevel1_result_loc_log6.csv";  
+		String resultFile = folderPath + File.separator + levelGroup + "_result_" + testType + "_" + mutationGroup + "_log" + logId + ".csv";  
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
 		
@@ -39,24 +58,31 @@ public class RunTest {
 	    	sb.append(fileName);
 			sb.append(","); 
 			
-			
+			List<Object> myList = new ArrayList<Object>();
+    		
 	    	try {
 	    		
-	    		List<Object> myList = new ArrayList<Object>();
 	    		
-	    		/*normal level test*/
-//	    		LevelTest objLevelTest = new LevelTest();
-//				LevelTest.start();
-//				myList = objLevelTest.closetReachableTest(levelName, fileName );
-//				LevelTest.close();
-	    		
-	    		/*Level test smarter agent*/
-	    		LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
-	    		LevelTestSmarterAgent.start();
-				myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
-				LevelTestSmarterAgent.close();
+	    		switch(testType) {
+	    		  case "simple" :
+	  	    		  /*normal level test*/
+	  	    		  LevelTest objLevelTest = new LevelTest();
+	  				  //LevelTest.start();
+	  				  myList = objLevelTest.closetReachableTest(levelName, fileName );
+	  				  //LevelTest.close();
+	  				  break ;
+	    		  case "smart" :
+	    			  /*Level test smarter agent*/
+	  	    		  LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
+	  	    		  //LevelTestSmarterAgent.start();
+	  				  myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
+	  				  //LevelTestSmarterAgent.close();
+	  				  break ;
+	  				default : throw new IllegalArgumentException() ;
+	    		}
+
 				
-	    		Thread.sleep(2000); // add some delay to allow LR run to close?
+	    		// Thread.sleep(4000); // some delay to let you read intermediate result 
 
 				for (Object element : myList) {
 					sb.append(element);
@@ -65,16 +91,16 @@ public class RunTest {
 				}
 				sb.append("\n");
 				
-				if(myList.size()==3 && myList.get(2).equals("success")) {
-					numberOfSuccesses++ ;
-				}
-				else numberOfFails++ ;
-				System.out.printf("##== success/fail/number: %d/%d/%d%n", numberOfSuccesses, numberOfFails, s+1 ) ;
-				
+						
 	    	}catch(AssertionFailedError afe){
 	    		sb.append("\n");
-	    		continue;
+	    		//continue;
 	    	}
+	    	if(myList.size()==3 && myList.get(2).equals("success")) {
+				numberOfSuccesses++ ;
+			}
+			else numberOfFails++ ;
+			System.out.printf("##== success/fail/number: %d/%d/%d%n", numberOfSuccesses, numberOfFails, s+1 ) ;
 	    	
     	}
     	br.write(sb.toString());
