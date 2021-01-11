@@ -85,7 +85,11 @@ public class LabWorldModel extends WorldModel {
         var distSq = Vec3.sub(target_onfloorPosition, agent_floorp).lengthSq() ;
         
         // interaction distance threshold is set at 0.6, so its squared-value is 0.36
-        return distSq <= 0.36 ;	
+        // interaction distance threshold is set at 0.7, so its squared-value is 0.49
+        // interaction distance threshold is set at 0.8, so its squared-value is about 0.64
+        // return distSq <= 0.36 ;	
+        return distSq <= 0.6 ;	
+        
 	}
 
 	@Override

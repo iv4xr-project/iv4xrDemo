@@ -25,7 +25,8 @@ public class LabRecruitsEnvironment extends W3DEnvironment {
 	/**
 	 * Limiting the agent speed per update cycle to 2 distance unit.
 	 */
-	public static final float AGENTSPEED = 2f ;
+	//public static final float AGENTSPEED = 2f ;
+	public static final float AGENTSPEED = 0.3f ;
 
 	static public String INTERACT_CMDNAME  = "Interact" ;
 

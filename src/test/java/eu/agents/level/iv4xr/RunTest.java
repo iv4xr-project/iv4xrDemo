@@ -39,24 +39,31 @@ public class RunTest {
 	    	sb.append(fileName);
 			sb.append(","); 
 			
-			
+			List<Object> myList = new ArrayList<Object>();
+    		
 	    	try {
 	    		
-	    		List<Object> myList = new ArrayList<Object>();
 	    		
-	    		/*normal level test*/
-//	    		LevelTest objLevelTest = new LevelTest();
-//				LevelTest.start();
-//				myList = objLevelTest.closetReachableTest(levelName, fileName );
-//				LevelTest.close();
-	    		
-	    		/*Level test smarter agent*/
-	    		LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
-	    		LevelTestSmarterAgent.start();
-				myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
-				LevelTestSmarterAgent.close();
+	    		switch(testType) {
+	    		  case "simple" :
+	  	    		  /*normal level test*/
+	  	    		  LevelTest objLevelTest = new LevelTest();
+	  				  //LevelTest.start();
+	  				  myList = objLevelTest.closetReachableTest(levelName, fileName );
+	  				  //LevelTest.close();
+	  				  break ;
+	    		  case "smart" :
+	    			  /*Level test smarter agent*/
+	  	    		  LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
+	  	    		  //LevelTestSmarterAgent.start();
+	  				  myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
+	  				  //LevelTestSmarterAgent.close();
+	  				  break ;
+	  				default : throw new IllegalArgumentException() ;
+	    		}
+
 				
-	    		Thread.sleep(2000); // add some delay to allow LR run to close?
+	    		// Thread.sleep(4000); // some delay to let you read intermediate result 
 
 				for (Object element : myList) {
 					sb.append(element);
@@ -65,16 +72,16 @@ public class RunTest {
 				}
 				sb.append("\n");
 				
-				if(myList.size()==3 && myList.get(2).equals("success")) {
-					numberOfSuccesses++ ;
-				}
-				else numberOfFails++ ;
-				System.out.printf("##== success/fail/number: %d/%d/%d%n", numberOfSuccesses, numberOfFails, s+1 ) ;
-				
+						
 	    	}catch(AssertionFailedError afe){
 	    		sb.append("\n");
-	    		continue;
+	    		//continue;
 	    	}
+	    	if(myList.size()==3 && myList.get(2).equals("success")) {
+				numberOfSuccesses++ ;
+			}
+			else numberOfFails++ ;
+			System.out.printf("##== success/fail/number: %d/%d/%d%n", numberOfSuccesses, numberOfFails, s+1 ) ;
 	    	
     	}
     	br.write(sb.toString());

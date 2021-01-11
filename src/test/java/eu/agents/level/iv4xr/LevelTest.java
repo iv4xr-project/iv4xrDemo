@@ -112,6 +112,7 @@ public class LevelTest {
 
     /**
      * A test to verify that the east closet is reachable.
+<<<<<<< HEAD
      */ 
     @Test
     public void closetReachableTest() throws InterruptedException {
@@ -133,6 +134,28 @@ public class LevelTest {
     	// read files in each level
     	//String levelName = "GameLevel1";
     	//String fileName = "GameLevel1_2020_09_30_20.19.14-main";
+=======
+    public void closetReachableTest() throws InterruptedException {
+    	// read files in each level
+    	String levelName = "GameLevel1/result_loc";
+    	String[] fileNames = {
+    			 "GameLevel1_2020_11_05_17.06.41"  
+    		    ,"GameLevel1_2020_11_05_17.06.55"
+    	} ;
+    	String summary = "" ;
+    	for(var file : fileNames) {
+    		System.out.println("##== Testing " + file) ;
+    	    var result = closetReachableTest(levelName,file) ;
+    	    summary += file + ": ";
+    	    if(result.size()==3) summary += result.get(2) + "\n" ;			
+    	    else summary += "fail\n" ;
+    	}
+    	System.out.println("##==\n" + summary) ;
+    }
+    
+    public List<Object> closetReachableTest(String levelName,String fileName) throws InterruptedException {
+    	
+>>>>>>> b8faccc4c614283b30d2b562f9dafdd22374279c
     	//File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
     	//File fileCount[] = directory.listFiles();
 
