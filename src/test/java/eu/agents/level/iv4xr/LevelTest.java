@@ -61,9 +61,9 @@ public class LevelTest {
     private static LabRecruitsTestServer labRecruitsTestServer;
     @BeforeAll
     static public void start() {
+    	// TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	//TestSettings.USE_SERVER_FOR_TEST = false ;
-    	//TestSettings.USE_GRAPHICS = true ;
+    	// TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -112,29 +112,12 @@ public class LevelTest {
 
     /**
      * A test to verify that the east closet is reachable.
-<<<<<<< HEAD
-     */ 
-    @Test
-    public void closetReachableTest() throws InterruptedException {
-    	String levelName = "GameLevel1/result_loc";
-    	String fileName = "GameLevel1_2020_11_05_17.06.16";
-    	closetReachableTest(levelName,fileName) ;
-    }
-    
-    /**
-     * A test to verify that the east closet is reachable.
      */
     /*For running this method from the file RunTest, you need to change the method type to List<Object>
      *  and Add "String levelName,String fileName" ad a input. Also, you should comment these to variable
      *  from the beginning of the code and uncomment the return value at the end of it
      * */
     @Test
-    public List<Object> closetReachableTest(String levelName, String fileName) throws InterruptedException {
-    	
-    	// read files in each level
-    	//String levelName = "GameLevel1";
-    	//String fileName = "GameLevel1_2020_09_30_20.19.14-main";
-=======
     public void closetReachableTest() throws InterruptedException {
     	// read files in each level
     	String levelName = "GameLevel1/result_loc";
@@ -155,13 +138,13 @@ public class LevelTest {
     
     public List<Object> closetReachableTest(String levelName,String fileName) throws InterruptedException {
     	
->>>>>>> b8faccc4c614283b30d2b562f9dafdd22374279c
     	//File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
     	//File fileCount[] = directory.listFiles();
-
-    	
+   
         // Create an environment
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(fileName,Platform.LEVEL_PATH+ File.separator + levelName));
+    	var LRconfig = new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName) ;
+    	LRconfig.agent_speed = 0.1f ;
+        var environment = new LabRecruitsEnvironment(LRconfig);
         if(USE_INSTRUMENT) instrument(environment) ;
         int cycleNumber = 0 ;
         long totalTime = 0;
@@ -220,20 +203,21 @@ public class LevelTest {
 	            cycleNumber++ ; 
 	        	testAgent.update();
                 
-	        	if (cycleNumber>1500) {
+	        	if (cycleNumber>1000) {
 	        		break ;
 	        	}
 	        }
 	        long endTime = System.currentTimeMillis();
 	        totalTime = endTime - startTime;
 	        //testingTask.printGoalStructureStatus();
-	        
+
+	        testAgent.printStatus();
+
 	        // check that we have passed both tests above:
 	        assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == NumberOfPassVerdicts) ;
 	        // goal status should be success
 	        assertTrue(testAgent.success());
 	        // close
-	        testAgent.printStatus();
 	        
 	        System.out.println("******run time******");
 		    System.out.println(totalTime/1000);
@@ -254,7 +238,7 @@ public class LevelTest {
         myList.add(cycleNumber);
         myList.add(totalTime/1000);
         myList.add(finalResult);
-       return myList;
+        return myList;
     }
 
 

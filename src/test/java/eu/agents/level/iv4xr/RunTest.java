@@ -12,20 +12,39 @@ import org.opentest4j.AssertionFailedError;
 import game.Platform;
 
 public class RunTest {
-
+	
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
-		String levelName = "GameLevel2"+File.separator+"result_logic_loc";
+		LevelTest.start();
+		String levelGroup = "GameLevel1" ;
+		String mutationGroup = "logic_loc" ;
+		String testType = "smart" ;
+		int logfileId = 10 ;
+		runeExperiment(testType, levelGroup, mutationGroup,logfileId) ;
+		
+		LevelTest.close();
+	}
+
+	/**
+	 * 
+	 * @param testType       "simple" or "smart"
+	 * @param levelGroup     e.g. "GameLevel1"
+	 * @param mutationGroup  e.g. "loc" or "logic_loc"
+	 */
+	public static void runeExperiment(String testType, String levelGroup, String mutationGroup, int logId) throws InterruptedException, IOException{
+		
 		//String levelName = "GameLevel1"+File.separator+"result_logic_loc";
+		String levelName = levelGroup + File.separator + "result_" + mutationGroup ;
 		File directory = new File(Platform.LEVEL_PATH +File.separator+ levelName );
 		File fileCount[] = directory.listFiles();
 		
-		String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel2"+File.separator+ "final_results\\result_logic_loc";
+		//String folderPath = Platform.LEVEL_PATH +File.separator+ "GameLevel1";
+		String folderPath = Platform.LEVEL_PATH + File.separator + levelGroup;
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		String resultFile = folderPath+File.separator+"GameLevel2_result_logic_loc2.csv";  
-		//String resultFile = folderPath+File.separator+"GameLevel1_result_smart_loc_log6.csv";  
+		//String resultFile = folderPath+File.separator+"GameLevel1_result_loc_log6.csv";  
+		String resultFile = folderPath + File.separator + levelGroup + "_result_" + testType + "_" + mutationGroup + "_log" + logId + ".csv";  
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
 		
