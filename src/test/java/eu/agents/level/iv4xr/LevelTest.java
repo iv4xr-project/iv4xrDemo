@@ -122,16 +122,8 @@ public class LevelTest {
     	// read files in each level
     	String levelName = "GameLevel1/result_loc";
     	String[] fileNames = {
-    			 "GameLevel1_2020_11_05_17.05.34"  
-    		    ,"GameLevel1_2020_11_05_17.06.13"
-    		    ,"GameLevel1_2020_11_05_17.05.42"
-    		    ,"GameLevel1_2020_11_06_10.47.26"
-    		    ,"GameLevel1_2020_11_06_10.47.27"
-    		    ,"GameLevel1_2020_11_05_17.05.46"
-    		    ,"GameLevel1_2020_11_05_17.06.18"
-    		    ,"GameLevel1_2020_11_05_16.45.35"
-    		    ,"GameLevel1_2020_11_05_17.04.54"
-    		    ,"GameLevel1_2020_11_05_17.07.04"	
+    			 "GameLevel1_2020_11_05_17.06.41"  
+    		    ,"GameLevel1_2020_11_05_17.06.55"
     	} ;
     	String summary = "" ;
     	for(var file : fileNames) {

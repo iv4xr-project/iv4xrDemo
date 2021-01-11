@@ -86,8 +86,9 @@ public class LabWorldModel extends WorldModel {
         
         // interaction distance threshold is set at 0.6, so its squared-value is 0.36
         // interaction distance threshold is set at 0.7, so its squared-value is 0.49
+        // interaction distance threshold is set at 0.8, so its squared-value is about 0.64
         // return distSq <= 0.36 ;	
-        return distSq <= 0.4 ;	
+        return distSq <= 0.6 ;	
         
 	}
 

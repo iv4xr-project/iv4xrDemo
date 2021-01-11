@@ -19,7 +19,7 @@ public class RunTest {
 		String levelGroup = "GameLevel1" ;
 		String mutationGroup = "logic_loc" ;
 		String testType = "smart" ;
-		int logfileId = 9 ;
+		int logfileId = 10 ;
 		runeExperiment(testType, levelGroup, mutationGroup,logfileId) ;
 		
 		LevelTest.close();
