@@ -116,7 +116,7 @@ public class LevelTest {
     @Test
     public void closetReachableTest() throws InterruptedException {
     	String levelName = "GameLevel1/result_loc";
-    	String fileName = "GameLevel1_2020_11_05_17.05.34";
+    	String fileName = "GameLevel1_2020_11_05_17.06.16";
     	closetReachableTest(levelName,fileName) ;
     }
     
@@ -197,7 +197,7 @@ public class LevelTest {
 	            cycleNumber++ ; 
 	        	testAgent.update();
                 
-	        	if (cycleNumber>400) {
+	        	if (cycleNumber>1500) {
 	        		break ;
 	        	}
 	        }
