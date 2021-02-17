@@ -63,7 +63,7 @@ public class LevelTest {
     static public void start() {
     	// TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	// TestSettings.USE_GRAPHICS = true ;
+    	 TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -90,7 +90,6 @@ public class LevelTest {
 	            		isValid = false;
 	            		break;
 	            	}     	
-	              // System.out.print(tempStr + " ");
 	            }
 	            if(!values.isEmpty())
 	        	 records.add(values);
@@ -113,17 +112,13 @@ public class LevelTest {
     /**
      * A test to verify that the east closet is reachable.
      */
-    /*For running this method from the file RunTest, you need to change the method type to List<Object>
-     *  and Add "String levelName,String fileName" ad a input. Also, you should comment these to variable
-     *  from the beginning of the code and uncomment the return value at the end of it
-     * */
     @Test
     public void closetReachableTest() throws InterruptedException {
     	// read files in each level
-    	String levelName = "GameLevel1/result_loc";
+    	String levelName = "GameLevel1";
     	String[] fileNames = {
-    			 "GameLevel1_2020_11_05_17.06.41"  
-    		    ,"GameLevel1_2020_11_05_17.06.55"
+    			 "GameLevel1_2021_02_11_14.49.45"  
+    		 //   ,"GameLevel1_2020_11_05_17.06.55"
     	} ;
     	String summary = "" ;
     	for(var file : fileNames) {
@@ -137,10 +132,7 @@ public class LevelTest {
     }
     
     public List<Object> closetReachableTest(String levelName,String fileName) throws InterruptedException {
-    	
-    	//File directory = new File(Platform.LEVEL_PATH +"\\" + levelName );
-    	//File fileCount[] = directory.listFiles();
-   
+    	  
         // Create an environment
     	var LRconfig = new LabRecruitsConfig(fileName,Platform.LEVEL_PATH +File.separator+ levelName) ;
     	LRconfig.agent_speed = 0.1f ;
@@ -158,11 +150,9 @@ public class LevelTest {
 	        // create a test agent
 	        var testAgent = new LabRecruitsTestAgent("agent1") // matches the ID in the CSV file
         		    . attachState(beliefState)
-        		    . attachEnvironment(environment);
-	        // define the testing-task:
+        		    . attachEnvironment(environment);    
 
 	        /*Automatically creating testing task based on the CSV files*/ 
-	       LinkedList<GoalStructure> list = new LinkedList<GoalStructure>();
 	       int j = 0;
 	       var getDataConection = getData(levelName, fileName);
 	        GoalStructure[] subGoals = new GoalStructure[getDataConection.size()*5];
@@ -177,12 +167,11 @@ public class LevelTest {
 	        	subGoals[j+3] = GoalLib.checkDoorState(doorToTest);
 	        	subGoals[j+4] = GoalLib.entityInvariantChecked(testAgent, doorToTest, doorToTest+" should be open", (WorldEntity e) -> e.getBooleanProperty("isOpen"));
 	        	j= j+5;        	
-
 	        }
+	        
+
 	        var testingTask = SEQ(subGoals);
 	        
-	  
-
 	        // attaching the goal and test data-collector
 	        var dataCollector = new TestDataCollector();
 	        testAgent . setTestDataCollector(dataCollector) . setGoal(testingTask) ;

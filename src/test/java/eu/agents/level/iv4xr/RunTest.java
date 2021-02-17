@@ -16,8 +16,8 @@ public class RunTest {
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
 		LevelTest.start();
-		String levelGroup = "GameLevel1" ;
-		String mutationGroup = "logic_loc" ;
+		String levelGroup = "GameLevel3" ;
+		String mutationGroup = "loc" ;
 		String testType = "smart" ;
 		int logfileId = 10 ;
 		runeExperiment(testType, levelGroup, mutationGroup,logfileId) ;
@@ -43,8 +43,8 @@ public class RunTest {
 		File theDir = new File(folderPath);
 		if(!theDir.exists())
 			theDir.mkdirs();
-		//String resultFile = folderPath+File.separator+"GameLevel1_result_loc_log6.csv";  
-		String resultFile = folderPath + File.separator + levelGroup + "_result_" + testType + "_" + mutationGroup + "_log" + logId + ".csv";  
+		String resultFile = folderPath+File.separator+"final_results\\GameLevel3_result_loc_smart_final3.csv";  
+		//String resultFile = folderPath + File.separator + levelGroup + "_result_" + testType + "_" + mutationGroup + "_log" + logId + ".csv";  
 		BufferedWriter br = new BufferedWriter(new FileWriter(resultFile));
 		StringBuilder sb = new StringBuilder();
 		
@@ -65,7 +65,7 @@ public class RunTest {
 	    		
 	    		switch(testType) {
 	    		  case "simple" :
-	  	    		  /*normal level test*/
+	  	    		  /*normal level test*/ 
 	  	    		  LevelTest objLevelTest = new LevelTest();
 	  				  //LevelTest.start();
 	  				  myList = objLevelTest.closetReachableTest(levelName, fileName );
@@ -73,6 +73,7 @@ public class RunTest {
 	  				  break ;
 	    		  case "smart" :
 	    			  /*Level test smarter agent*/
+	    			 System.out.print("injaaaa");
 	  	    		  LevelTestSmarterAgent objLevelTestSmarter = new LevelTestSmarterAgent();
 	  	    		  //LevelTestSmarterAgent.start();
 	  				  myList = objLevelTestSmarter.closetReachableTest(levelName, fileName );
