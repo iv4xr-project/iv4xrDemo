@@ -61,6 +61,11 @@ public class BeliefState extends State {
      * To keep track entities the agent has knowledge about (not necessarily up to date knowledge).
      */
     public LabWorldModel worldmodel  = new LabWorldModel() ;
+    
+    /**
+     * Those entities whose state is changed in the last cycle.
+     */
+    public List<WorldEntity> changedEntities  = null ;
 
 
     /**
@@ -472,6 +477,7 @@ public class BeliefState extends State {
     	// add newly discovered Obstacle-like entities, or change their states if they are like doors
     	// which can be open or close:
     	var impactEntities = worldmodel.mergeNewObservation(observation) ;
+    	changedEntities = impactEntities ;
     	// recalculating navigation nodes that become blocked or unblocked:
         boolean refreshNeeded = false ;
         for (var e : impactEntities) {

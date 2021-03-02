@@ -17,13 +17,15 @@ import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
+import eu.iv4xr.framework.spatial.Vec3;
 import helperclasses.datastructures.linq.QArrayList;
 import logger.JsonLoggerInstrument;
 import nl.uu.cs.aplib.mainConcepts.Environment;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import static org.junit.jupiter.api.Assertions.* ;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import game.Platform;
 import game.LabRecruitsTestServer;
 import world.BeliefState;
+import static helperclasses.GraphPlotter.* ;
 
 import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
@@ -63,9 +66,10 @@ public class RoomReachabilityTest {
 
     /**
      * A test to verify that the east closet is reachable.
+     * @throws IOException 
      */
     @Test
-    public void closetReachableTest() throws InterruptedException {
+    public void closetReachableTest() throws InterruptedException, IOException {
 
     	var buttonToTest = "button1" ;
     	var doorToTest = "door1" ;
@@ -127,10 +131,19 @@ public class RoomReachabilityTest {
 	        //goal not achieved yet
 	        assertFalse(testAgent.success());
 
+	        Map<Vec3,Float> traceData = new HashMap<>() ;
+	        
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (testingTask.getStatus().inProgress()) {
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+	        	Vec3 position = testAgent.getState().worldmodel.position ;
+	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + position) ;
+	        	if (position != null) {
+	        		Vec3 p_ = position.copy() ;
+	        	    p_.z = 8- p_.z ;
+	        		float score = (float) testAgent.getState().worldmodel.score / 40 ;
+		        	traceData.put(p_,score) ;
+	        	}
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();
@@ -146,6 +159,8 @@ public class RoomReachabilityTest {
 	        assertTrue(testAgent.success());
 	        // close
 	        testAgent.printStatus();
+	        
+	        mkScatterGraph(traceData,"roomReachabilityTest.png",120,80,10f,4) ;
         }
         finally { environment.close(); }
     }
