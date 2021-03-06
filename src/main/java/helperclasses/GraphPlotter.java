@@ -15,7 +15,7 @@ import eu.iv4xr.framework.spatial.Vec3;
 
 public class GraphPlotter {
 	
-	public static void mkScatterGraph(Map<Vec3,Float> data, 
+	public static void mkScatterGraph(List data, 
 			String fileToSave,
 			int width, int height, 
 			float scale,
@@ -26,12 +26,19 @@ public class GraphPlotter {
 		g2d.setColor(Color.white);
 		g2d.fillRect(0,0, width, height);
 		
-		for(var p : data.entrySet()) {
+		for(var row : data) {
+			List row_ = (List) row ;
+
+			Vec3 p = (Vec3) row_.get(0) ;
+			float v1 = (Float) row_.get(1) ;
+			float v2 = (Float) row_.get(2) ;
+			float v3 = (Float) row_.get(3) ;
 			
-			int x = Math.round(p.getKey().x * scale) ;
-			int y = Math.round(p.getKey().z * scale) ;
 			
-			Color c = new Color(p.getValue(),0.5f,0.5f) ;
+			int x = Math.round(p.x * scale) ;
+			int y = Math.round(p.z * scale) ;
+			
+			Color c = new Color(v1,v2,v3) ;
 			g2d.setColor(c); 
 			g2d.fillOval(x, y, dotSize, dotSize);
 		}

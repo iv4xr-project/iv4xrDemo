@@ -13,6 +13,7 @@ public class LabWorldModel extends WorldModel {
 	public int health ;
 	public int score ;
 	public int scoreGained ;
+	public int healthLost ;
 	public String mood ;
 
 	/**
@@ -43,6 +44,7 @@ public class LabWorldModel extends WorldModel {
 	@Override
 	public List<WorldEntity> mergeNewObservation(WorldModel observation) {
 		LabWorldModel observation_ = (LabWorldModel) observation ;
+		this.healthLost  = this.health -  observation_.health ;
 		this.health = observation_.health ;
 		this.scoreGained = observation_.score - this.score ;
 		this.score  = observation_.score ;
