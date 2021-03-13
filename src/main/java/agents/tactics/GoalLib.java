@@ -83,7 +83,7 @@ public class GoalLib {
     
     
     /**
-     * This method will construct a goal in which the agent will a reachable position nearby
+     * This method will construct a goal in which the agent will go a reachable position nearby
      * the given entity. Positions east/west/south/north in the distance of 1.0 from
      * the entity will be tried. Actually, the used tactic will try to reach a position
      * in the distance of 0.7 from the entity, but this goal will be achieved when the
@@ -134,7 +134,9 @@ public class GoalLib {
         	  goal(String.format("This entity is in interaction distance: [%s]", entityId))
         	  . toSolve((BeliefState belief) -> {
         		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
-       	          return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
+        		  // bug .. .should be distsq:
+        		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
+        		  return e!=null && Vec3.sub(belief.worldmodel.getFloorPosition(), e.getFloorPosition()).lengthSq() <= 1 ;
         	    })
         	  . withTactic(
                     FIRSTof( //the tactic used to solve the goal

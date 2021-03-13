@@ -98,8 +98,10 @@ public class Explore_1_Test {
         
         assertTrue(g.getStatus().success()) ;
         var agent_p  = agent.getState().worldmodel.getFloorPosition() ;
-        var button_p = ((LabEntity) agent.getState().worldmodel.getElement("button1")).getFloorPosition() ;
-        assertTrue(Vec3.dist(agent_p,button_p) < 0.5) ;
+        var button = ((LabEntity) agent.getState().worldmodel.getElement("button1")) ;
+        var button_p = button.getFloorPosition() ;
+        assertTrue(Vec3.dist(agent_p,button_p) <= 1f) ;
+        assertTrue(button.getBooleanProperty("isOn")) ;
         
         if (!environment.close())
             throw new InterruptedException("Unity refuses to close the Simulation!");

@@ -56,7 +56,7 @@ public class FireHazardLevel_2_Test {
     static void start() {
     	// Uncomment this to make the game's graphic visible:
     	//TestSettings.USE_SERVER_FOR_TEST = false ;
-    	//TestSettings.USE_GRAPHICS = true ;
+        // TestSettings.USE_GRAPHICS = true ;
        	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -117,11 +117,13 @@ public class FireHazardLevel_2_Test {
         	*/
 
             tick++;
-            /*
-            if (tick >= 20) {
+            
+            if (tick >= 250) {
             	break ;
-            }*/
+            }
         }
+        
+        agent.printStatus();
 
         // check that the testing task is completed and that the agent still have 'enough'
         // health
