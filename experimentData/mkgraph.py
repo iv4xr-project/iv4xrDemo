@@ -69,7 +69,7 @@ def mkHeatMap(filename):
     scale = 1
     width  = 12
     height = 8
-    white = 30
+    white = 45
     map = np.zeros((scale*height,scale*width))
     for x in range(0,scale*height):
       for y in range(0,scale*width):
@@ -84,7 +84,7 @@ def mkHeatMap(filename):
         hope = float(r['hope'])
         joy = float(r['joy'])
         satisfaction = float(r['satisfaction'])
-        combined = 10*(hope + 1.1*joy + 1.5*satisfaction)
+        combined = 15*(hope + 1.1*joy + 1.5*satisfaction)
         if map[(x,y)]==white:
            map[(x,y)] = combined
         else:
@@ -137,20 +137,29 @@ def mkColdMap(filename):
     else : plt.show()
 
 
-# Available data-set:
-#    data_setup1.csv : a playthrough over a small LR level with fire
-#    data_setup2.csv : a playthrough over the same LR level, with a bit more
+# Available data-sets:
+#    data_xxx_setup1.csv : a playthrough over a small LR level with fire
+#    data_xxx_setup2.csv : a playthrough over the same LR level, with a bit more
 #                      fire, and some difference in the placing of the fire
 #
 # To build the graph depicting how emotions develop over time: (uncomment)
 #
-mkTimeProgressionGraph('data_setup1.csv')
+mkTimeProgressionGraph('data_goalQuestCompleted_setup1.csv')
 plt.clf()
-mkTimeProgressionGraph('data_setup2.csv')
+mkTimeProgressionGraph('data_goalQuestCompleted_setup2.csv')
 #
 # To make the heat-map of combined hope-joy-satisfaction of setup2:
 plt.clf()
-mkHeatMap('data_setup2.csv')
+mkHeatMap('data_goalQuestCompleted_setup2.csv')
 # To make the heat-map of fear of setup2:
 plt.clf()
-mkColdMap('data_setup2.csv')
+mkColdMap('data_goalQuestCompleted_setup2.csv')
+
+plt.clf()
+mkTimeProgressionGraph('data_goalGetMuchPoints_setup1.csv')
+plt.clf()
+mkTimeProgressionGraph('data_goalGetMuchPoints_setup2.csv')
+plt.clf()
+mkHeatMap('data_goalGetMuchPoints_setup2.csv')
+plt.clf()
+mkColdMap('data_goalGetMuchPoints_setup2.csv')

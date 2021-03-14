@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.* ;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -131,28 +132,36 @@ public class RoomReachabilityTest {
 	            		"door3 should be open",
 	            		(WorldEntity e) -> e.getBooleanProperty("isOpen")),
 	        	GoalLib.entityInCloseRange("door3"),
-	        	GoalLib.positionsVisited(new Vec3(10.5f,0,4f))
+	        	GoalLib.positionsVisited(new Vec3(11.3f,0,4f))
 	        );
 	        // attaching the goal and testdata-collector
 	        var dataCollector = new TestDataCollector();
 	        testAgent . setTestDataCollector(dataCollector) . setGoal(testingTask) ;
 
-
+	        // add an event-producer to the test agent so that it produce events for
+	        // emotion appraisals:
+	        EventsProducer eventsProducer = new EventsProducer() .attachTestAgent(testAgent) ;
+	        
+	        // Create an emotion appraiser, and hook it to the agent:
+	        EmotionAppraisalSystem eas = new EmotionAppraisalSystem(testAgent.getId()) ;
+	        eas. attachEmotionBeliefBase(new EmotionBeliefBase() .attachFunctionalState(testAgent.getState())) 
+	           . withUserModel(new PlayerOneCharacterization()) 
+	           . addGoal(questIsCompleted,50)
+	           . addGoal(gotAsMuchPointsAsPossible,50) 
+	           . addInitialEmotions() ;
+	        
+	        // some lists for collecting experiment data:     
+	        List<String[]> csvData_goalQuestIsCompleted = new LinkedList<>() ;
+	        String[] csvRow = { "t", "x", "y", "hope", "joy", "satisfaction", "fear" } ;
+	        csvData_goalQuestIsCompleted.add(csvRow) ;
+	        List<String[]> csvData_goalGetMuchPoints = new LinkedList<>() ;
+	        csvData_goalGetMuchPoints.add(csvRow) ;
+	        Function<Emotion,Float> normalizeIntensity = e -> e!=null ? (float) e.intensity / 800f : 0f ;
+	        
 	        environment.startSimulation(); // this will press the "Play" button in the game for you
 	        //goal not achieved yet
 	        assertFalse(testAgent.success());
 
-	        List traceData = new LinkedList() ;
-	        List fearData = new LinkedList() ;
-	        List<String[]> csvData = new LinkedList<>() ;
-	        String[] csvRow = { "t", "x", "y", "hope", "joy", "satisfaction", "fear" } ;
-	        csvData.add(csvRow) ;
-	        EmotionAppraisalSystem eas = new EmotionAppraisalSystem(testAgent.getId()).withUserModel(new PlayerOneCharacterization()) ;
-	        eas.beliefbase = new EmotionBeliefBase() .attachFunctionalState(testAgent.getState()) ;
-	        eas.addGoal(questIsCompleted,50);
-	        eas.addGoal(gotAsMuchPointsAsPossible,50) ;
-	        EventsProducer eventsProducer = new EventsProducer() .attachTestAgent(testAgent) ;
-	        
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (testingTask.getStatus().inProgress()) {
@@ -167,39 +176,36 @@ public class RoomReachabilityTest {
 	        	if (position != null) {
 	        		Vec3 p_ = position.copy() ;
 	        	    p_.z = 8- p_.z ;
-	        		Float score = (float) testAgent.getState().worldmodel.score / 40 ;
-	        		List row = new LinkedList() ;
-	        		List fearRow = new LinkedList() ;
-	        		row.add(p_) ;
-	        		fearRow.add(p_) ;	        		
-	        		// row.add(score) ;
-	        		Emotion hope_completingQuest = eas.getEmotion(questIsCompleted.name,EmotionType.Hope) ;
-	        		Emotion joy_completingQuest = eas.getEmotion(questIsCompleted.name,EmotionType.Joy) ;
-	        		Emotion satisfaction_completingQuest = eas.getEmotion(questIsCompleted.name,EmotionType.Satisfaction) ;
-	        		Emotion fear_completingQuest = eas.getEmotion(questIsCompleted.name,EmotionType.Fear) ;
-	        		
-	        		float hope_completingQuest_intensity = hope_completingQuest!=null ? (float) hope_completingQuest.intensity / 800f : 0f ;
-	        		float joy_completingQuest_intensity  = joy_completingQuest!=null ? (float) joy_completingQuest.intensity / 800f : 0f ;
-	        		float satisfaction_completingQuest_intensity = satisfaction_completingQuest!=null ? (float) satisfaction_completingQuest.intensity/800f : 0f ;
-	        		float fear_completingQuest_intensity = fear_completingQuest!=null ? (float) fear_completingQuest.intensity/800f : 0f ;
-	        		
-	        		row.add(hope_completingQuest_intensity) ;
-	        		row.add(joy_completingQuest_intensity) ;
-	        		row.add(satisfaction_completingQuest_intensity) ;
-	        		fearRow.add(fear_completingQuest_intensity) ;
-	        		fearRow.add(0f) ; fearRow.add(0f) ;
-	        		
-	        		String[] csvRow_ = { "" + i,
-	        				"" + p_.x , "" + p_.z , 
-	        				"" + hope_completingQuest_intensity, 
-	        				"" + joy_completingQuest_intensity, 
-	        				"" + satisfaction_completingQuest_intensity,
-	        				"" + fear_completingQuest_intensity} ;
+	        		Float score = (float) testAgent.getState().worldmodel.score ;
+	        		System.out.println("*** score=" + score) ;
 
+	        		float hope_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Hope)) ;
+	        		float joy_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Joy)) ;
+	        		float satisfaction_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Satisfaction)) ;
+	        		float fear_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Fear)) ;
 	        		
-		        	traceData.add(row) ;
-		        	fearData.add(fearRow) ;
-		        	csvData.add(csvRow_) ;
+	        		float hope_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Hope)) ;
+	        		float joy_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Joy)) ;
+	        		float satisfaction_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Satisfaction)) ;
+	        		float fear_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Fear)) ;
+	        		
+	 
+	        		String[] csvRow1 = { "" + i,
+	        				"" + p_.x , "" + p_.z , 
+	        				"" + hope_completingQuest, 
+	        				"" + joy_completingQuest, 
+	        				"" + satisfaction_completingQuest,
+	        				"" + fear_completingQuest} ;
+	        		
+	        		String[] csvRow2 = { "" + i,
+	        				"" + p_.x , "" + p_.z , 
+	        				"" + hope_getMuchPoints, 
+	        				"" + joy_getMuchPoints, 
+	        				"" + satisfaction_getMuchPoints,
+	        				"" + fear_getMuchPoints} ;
+	       		
+		        	csvData_goalQuestIsCompleted.add(csvRow1) ;
+		        	csvData_goalGetMuchPoints.add(csvRow2) ;
 	        	}
 	            Thread.sleep(50);
 	            i++ ;
@@ -217,9 +223,8 @@ public class RoomReachabilityTest {
 	        // close
 	        testAgent.printStatus();
 	        
-	        mkScatterGraph(traceData,"roomReachabilityTest.png",5*120,5*80,5*10f,5*4) ;
-	        mkScatterGraph(fearData,"fear.png",5*120,5*80,5*10f,5*4) ;
-	        exportToCSV(csvData,"data.csv") ;
+	        exportToCSV(csvData_goalQuestIsCompleted,"data_goalQuestCompleted.csv") ;
+	        exportToCSV(csvData_goalGetMuchPoints,"data_goalGetMuchPoints.csv") ;
         }
         finally { environment.close(); }
     }
