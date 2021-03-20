@@ -142,24 +142,28 @@ def mkColdMap(filename):
 #    data_xxx_setup2.csv : a playthrough over the same LR level, with a bit more
 #                      fire, and some difference in the placing of the fire
 #
-# To build the graph depicting how emotions develop over time: (uncomment)
-#
-mkTimeProgressionGraph('data_goalQuestCompleted_setup1.csv')
-plt.clf()
-mkTimeProgressionGraph('data_goalQuestCompleted_setup2.csv')
-#
 # To make the heat-map of combined hope-joy-satisfaction of setup2:
 plt.clf()
 mkHeatMap('data_goalQuestCompleted_setup2.csv')
 # To make the heat-map of fear of setup2:
 plt.clf()
 mkColdMap('data_goalQuestCompleted_setup2.csv')
-
-plt.clf()
-mkTimeProgressionGraph('data_goalGetMuchPoints_setup1.csv')
-plt.clf()
-mkTimeProgressionGraph('data_goalGetMuchPoints_setup2.csv')
 plt.clf()
 mkHeatMap('data_goalGetMuchPoints_setup2.csv')
 plt.clf()
 mkColdMap('data_goalGetMuchPoints_setup2.csv')
+
+# changing some plot parameters, such as font-size and width of the graph:
+plt.rcParams.update({'font.size': 16})
+plt.figure(figsize=(8,4.8)) # in inches; default is w=6.4 and h=4.8
+
+# To build the graph depicting how emotions develop over time: (uncomment)
+#
+mkTimeProgressionGraph('data_goalQuestCompleted_setup1.csv')
+plt.clf()
+mkTimeProgressionGraph('data_goalQuestCompleted_setup2.csv')
+#
+plt.clf()
+mkTimeProgressionGraph('data_goalGetMuchPoints_setup1.csv')
+plt.clf()
+mkTimeProgressionGraph('data_goalGetMuchPoints_setup2.csv')

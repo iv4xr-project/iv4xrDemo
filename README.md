@@ -1,5 +1,11 @@
 # <img src="./docs/iv4xr_logo_1200dpi.png" width="20%"> <img src="./docs/logo.png" width="8%"> iv4XR Demo
 
+Note for those want to try the **PX Experiment** :) To run it: (1) build this project. 
+(2) run the unit-test `pxExperiment.Simple.PX_Testing_SimpleExperiment`. 
+The setup of the Player Characterization can be found in the class `agents.PlayerOneCharacterization`.
+Note that this project requires you to first build an executable of the game Lab Recruits, as well as our 
+iv4XR/aplib agent-programming framework. Check the corresponding projects on instructions how to build them.
+
 
 This is a demo version 2.x for the [iv4XR Agent-based Testing Framework](https://github.com/iv4xr-project/aplib),
 demonstrating that iv4XR test agents can control a game called _Lab Recruits_ to perform testing tasks.

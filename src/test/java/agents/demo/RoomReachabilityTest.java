@@ -9,33 +9,21 @@ package agents.demo;
 
 
 
-import agents.EventsProducer;
 import agents.LabRecruitsTestAgent;
-import agents.PlayerOneCharacterization;
-import static agents.PlayerOneCharacterization.*;
-
 import agents.TestSettings;
 import agents.tactics.GoalLib;
 import agents.tactics.TacticLib;
 import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
-import eu.iv4xr.framework.extensions.occ.Emotion;
-import eu.iv4xr.framework.extensions.occ.EmotionAppraisalSystem;
-import eu.iv4xr.framework.extensions.occ.Event;
-import eu.iv4xr.framework.extensions.occ.Emotion.EmotionType;
-import eu.iv4xr.framework.extensions.occ.Event.Tick;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
-import eu.iv4xr.framework.spatial.Vec3;
 import helperclasses.datastructures.linq.QArrayList;
 import logger.JsonLoggerInstrument;
 import nl.uu.cs.aplib.mainConcepts.Environment;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import static org.junit.jupiter.api.Assertions.* ;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Scanner;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,8 +31,6 @@ import org.junit.jupiter.api.Test;
 import game.Platform;
 import game.LabRecruitsTestServer;
 import world.BeliefState;
-import static helperclasses.GraphPlotter.* ;
-import static helperclasses.CSVExport.* ;
 
 import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
@@ -63,7 +49,7 @@ public class RoomReachabilityTest {
     static void start() {
     	// TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	TestSettings.USE_GRAPHICS = true ;
+    	// TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -77,17 +63,16 @@ public class RoomReachabilityTest {
 
     /**
      * A test to verify that the east closet is reachable.
-     * @throws IOException 
      */
     @Test
-    public void closetReachableTest() throws InterruptedException, IOException {
+    public void closetReachableTest() throws InterruptedException {
 
     	var buttonToTest = "button1" ;
     	var doorToTest = "door1" ;
 
         // Create an environment
-    	var config = new LabRecruitsConfig("buttons_doors_1_setup2") ;
-    	config.light_intensity = 0.45f ;
+    	var config = new LabRecruitsConfig("buttons_doors_1") ;
+    	config.light_intensity = 0.3f ;
     	var environment = new LabRecruitsEnvironment(config);
         if(USE_INSTRUMENT) instrument(environment) ;
 
@@ -131,33 +116,13 @@ public class RoomReachabilityTest {
 	            		"door3",
 	            		"door3 should be open",
 	            		(WorldEntity e) -> e.getBooleanProperty("isOpen")),
-	        	GoalLib.entityInCloseRange("door3"),
-	        	GoalLib.positionsVisited(new Vec3(11.3f,0,4f))
+	        	GoalLib.entityInCloseRange("door3")
 	        );
 	        // attaching the goal and testdata-collector
 	        var dataCollector = new TestDataCollector();
 	        testAgent . setTestDataCollector(dataCollector) . setGoal(testingTask) ;
 
-	        // add an event-producer to the test agent so that it produce events for
-	        // emotion appraisals:
-	        EventsProducer eventsProducer = new EventsProducer() .attachTestAgent(testAgent) ;
-	        
-	        // Create an emotion appraiser, and hook it to the agent:
-	        EmotionAppraisalSystem eas = new EmotionAppraisalSystem(testAgent.getId()) ;
-	        eas. attachEmotionBeliefBase(new EmotionBeliefBase() .attachFunctionalState(testAgent.getState())) 
-	           . withUserModel(new PlayerOneCharacterization()) 
-	           . addGoal(questIsCompleted,50)
-	           . addGoal(gotAsMuchPointsAsPossible,50) 
-	           . addInitialEmotions() ;
-	        
-	        // some lists for collecting experiment data:     
-	        List<String[]> csvData_goalQuestIsCompleted = new LinkedList<>() ;
-	        String[] csvRow = { "t", "x", "y", "hope", "joy", "satisfaction", "fear" } ;
-	        csvData_goalQuestIsCompleted.add(csvRow) ;
-	        List<String[]> csvData_goalGetMuchPoints = new LinkedList<>() ;
-	        csvData_goalGetMuchPoints.add(csvRow) ;
-	        Function<Emotion,Float> normalizeIntensity = e -> e!=null ? (float) e.intensity / 800f : 0f ;
-	        
+
 	        environment.startSimulation(); // this will press the "Play" button in the game for you
 	        //goal not achieved yet
 	        assertFalse(testAgent.success());
@@ -165,48 +130,7 @@ public class RoomReachabilityTest {
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (testingTask.getStatus().inProgress()) {
-	        	Vec3 position = testAgent.getState().worldmodel.position ;
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + position) ;
-	        	eventsProducer.generateCurrentEvents();
-	        	if(eventsProducer.currentEvents.isEmpty()) eventsProducer.currentEvents.add(new Tick()) ;
-	        	
-	        	for(Event e : eventsProducer.currentEvents) {
-	        		eas.update(e, i);
-	        	}
-	        	if (position != null) {
-	        		Vec3 p_ = position.copy() ;
-	        	    p_.z = 8- p_.z ;
-	        		Float score = (float) testAgent.getState().worldmodel.score ;
-	        		System.out.println("*** score=" + score) ;
-
-	        		float hope_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Hope)) ;
-	        		float joy_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Joy)) ;
-	        		float satisfaction_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Satisfaction)) ;
-	        		float fear_completingQuest = normalizeIntensity.apply(eas.getEmotion(questIsCompleted.name,EmotionType.Fear)) ;
-	        		
-	        		float hope_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Hope)) ;
-	        		float joy_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Joy)) ;
-	        		float satisfaction_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Satisfaction)) ;
-	        		float fear_getMuchPoints = normalizeIntensity.apply(eas.getEmotion(gotAsMuchPointsAsPossible.name,EmotionType.Fear)) ;
-	        		
-	 
-	        		String[] csvRow1 = { "" + i,
-	        				"" + p_.x , "" + p_.z , 
-	        				"" + hope_completingQuest, 
-	        				"" + joy_completingQuest, 
-	        				"" + satisfaction_completingQuest,
-	        				"" + fear_completingQuest} ;
-	        		
-	        		String[] csvRow2 = { "" + i,
-	        				"" + p_.x , "" + p_.z , 
-	        				"" + hope_getMuchPoints, 
-	        				"" + joy_getMuchPoints, 
-	        				"" + satisfaction_getMuchPoints,
-	        				"" + fear_getMuchPoints} ;
-	       		
-		        	csvData_goalQuestIsCompleted.add(csvRow1) ;
-		        	csvData_goalGetMuchPoints.add(csvRow2) ;
-	        	}
+	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();
@@ -222,9 +146,6 @@ public class RoomReachabilityTest {
 	        assertTrue(testAgent.success());
 	        // close
 	        testAgent.printStatus();
-	        
-	        exportToCSV(csvData_goalQuestIsCompleted,"data_goalQuestCompleted.csv") ;
-	        exportToCSV(csvData_goalGetMuchPoints,"data_goalGetMuchPoints.csv") ;
         }
         finally { environment.close(); }
     }
