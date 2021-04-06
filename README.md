@@ -42,7 +42,6 @@ The demo classes are in `src/test/java/agents/demo`. The demos are by default no
 ### What's in the package
 
 * `./src` the source files. It follows Maven's convention, so the root of the source files is in `src/main/java` and the root of tests' source files is in `src/test/java`.
-* `./gym` contains the binary of the _Lab Recruits_ game (macos and windows).
 * `./src/test/resources/levels` contain sample level definitions for _Lab Recruits_.
 
 
