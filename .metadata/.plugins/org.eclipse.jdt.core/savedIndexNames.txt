@@ -1,0 +1,1 @@
+INDEX VERSION 1.131+C:\Users\Gholi002\Documents\Utrecht\iv4XR Research\Implementation\iv4xrDemo\.metadata\.plugins\org.eclipse.jdt.core
