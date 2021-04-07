@@ -9,11 +9,9 @@ import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.mainConcepts.Environment;
 
 public class LabWorldModel extends WorldModel {
-	
+
 	public int health ;
 	public int score ;
-	public int scoreGained ;
-	public int healthLost ;
 	public String mood ;
 
 	/**
@@ -44,9 +42,7 @@ public class LabWorldModel extends WorldModel {
 	@Override
 	public List<WorldEntity> mergeNewObservation(WorldModel observation) {
 		LabWorldModel observation_ = (LabWorldModel) observation ;
-		this.healthLost  = this.health -  observation_.health ;
 		this.health = observation_.health ;
-		this.scoreGained = observation_.score - this.score ;
 		this.score  = observation_.score ;
 		this.mood = observation_.mood ;
 		this.visibleNavigationNodes = observation_.visibleNavigationNodes ;

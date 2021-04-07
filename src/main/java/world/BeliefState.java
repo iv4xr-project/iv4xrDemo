@@ -39,10 +39,6 @@ public class BeliefState extends State {
 	 * is further, pathfinder is triggered to calculate a new path.
 	 */
 	public static final float DIST_TO_MEMORIZED_GOALLOCATION_SOFT_REPATH_THRESHOLD  = 0.05f ;
-    /**
-     * Those entities whose state is changed in the last cycle.
-     */
-    public List<WorldEntity> changedEntities  = null ;
 
 	/**
 	 * When the distance of the agent to the current waypoint is less than this, the
