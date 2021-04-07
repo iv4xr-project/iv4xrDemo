@@ -66,7 +66,6 @@ public class LabRecruitsConfig {
     public LabRecruitsConfig(String levelName, String levelFolder){
         useLevel(levelName, levelFolder);
     }
-
     private LabRecruitsConfig useLevel(String levelName, String levelFolder){
         String fullPath = Paths.get(levelFolder, levelName + ".csv").toAbsolutePath().toString();
         Util.verifyPath(fullPath);

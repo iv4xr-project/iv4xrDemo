@@ -84,5 +84,10 @@
             <artifactId>aplib</artifactId>
             <version>[1.2.1,)</version> <!--  at least version 1.2.1 -->
         </dependency>
+        <dependency>
+            <groupId>eu.iv4xr.framework</groupId>
+            <artifactId>jocc</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
