@@ -47,5 +47,4 @@ public class TestSettings {
     		new Scanner(System.in) . nextLine() ;
     	}
     }
-
 }

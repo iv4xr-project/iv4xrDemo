@@ -23,7 +23,7 @@ public class FireHazardTest {
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
     @BeforeAll
-    static void start() {
+    public static void start() {
     	// Uncomment this to make the game's graphic visible:
     	//TestSettings.USE_SERVER_FOR_TEST = false ;
     	// TestSettings.USE_GRAPHICS = true ;
