@@ -39,6 +39,33 @@ public class LabRecruitsRawNavMesh {
     }
     
     /**
+     * It turns out that Unity can send a nav-mesh that is broken, where a node (a corner of
+     * a triangle) in the mesh ends up split in two nodes, located very close to each other,
+     * but they are disconnected (there is no path in the mesh that would connect the twin).
+     * This method fixes this by identifying such twins and force them to be merged.
+     * 
+     *  Thanks to Samira for the fix.
+     */
+    private void fix_broken_navmesh() {
+        float epsilon = 0.001f ;
+        for(int i=0; i< indices.length; i++) {
+            for(int j=i+1; j< indices.length; j++) {
+                int k = indices[i];
+                Vec3 currentVertix= vertices[k];
+                int n = indices[j];
+                Vec3 next = vertices[n];
+                float dis  = Vec3.dist(currentVertix, next);
+                
+                if(dis <= epsilon){
+                    if(k != n) {        
+                    indices[j] = k; 
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
      * This will convert this raw-mesh into the mesh representation as wanted by
      * the iv4xr agents.See {@link eu.iv4xr.framework.spatial.meshes.Mesh}.
      */
@@ -48,6 +75,9 @@ public class LabRecruitsRawNavMesh {
     	
     	Mesh mesh = new Mesh() ;
 
+    	// Add the following fix to fix possibly broken mesh sent by Unity:
+    	fix_broken_navmesh() ;
+    	
     	// (1) copy the vertices to the new-mesh:
         for (int i=0; i< vertices.length; i++) mesh.vertices.add(vertices[i]) ;
         
