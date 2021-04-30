@@ -476,6 +476,7 @@ public class BeliefState extends State {
     	// add newly discovered Obstacle-like entities, or change their states if they are like doors
     	// which can be open or close:
     	var impactEntities = worldmodel.mergeNewObservation(observation) ;
+    	changedEntities = impactEntities ;
     	// recalculating navigation nodes that become blocked or unblocked:
         boolean refreshNeeded = false ;
         for (var e : impactEntities) {
