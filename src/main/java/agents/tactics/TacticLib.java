@@ -438,12 +438,16 @@ public class TacticLib {
                 	// if this is set too low, the agent may unnecessarily do re-plan
                 	// if it is set too high, the agent may get stuck longer
 
+                    /*
                 	var someDoorHasChangedState =
                 			belief.knownDoors().stream()
                 	        . anyMatch(door -> door.lastStutterTimestamp < 0
                 	                           && door.hasPreviousState()
                 	                           && door.hasChangedState())
                 	        ;
+                	*/
+                    // replacing the above logic with this one that should be more reliable:
+                	var someDoorHasChangedState = belief.changedEntities.stream().anyMatch(e -> e.type == LabEntity.DOOR) ;
 
                 	return someDoorHasChangedState ;
                 	/*
