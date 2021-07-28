@@ -56,14 +56,7 @@
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>5.5.2</version>
-            <scope>test</scope>
-        </dependency>
-      -->
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -71,18 +64,15 @@
         </dependency>
 
         <!-- dependencies on iv4xr Agent Framework -->
-        <!--  for remote repo:
-        <dependency>
-            <groupId>com.github.iv4XR-project</groupId>
-            <artifactId>aplib</artifactId>
-            <version>v1.0</version>
-        </dependency>
-        -->
         <dependency>
             <!-- <groupId>nl.uu.cs.aplib</groupId> -->
             <groupId>com.github.iv4xr-project</groupId>
             <artifactId>aplib</artifactId>
-            <version>[1.2.1,)</version> <!--  at least version 1.2.1 -->
+            <!--  at least version 1.2.1 -->
+            <!-- version range does not work in combination with jitpack :(
+            <version>[1.2.2,)</version>
+            -->
+            <version>1.2.2</version>  
         </dependency>
     </dependencies>
 </project>
