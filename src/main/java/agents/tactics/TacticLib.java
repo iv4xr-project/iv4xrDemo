@@ -567,6 +567,13 @@ public class TacticLib {
                 	  // force update to worldmodel:
                 	  //System.out.println("## interacted with " + objectID) ;
                 	  belief.mergeNewObservationIntoWOM(obs);
+                	  // add a wait... not an ideal solution as it ignores thread interrupt
+                	  try {
+                		  Thread.sleep(500) ;
+                	  }
+                	  catch(Exception exc) {
+                		  // swallowing thread exception...
+                	  }
                       return belief;
                     })
                . on((BeliefState belief) -> {
