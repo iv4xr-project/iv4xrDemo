@@ -142,6 +142,7 @@ public class Observation {
     	   case "Decoration" :
     		   // decorations are statics, so we can use their x,y,z coordinates to identify them
     		   int k = obj.name.indexOf("Prefab") ;
+    		   if(k<0) k = obj.name.length() ;
     		   String id_ = obj.name.substring(0,k) + "@" + obj.transform.position.toString() ; 
     		   return id_ ;
     	   default :
@@ -150,6 +151,7 @@ public class Observation {
     		   if (obj.FireHazard != null) {
     			   // Firehazard does not move around, so we will use their positions to identify them
     			   k = obj.name.indexOf("(Clone)") ;
+    			   if(k<0) k = obj.name.length() ;
         		   id_ = obj.name.substring(0,k) + "@" + obj.transform.position.toString() ; 
         		   return id_ ;
     		   }
