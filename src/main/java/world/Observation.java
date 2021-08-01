@@ -75,6 +75,13 @@ public class Observation {
         	public String toString() {
         		return("" + r + "/" + g + "/" + b) ;
         	}
+        	
+        	@Override
+        	public boolean equals(Object o) {
+        		if (! (o instanceof Color)) return false ;
+        		Color o_ = (Color) o ;
+        		return this.r == o_.r && this.g == o_.g && this.b == o_.b ;
+        	}
         }
 
         /** States for doors and toggle buttons */

@@ -431,6 +431,10 @@ public class TacticLib {
                 .do1((BeliefState belief) -> {
                 	System.out.println("####Detecting some doors change their state. Forcing path recalculation @" + belief.worldmodel.position) ;
                 	belief.clearGoalLocation();
+                	try {
+                		Thread.sleep(700); // waiting for the door animation
+                	}
+                	catch(Exception e) { }
                 	return belief ;
                 })
                 .on_((BeliefState belief) -> {
@@ -569,7 +573,8 @@ public class TacticLib {
                 	  belief.mergeNewObservationIntoWOM(obs);
                 	  // add a wait... not an ideal solution as it ignores thread interrupt
                 	  try {
-                		  Thread.sleep(500) ;
+                		  // LR has 0.5s timeout before a button can be interacted again, so we need to wait: 
+                		  Thread.sleep(650) ;
                 	  }
                 	  catch(Exception exc) {
                 		  // swallowing thread exception...

@@ -41,6 +41,7 @@ public class LabEntity extends WorldEntity implements LineIntersectable{
 	 */
 	@Override
 	public boolean hasSameState(WorldEntity old) {
+		if (! this.position.equals(old.position) || ! this.extent.equals(old.extent)) return false ;
 		if (!this.dynamic) return true ;
 		switch(this.type) {
 		  case DOOR   : return getBooleanProperty("isOpen") == old.getBooleanProperty("isOpen") ;

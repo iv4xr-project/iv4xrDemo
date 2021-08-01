@@ -39,11 +39,20 @@ public class BeliefState extends State {
 	 * is further, pathfinder is triggered to calculate a new path.
 	 */
 	public static final float DIST_TO_MEMORIZED_GOALLOCATION_SOFT_REPATH_THRESHOLD  = 0.05f ;
-    /**
-     * Those entities whose state is changed in the last cycle.
+    
+	/**
+     * Those entities whose state is changed in the last cycle. This is lrawChangedEntitiesike 
+     * which has been filtered to include buttons, doors, and screens, and only
+     * when their logical state changes (so, not when their location changes due to
+     * animation).
      */
     public List<WorldEntity> changedEntities  = null ;
-
+    
+	/**
+     * Those entities whose state is changed in the last cycle.
+     */
+    public List<WorldEntity> rawChangedEntities  = null ;
+    
 	/**
 	 * When the distance of the agent to the current waypoint is less than this, the
 	 * waypoint is considered achieved, and we advance to next waypoint.
@@ -476,11 +485,19 @@ public class BeliefState extends State {
     	// add newly discovered Obstacle-like entities, or change their states if they are like doors
     	// which can be open or close:
     	var impactEntities = worldmodel.mergeNewObservation(observation) ;
-    	changedEntities = impactEntities ;
+    	rawChangedEntities = impactEntities ;
+    	changedEntities = impactEntities.stream()
+    			.filter(e -> e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.SWITCH) || e.type.equals(LabEntity.COLORSCREEN)) 
+    			.filter(e -> !e.hasPreviousState()
+    					|| (e.type.equals(LabEntity.DOOR) && e.getBooleanProperty("isOpen") != e.getPreviousState().getBooleanProperty("isOpen"))
+    					|| (e.type.equals(LabEntity.SWITCH) && e.getBooleanProperty("isOn") != e.getPreviousState().getBooleanProperty("isOn"))			
+    					|| (e.type.equals(LabEntity.COLORSCREEN) && ! e.getProperty("color").equals(e.getPreviousState().getProperty("color")))			
+    					)
+    			.collect(Collectors.toList()) ;
     	// recalculating navigation nodes that become blocked or unblocked:
         boolean refreshNeeded = false ;
-        for (var e : impactEntities) {
-        	if (e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.COLORSCREEN) || e.type.equals(LabEntity.GOAL)) {
+        for (var e : rawChangedEntities) {
+        	if (e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.COLORSCREEN)) {
         		Obstacle o = findThisObstacleInNavGraph(e.id) ;
 	       		if (o==null) {
 	       			 // e has not been added to the navgraph, so we add it, and retrieve its
@@ -492,6 +509,9 @@ public class BeliefState extends State {
 	       				 // unless it is a door, the obstacle is always blocking:
 	       				 o.isBlocking = true ;
 	       			 }
+	       		}
+	       		else {
+	       			o.obstacle = e ;
 	       		}
 	       		// if it is a door, toggle the blocking state of o to reflect the blocking state of e:
 	       		if (e.type.equals(LabEntity.DOOR)) {
