@@ -146,6 +146,7 @@ public class Observation {
     	   case "Door" : return obj.name ;
     	   case "Switch" : return obj.name ;
     	   case "ColorScreen" : return obj.name ;
+    	   case "NPC" : return obj.name ;
     	   case "Decoration" :
     		   // decorations are statics, so we can use their x,y,z coordinates to identify them
     		   int k = obj.name.indexOf("Prefab") ;
@@ -233,6 +234,9 @@ public class Observation {
             });
         } else if (obj.tag.equals("Goal")) {
         	we_type = LabEntity.GOAL ;
+        }
+        else if (obj.tag.equals("NPC")) {
+        	we_type = LabEntity.NPC ;
         }
         else if (obj.FireHazard != null) {
             we_type = LabEntity.FIREHAZARD;

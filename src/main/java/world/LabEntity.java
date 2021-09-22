@@ -20,6 +20,8 @@ public class LabEntity extends WorldEntity implements LineIntersectable{
 	public static final String COLORSCREEN = "ColorScreen" ;
 	public static final String FIREHAZARD = "FireHazard" ;
 	public static final String SWITCH = "Switch" ;
+	public static final String NPC = "NPC" ;
+	
 	
 	public LabEntity(String id, String type, boolean dynamic) {
 		super(id,type,dynamic) ;
