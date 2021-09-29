@@ -52,7 +52,10 @@ public class GoalLib {
         Goal goal = new Goal("This position is in-range: " + goalPosition.toString())
         		    . toSolve((BeliefState belief) -> {
                         //check if the agent is close to the goal position
-                        return Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()) < 0.4;
+        		    	System.out.println("positionInCloseRange" +", "+ goalPosition +", "+ Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()));
+        		    	
+        		    	
+        		    	return Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()) <= 1;
                     });
         //define the goal structure
         Goal g = goal.withTactic(
@@ -136,6 +139,7 @@ public class GoalLib {
         		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
         		  // bug .. .should be distsq:
         		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
+        		  System.out.print("entityinteracted: navigate to" + e);
         		  return e!=null && Vec3.sub(belief.worldmodel.getFloorPosition(), e.getFloorPosition()).lengthSq() <= 1 ;
         	    })
         	  . withTactic(
@@ -167,14 +171,29 @@ public class GoalLib {
 	 * This goal fails if the agent no longer believes that the entity is reachable.
 	 */
     public static GoalStructure entityStateRefreshed(String id){
-        return goal("The belief on this entity is refreshed: " + id)
-                .toSolve((BeliefState b) -> 
-                    b.evaluateEntity(id, e -> b.age(e) == 0))
+        var g =  goal("The belief on this entity is refreshed: " + id)
+                .toSolve((BeliefState b) -> {
+                	
+                	System.out.println("entity state refresh: " + 
+                b.evaluateEntity(id, e -> b.age(e) == 0)
+                	+"get goal location "+ b.getGoalLocation()
+                		);
+                	
+                  var entity = b.worldmodel.getElement(id);
+                  return   (b.evaluateEntity(id, e -> b.age(e) == 0)
+                		  
+                		  );
+                  
+                })
                 .withTactic(FIRSTof(
-                        TacticLib.navigateToClosestReachableNode(id),
+                        TacticLib.navigateToClosestReachableNode(id),              		
                         TacticLib.explore(),
                         ABORT()))
                 .lift() ;
+        	
+       		 return g;
+        	// g.maxbudget(8);
+       		// return FIRSTof(g, SUCCESS()) ;
     }
 
     /**

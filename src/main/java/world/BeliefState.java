@@ -427,7 +427,7 @@ public class BeliefState extends State {
     @Override
     public void updateState() {
         super.updateState();
-        var observation = this.env().observe(id) ;
+        var observation = this.env().observe(id) ;       
         mergeNewObservationIntoWOM(observation) ;
         // updating recent positions tracking (to detect stuck) here, rater than in mergeNewObservationIntoWOM,
         // because the latter is also invoked directly by some tactic (Interact) that do not/should not update
@@ -486,6 +486,7 @@ public class BeliefState extends State {
     	// which can be open or close:
     	var impactEntities = worldmodel.mergeNewObservation(observation) ;
     	rawChangedEntities = impactEntities ;
+    	
     	changedEntities = impactEntities.stream()
     			.filter(e -> e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.SWITCH) || e.type.equals(LabEntity.COLORSCREEN)) 
     			.filter(e -> !e.hasPreviousState()
@@ -495,7 +496,18 @@ public class BeliefState extends State {
     					)
     			.collect(Collectors.toList()) ;
     	// recalculating navigation nodes that become blocked or unblocked:
-        boolean refreshNeeded = false ;
+    	
+    	
+	
+//    	impactEntities.stream().filter(e -> !e.hasPreviousState()).forEach(e -> System.out.println("previous"+ e.id));
+//    	impactEntities.stream().filter(e -> e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.SWITCH) || e.type.equals(LabEntity.COLORSCREEN)) 
+//    	.filter(e -> !e.hasPreviousState() || (e.type.equals(LabEntity.DOOR) && e.getBooleanProperty("isOpen") != e.getPreviousState().getBooleanProperty("isOpen"))).forEach(e -> System.out.println("door in prin"+ e.id));
+//    	impactEntities.stream().filter(e -> e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.SWITCH) || e.type.equals(LabEntity.COLORSCREEN)) 
+//    	.filter(e -> !e.hasPreviousState() || (e.type.equals(LabEntity.SWITCH) && e.getBooleanProperty("isOn") != e.getPreviousState().getBooleanProperty("isOn"))).forEach(e -> System.out.println("button in prin"+ e.id));
+//    	
+//    	changedEntities.forEach(e -> System.out.println("khodesh" + e.id));
+//    	System.out.println("****end updateeee");	
+    	boolean refreshNeeded = false ;
         for (var e : rawChangedEntities) {
         	if (e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.COLORSCREEN)) {
         		Obstacle o = findThisObstacleInNavGraph(e.id) ;

@@ -211,37 +211,57 @@ public class TacticLib {
 	static Tactic navigateToClosestReachableNode(String id) {
 
 		MiniMemory memory = new MiniMemory("S0") ;
-
+		
 		Action move =
 				unguardedNavigateTo("Navigate to a navigation vertex nearby " + id)
 
 				. on((BeliefState belief) -> {
-
+					
 					LabEntity e = belief.worldmodel.getElement(id) ;
-    			    if (e==null) return null ;
-
+				
+//					System.out.println("navigate to close reachable:*** goal location: " + belief.getGoalLocation()
+//					+ "***door1 location: "   + "***agent position"+ belief.worldmodel.getFloorPosition()
+//					+ "***path to entity position"
+//					);
+					
+				//	if(belief.findPathTo(e.position,true) ==null) { return null;}
+    			    
+					if (e==null) return null ;
+					
 					Vec3 nodeLocation = null ;
 					if (!memory.memorized.isEmpty()) {
 						nodeLocation = (Vec3) memory.memorized.get(0) ;
 					}
+					
 					Vec3 currentGoalLocation = belief.getGoalLocation() ;
-
+					
+					
+					if(nodeLocation != null && currentGoalLocation != null)
+					System.out.println("navigate to close reachable move:" + 
+					(Vec3.dist(nodeLocation,currentGoalLocation)) + 
+					 "selected node" + nodeLocation + " current goal location "+ currentGoalLocation);
+					
 					if (nodeLocation == null
 					    || currentGoalLocation == null
-					    || Vec3.dist(nodeLocation,currentGoalLocation) >= 0.05) {
+					    || Vec3.dist(nodeLocation,currentGoalLocation) >= 0.05
+					    ) {
 						// in all these cases we need to calculate the node to go
-
+						
     			        var entity_location = e.getFloorPosition() ;
+    			        
 	    			    List<Pair<Vec3,Float>> candidates = new LinkedList<>() ;
 	    			    int k=0 ;
+	    			    
+	    			    
 	    			    for (Vec3 v : belief.pathfinder.vertices) {
 	    			    	if (belief.pathfinder.seenVertices.get(k)) {
 	    			    		// v has been seen:
-	    			    		candidates.add(new Pair(v, Vec3.dist(entity_location, v))) ;
+	    			    		candidates.add(new Pair(v, Vec3.dist(entity_location, v))) ;	    			    		
 	    			    	}
 	    			    	k++ ;
 	    			    }
-
+	    			    	    			   
+	    			    
 		    		    if (candidates.isEmpty()) return null ;
 		    		    // sort the candidates according to how close they are to the entity e (closest first)
 		    		    candidates.sort((c1,c2) -> c1.snd.compareTo(c2.snd));
@@ -262,11 +282,17 @@ public class TacticLib {
 		    			// no reachable node can be found. We will clear the memory, and declare the tactic as disabled
 		    			memory.memorized.clear() ;
 		    			return null ;
-					}
+					}				
 					else {
 						// else the memorized location and the current goal-location coincide. No need to
 						// recalculate the path, so we will just return the pair (memorized-loc,null)
+						System.out.println("navigate to close reachable: else part: " +  e.timestamp +"++"+ belief.age(id) );
+						if(belief.age(id) != 0) {
+					//		memory.memorized.clear() ;   
+							return null;
+							}
 						return new Pair (nodeLocation,null) ;
+						
 					}
 				}) ;
 
@@ -289,8 +315,11 @@ public class TacticLib {
 
     	Action move = unguardedNavigateTo("Navigate to " + id)
     			      // replacing its guard with this new one:
+    			
 		              . on((BeliefState belief) -> {
+		            	  
 		                	var e = (LabEntity) belief.worldmodel.getElement(id) ;
+		                	System.out.println("raw navigate to " + e);
 		    			    if (e==null) return null ;
 		    			    var p = e.getFloorPosition() ;
 		    			    // find path to p, but don't force re-calculation
@@ -333,7 +362,10 @@ public class TacticLib {
     			    // memorized it.
 
     			    // If no path can be found, this guard returns null... hence disabled.
-    			    return belief.findPathTo(position, false) ;
+    			    
+    			   var x = belief.findPathTo(position, false);
+    			   System.out.print("raw navigate to" + position + x );
+    			   return x ;
     			 })
     		   . lift() ;
     }
@@ -367,7 +399,7 @@ public class TacticLib {
                 	var destination = q.fst ;
                 	var path = q.snd ;
 
-                	//System.out.println("### tactic NavigateTo " + destination) ;
+                	System.out.println("### tactic Ungard NavigateTo " + destination + path) ;
 
                 	//if a new path is received, memorize it as the current path to follow:
                 	if (path!= null) {
@@ -427,6 +459,7 @@ public class TacticLib {
      *  Path recalculation is forced by clearing the goal-position.
      */
     public static Tactic forceReplanPath() {
+    	System.out.println("#### force replane");
         Tactic clearTargetPosition = action("Force path recalculation.")
                 .do1((BeliefState belief) -> {
                 	System.out.println("####Detecting some doors change their state. Forcing path recalculation @" + belief.worldmodel.position) ;
@@ -482,6 +515,7 @@ public class TacticLib {
      * @return
      */
     public static Tactic tryToUnstuck() {
+    	System.out.println("#### try to unstuck");
     	Tactic unstuck = action("Trying to unstuck")
     			.do1((BeliefState belief) -> {
     				System.out.println("#### STUCK, probably cannot get past a turn-corner: @"
@@ -502,8 +536,17 @@ public class TacticLib {
     				return belief ;
     			})
     			.on_((BeliefState belief) -> {
-    				//System.out.println(">>> stuck: " + belief.isStuck() + ", goal loc: " + belief.getGoalLocation()) ;
-    				return belief.getGoalLocation() != null &&  belief.isStuck() ;
+    				
+    				var x =  belief.getGoalLocation() != null 
+    						&& !belief.getCurrentWayPoint().equals(belief.getGoalLocation()) 
+    						&&  belief.isStuck() ;
+ //   				if(belief.getGoalLocation() != null && belief.getCurrentWayPoint() != null )
+//    					System.out.println(">>> stuck: getCurrentWayPoint: " + belief.getCurrentWayPoint().equals(belief.getGoalLocation())
+//    							+ belief.getGoalLocation()
+//    							+ belief.getCurrentWayPoint()   							
+//    							);
+    				//System.out.println(">>> stuck: " + belief.isStuck() + x  ) ;
+    				return x;
     			})
     			.lift() ;
     	return unstuck ;
@@ -725,6 +768,7 @@ public class TacticLib {
      */
     public static Tactic explore() {
 
+
     	var memo = new MiniMemory("S0") ;
     	// three states:
     	//  S0 ; initial exploration state, a new exploration target must be set
@@ -795,7 +839,7 @@ public class TacticLib {
         return FIRSTof(
         		 forceReplanPath(),
 				 tryToUnstuck(),
-				 explore_) ;
+				 explore_) ;    
     }
 
 }
