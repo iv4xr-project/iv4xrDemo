@@ -44,7 +44,7 @@ public class TacticLib {
 	/**
 	 * Distance used to unstuck an agent.
 	 */
-	public static final float UNSTUCK_DELTA = 0.5f ;
+	public static final float UNSTUCK_DELTA = 0.6f ;
 
 	/**
 	 * When the agent comes to this distance to the current exploration target,
@@ -527,6 +527,9 @@ public class TacticLib {
     	    			System.out.println("#### forcing a move past the corner...to " + unstuckPosition) ;
     	    			//belief.mentalMap.insertNewWayPoint(unstuckPosition);
     	    			belief.worldmodel.moveToward(belief.env(),unstuckPosition) ;
+    	    			var obs = belief.env().observe(belief.id) ;
+    	    			var newp = obs.position;
+    	    			System.out.println("####after forcing a move past the corner...to " + newp ) ;
     	    		}
     	    		else {
     	    			// else .... for now do nothing :|

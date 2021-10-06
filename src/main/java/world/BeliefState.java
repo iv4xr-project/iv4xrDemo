@@ -288,6 +288,7 @@ public class BeliefState extends State {
     	// else we invoke the pathfinder to calculate a path:
     	// be careful with the threshold 0.05..
     	var abstractpath = pathfinder.findPath(worldmodel.getFloorPosition(),q,BeliefState.DIST_TO_FACE_THRESHOLD) ;
+    	System.out.println("findPathTo " + abstractpath);
     	if (abstractpath == null) return null ;
     	List<Vec3> path = abstractpath.stream().map(v -> pathfinder.vertices.get(v)).collect(Collectors.toList()) ;
     	// add the destination path too:
