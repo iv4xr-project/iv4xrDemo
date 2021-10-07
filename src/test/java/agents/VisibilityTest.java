@@ -1,9 +1,11 @@
 package agents;
 
+import static agents.TestSettings.USE_INSTRUMENT;
 import static agents.TestSettings.USE_SERVER_FOR_TEST;
 
 
 import game.LabRecruitsTestServer;
+import logger.JsonLoggerInstrument;
 import world.BeliefState;
 import world.LabWorldModel;
 
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import agents.tactics.GoalLib;
 import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
+import environments.SocketReaderWriter;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +33,8 @@ public class VisibilityTest {
     static void start() {
         // TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	// TestSettings.USE_GRAPHICS = true ;
+    	//TestSettings.USE_GRAPHICS = true ;
+    	//TestSettings.USE_SERVER_FOR_TEST = false ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
        	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -66,7 +70,8 @@ public class VisibilityTest {
         if (! environment.startSimulation())
             throw new InterruptedException("Unity refuses to start the Simulation!");
         
-       
+       //SocketReaderWriter.debug = true ;  ... to show the json msgs
+        
        // Initial observation:
        LabWorldModel wom = environment.observe("agent0") ;
        // the wom should contain what the agent at that moment sees. Check what it sees
