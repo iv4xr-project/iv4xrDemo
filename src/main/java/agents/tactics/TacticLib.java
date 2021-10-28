@@ -495,16 +495,6 @@ public class TacticLib {
     	    			System.out.println("#### forcing a move past the corner...to " + unstuckPosition) ;
     	    			//belief.mentalMap.insertNewWayPoint(unstuckPosition);
     	    			belief.worldmodel.moveToward(belief.env(),unstuckPosition) ;
-<<<<<<< HEAD
-=======
-    	    			//try {
-    	    				//Thread.sleep(200);
-    	    			//}
-    	    			//catch(Exception e) { }
-    	    			//var obs = belief.env().observe(belief.id) ;
-    	    			//var newp = obs.position;
-    	    			//System.out.println("#### new position after unstuck move: " + newp ) ;
->>>>>>> 6e5edb4127ccb09516d014f59ac60a75f86bd9e8
     	    		}
     	    		else {
     	    			// else .... for now do nothing :|
