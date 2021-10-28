@@ -120,8 +120,8 @@ public class LabWorldModel extends WorldModel {
 
 	@Override
 	public LabWorldModel moveToward(W3DEnvironment env, Vec3 targetLocation) {
-		return (LabWorldModel) super.moveToward(env, targetLocation) ;
+		//return (LabWorldModel) super.moveToward(env, targetLocation) ;
+		return (LabWorldModel) env.moveToward(agentId, this.getFloorPosition(), targetLocation);
 	}
-
 
 }
