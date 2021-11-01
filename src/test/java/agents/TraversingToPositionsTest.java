@@ -99,6 +99,7 @@ public class TraversingToPositionsTest {
             if (i>=150) break ;
         }
         g.printGoalStructureStatus();
+        System.out.println("#pass: " + dataCollector.getNumberOfPassVerdictsSeen()) ;
         assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == 4) ;
         
         if (!environment.close())

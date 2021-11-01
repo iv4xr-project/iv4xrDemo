@@ -55,7 +55,7 @@ public class GoalLib {
         		    	System.out.println("positionInCloseRange" +", "+ goalPosition +", "+ Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()));
         		    	
         		    	
-        		    	return Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()) <= 1;
+        		    	return Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()) < 0.4 ;
                     });
         //define the goal structure
         Goal g = goal.withTactic(
