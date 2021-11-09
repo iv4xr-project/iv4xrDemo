@@ -83,8 +83,6 @@ public class BeliefState extends State {
 
     public Boolean receivedPing = false;//store whether the agent has an unhandled ping
 
-    public float viewDistance = 10f ;
-
     /**
      * Since getting to some location may take multiple cycle, and we want to avoid invoking the
      * pathfinder at every cycle, the agent will memorize what the target location it is trying
@@ -550,19 +548,22 @@ public class BeliefState extends State {
     }
 
     /**
-     * Copy the view-distance from the given LR configuration into this Belief.
+     * Get the agent's view distance. This value was set in the Lab-Recruit configuration,
+     * that was passed when constructing the LR-environment attached to this state.
+     * The default distance is the default that is set in LR-config, which is 10.
      */
-    public void setViewDistance(LabRecruitsConfig config) {
-    	viewDistance = config.view_distance ;
+    public float getViewDistance() {
+    	return env().gameConfig().view_distance ;
     }
-
+    
     /**
      * True if the given position q is within the viewing range of the
      * agent. This is defined by the field viewDistance, whose default is 10.
      */
     public boolean withinViewRange(Vec3 q){
+    	float vd = getViewDistance() ;
     	return worldmodel.position != null
-    			&& Vec3.sub(worldmodel.getFloorPosition(),q).lengthSq() < viewDistance * viewDistance;
+    			&& Vec3.sub(worldmodel.getFloorPosition(),q).lengthSq() < vd*vd;
     }
 
     /**
