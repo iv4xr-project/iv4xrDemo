@@ -139,7 +139,7 @@ public class GoalLib {
         		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
         		  // bug .. .should be distsq:
         		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
-        		  System.out.print("entityinteracted: navigate to" + e);
+        		  // System.out.print("entityinteracted: navigate to" + e);
         		  return e!=null && Vec3.sub(belief.worldmodel.getFloorPosition(), e.getFloorPosition()).lengthSq() <= 1 ;
         	    })
         	  . withTactic(
@@ -159,7 +159,7 @@ public class GoalLib {
                    ABORT())) // observe the objects
               . lift();
 
-        return SEQ(goal1, goal2);
+        return SEQ(goal1, goal2, SUCCESS());// adding success() to force observation after the interaction
     }
     
 
@@ -174,10 +174,10 @@ public class GoalLib {
         var g =  goal("The belief on this entity is refreshed: " + id)
                 .toSolve((BeliefState b) -> {
                 	
-                	System.out.println("entity state refresh: " + 
+                /*	System.out.println("entity state refresh: " + 
                 b.evaluateEntity(id, e -> b.age(e) == 0)
                 	+"get goal location "+ b.getGoalLocation()
-                		);
+                		); */
                 	
                   var entity = b.worldmodel.getElement(id);
                   return   (b.evaluateEntity(id, e -> b.age(e) == 0)

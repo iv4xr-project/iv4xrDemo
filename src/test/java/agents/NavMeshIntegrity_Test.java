@@ -84,7 +84,7 @@ public class NavMeshIntegrity_Test {
 
 	        // define the testing-task:
 	        var testingTask = SEQ(
-	            GoalLib.entityInteracted("button3"), GoalLib.entityStateRefreshed("door3"),
+	            GoalLib.entityInteracted("button3"), GoalLib.entityStateRefreshed("door1"),
 	            GoalLib.entityInteracted("button7"), GoalLib.entityStateRefreshed("door4"),
 	            GoalLib.entityInteracted("button9"), GoalLib.entityStateRefreshed("door5"),
 	            GoalLib.entityInteracted("button16"), GoalLib.entityStateRefreshed("door7"),

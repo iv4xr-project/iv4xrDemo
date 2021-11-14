@@ -218,6 +218,7 @@ public class TacticLib {
 				. on((BeliefState belief) -> {
 
 					LabEntity e = belief.worldmodel.getElement(id) ;
+					
     			    if (e==null) return null ;
 
 					Vec3 nodeLocation = null ;
@@ -241,7 +242,7 @@ public class TacticLib {
 	    			    	}
 	    			    	k++ ;
 	    			    }
-
+	    			  
 		    		    if (candidates.isEmpty()) return null ;
 		    		    // sort the candidates according to how close they are to the entity e (closest first)
 		    		    candidates.sort((c1,c2) -> c1.snd.compareTo(c2.snd));
@@ -572,7 +573,13 @@ public class TacticLib {
                 	  var obs = belief.worldmodel.interact(belief.env(), LabWorldModel.INTERACT, e)  ;
                 	  // force update to worldmodel:
                 	  //System.out.println("## interacted with " + objectID) ;
-                	  belief.mergeNewObservationIntoWOM(obs);
+                	  
+                	  // Fix
+                	  // This merge cause update-steal, which causes the change-entities detection to
+                	  // fail to detect. We remove it; the agent can still get the updated state, but
+                	  // in the next update-cycle:
+                	  // belief.mergeNewObservationIntoWOM(obs);
+                	  
                 	  // add a wait... not an ideal solution as it ignores thread interrupt
                 	  try {
                 		  // LR has 0.5s timeout before a button can be interacted again, so we need to wait: 
@@ -600,7 +607,7 @@ public class TacticLib {
                 	return null ;
                     })
                . lift();
-        return interact;
+        return interact ;
     }
 
     /*
