@@ -6,8 +6,12 @@
 
     <!--  <groupId>nl.uu.cs.muscleai.labrecruits</groupId> -->
     <groupId>com.github.iv4xr-project</groupId>
-    <artifactId>lab-recruits-api</artifactId>
-    <!--   <artifactId>iv4xrDemo</artifactId> -->
+    <!-- 
+        This artifact id does not work in combination with jitpack. It seems
+        that the id has to match the repo-name in github :(
+        <artifactId>lab-recruits-api</artifactId>
+    -->   
+    <artifactId>iv4xrDemo</artifactId>
     <version>2.2.5-SNAPSHOT</version>
     <build>
         <plugins>
