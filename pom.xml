@@ -7,7 +7,7 @@
     <!--  <groupId>nl.uu.cs.muscleai.labrecruits</groupId> -->
     <groupId>com.github.iv4xr-project</groupId>
     <artifactId>lab-recruits-api</artifactId>
-    <version>2.2.4-SNAPSHOT</version>
+    <version>2.2.5-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
