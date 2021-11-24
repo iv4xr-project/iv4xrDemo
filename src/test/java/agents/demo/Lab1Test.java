@@ -21,7 +21,9 @@ import nl.uu.cs.aplib.mainConcepts.Environment;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,17 +46,42 @@ public class Lab1Test {
 
     @BeforeAll
     static void start() {
-        // TestSettings.USE_SERVER_FOR_TEST = false;
-        // Uncomment this to make the game's graphic visible:
-        TestSettings.USE_GRAPHICS = true;
-        String labRecruitesExeRootDir = System.getProperty("user.dir");
-        labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir);
+    	/**
+    	 *  Custom the path of this bat file, and the paths that are inside this bat: 
+    	 *  - cd C:\Program Files\Unity 2019.4.32f1\Editor
+    	 *  - projectPath "C:\Users\Fernando\Desktop\iv4xr\labrecruits\Unity\AIGym"
+    	 */
+    	ProcessBuilder processBuilder = new ProcessBuilder("C:\\Users\\Fernando\\Desktop\\iv4xr\\labrecruits\\launchUnityWithCoverage.bat");
+    	try {
+    		Process process = processBuilder.start();
+    		// Wait until Unity is running
+    		// TODO: Instead of wait X seconds, implement a way to check if Unity process or LabRecruits game is ready
+    		TimeUnit.SECONDS.sleep(30);
+    	} catch (IOException | InterruptedException e) {
+    		e.printStackTrace();
+    	}
+    	// We already executed Unity, do not execute LabRecruits.exe
+    	TestSettings.USE_SERVER_FOR_TEST = false;
+    	// Make the game's graphic visible:
+    	TestSettings.USE_GRAPHICS = true;
+    	String labRecruitesExeRootDir = System.getProperty("user.dir");
+    	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir);
     }
 
     @AfterAll
     static void close() {
-        if (labRecruitsTestServer != null)
-            labRecruitsTestServer.close();
+    	if (labRecruitsTestServer != null) {
+    		// This close is going to send a disconnect request to LabRecruits, stop recording the coverage and create the coverage results
+    		labRecruitsTestServer.close();
+    	}
+    	try {
+    		// Wait 10 so Unity will have time to prepare the coverage reports
+    		TimeUnit.SECONDS.sleep(10);
+    		// Then kill Unity process to close Unity+LabRecruits SUT
+    		Runtime.getRuntime().exec("taskkill /F /IM Unity.exe");
+    	} catch (IOException | InterruptedException e) {
+    		e.printStackTrace();
+    	}
     }
 
     void instrument(Environment env) {
@@ -81,7 +108,7 @@ public class Lab1Test {
      * commenting out this test until we get a better un-stuck tactic. You can still
      * uncomment it to try it out.
      */
-    //@Test
+    @Test
     public void test_the_lab_is_finishable() throws InterruptedException {
 
         // Create an environment
@@ -90,11 +117,11 @@ public class Lab1Test {
         var environment = new LabRecruitsEnvironment(config);
 
         try {
-            if (TestSettings.USE_GRAPHICS) {
-                System.out.println(
-                        "You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.");
-                new Scanner(System.in).nextLine();
-            }
+//        	if (TestSettings.USE_GRAPHICS) {
+//        		System.out.println(
+//        				"You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.");
+//        		new Scanner(System.in).nextLine();
+//        	}
 
             // create a test agent
             var testAgent = new LabRecruitsTestAgent("agent0") // matches the ID in the CSV file
