@@ -424,8 +424,8 @@ public class BeliefState extends State {
      * method is called.
      */
     @Override
-    public void updateState() {
-        super.updateState();
+    public void updateState(String agentId) {
+        super.updateState(agentId);
         var observation = this.env().observe(id) ;       
         mergeNewObservationIntoWOM(observation) ;
         // updating recent positions tracking (to detect stuck) here, rater than in mergeNewObservationIntoWOM,
