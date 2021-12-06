@@ -194,8 +194,8 @@ public class TacticLib {
 	 * that covers a given point. Return null if there is none.
 	 */
     static Face getCoveringFaces(BeliefState S, Vec3 p) {
-    	for(Face face : S.pathfinder.faces) {
-			if (face.distFromPoint(p, S.pathfinder.vertices) <= 0.1) {
+    	for(Face face : S.pathfinder().faces) {
+			if (face.distFromPoint(p, S.pathfinder().vertices) <= 0.1) {
 				// found it
 				return face ;
 			}
@@ -235,8 +235,8 @@ public class TacticLib {
     			        var entity_location = e.getFloorPosition() ;
 	    			    List<Pair<Vec3,Float>> candidates = new LinkedList<>() ;
 	    			    int k=0 ;
-	    			    for (Vec3 v : belief.pathfinder.vertices) {
-	    			    	if (belief.pathfinder.seenVertices.get(k)) {
+	    			    for (Vec3 v : belief.pathfinder().vertices) {
+	    			    	if (belief.pathfinder().seenVertices.get(k)) {
 	    			    		// v has been seen:
 	    			    		candidates.add(new Pair(v, Vec3.dist(entity_location, v))) ;
 	    			    	}
@@ -550,12 +550,12 @@ public class TacticLib {
 
     private static boolean isPointInNavigableSurface(BeliefState belief, Vec3 p) {
     	List<Face> faces = new LinkedList<>() ;
-    	faces.addAll(belief.pathfinder.faces) ;
+    	faces.addAll(belief.pathfinder().faces) ;
     	faces.sort((f1,f2) ->
-    	     Float.compare(Vec3.dist(belief.pathfinder.vertices.get(f1.vertices[0]),p),
-    	    		       Vec3.dist(belief.pathfinder.vertices.get(f2.vertices[0]),p))) ;
+    	     Float.compare(Vec3.dist(belief.pathfinder().vertices.get(f1.vertices[0]),p),
+    	    		       Vec3.dist(belief.pathfinder().vertices.get(f2.vertices[0]),p))) ;
     	for (Face f : faces) {
-    		if (f.distFromPoint(p, belief.pathfinder.vertices) <= DIST_SURFACE_THRESHOLD_STUCK)
+    		if (f.distFromPoint(p, belief.pathfinder().vertices) <= DIST_SURFACE_THRESHOLD_STUCK)
     			return true ;
     	}
     	return false ;
@@ -680,7 +680,7 @@ public class TacticLib {
                     	else {
                     		belief.worldmodel.mergeOldObservation(obs) ;
                     	}
-                    	belief.pathfinder.markAsSeen(obs.visibleNavigationNodes);
+                    	belief.pathfinder().markAsSeen(obs.visibleNavigationNodes);
                         m = belief.messenger().retrieve(M -> M.getMsgName().equals("ObservationSharing")) ;
                     }
                     //do an observation
@@ -751,7 +751,7 @@ public class TacticLib {
                          //get the location of the closest unexplored node
         				 var position = belief.worldmodel.getFloorPosition() ;
         				 //System.out.println(">>> #explored nodes:" + belief.pathfinder.numberOfSeen()) ;
-        				 var path = belief.pathfinder.explore(position,BeliefState.DIST_TO_FACE_THRESHOLD) ;
+        				 var path = belief.pathfinder().explore(position,BeliefState.DIST_TO_FACE_THRESHOLD) ;
 
         				 if (path==null || path.isEmpty()) {
         					memo.moveState("exhausted") ;
@@ -759,7 +759,7 @@ public class TacticLib {
                             return null ;
         				 }
         				 List<Vec3> explorationPath = path.stream()
-        						            .map(v -> belief.pathfinder.vertices.get(v))
+        						            .map(v -> belief.pathfinder().vertices.get(v))
         						            .collect(Collectors.toList()) ;
 
         				 var target = explorationPath.get(explorationPath.size() - 1) ;

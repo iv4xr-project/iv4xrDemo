@@ -64,11 +64,11 @@ public class LabRecruitsEnvironmentTest {
     	var environment = new LabRecruitsEnvironment(new LabRecruitsConfig("minimal"));
     	
     	assertTrue(environment != null) ;
-    	assertTrue(environment.worldNavigableMesh != null) ;
-    	assertTrue(environment.worldNavigableMesh.faces.size() > 0 ) ;
-    	assertTrue(environment.worldNavigableMesh.vertices.size() > 0 ) ;
+    	assertTrue(environment.worldNavigableMesh() != null) ;
+    	assertTrue(environment.worldNavigableMesh().faces.size() > 0 ) ;
+    	assertTrue(environment.worldNavigableMesh().vertices.size() > 0 ) ;
     	
-    	System.out.println(environment.worldNavigableMesh) ;
+    	System.out.println(environment.worldNavigableMesh()) ;
     	
     	//System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
 		//new Scanner(System.in) . nextLine() ;

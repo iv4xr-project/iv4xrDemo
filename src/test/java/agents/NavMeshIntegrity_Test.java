@@ -104,9 +104,9 @@ public class NavMeshIntegrity_Test {
 	        // do one update and explicitly check reachability between these two points (which was
 	        // unreachable before fixed):
 	        testAgent.update() ;
-	        testAgent.getState().pathfinder.perfect_memory_pathfinding = true ;
-	        assertTrue(testAgent.getState().pathfinder.findPath(new Vec3(3,0,70), new Vec3(3,0,77.5f), 0.1f) != null) ;
-            testAgent.getState().pathfinder.perfect_memory_pathfinding = false ;
+	        testAgent.getState().pathfinder().perfect_memory_pathfinding = true ;
+	        assertTrue(testAgent.getState().pathfinder().findPath(new Vec3(3,0,70), new Vec3(3,0,77.5f), 0.1f) != null) ;
+            testAgent.getState().pathfinder().perfect_memory_pathfinding = false ;
 
 	        int i = 0 ;
 	        // keep updating the agent

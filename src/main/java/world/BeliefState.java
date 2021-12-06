@@ -9,6 +9,7 @@ package world;
 
 import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
+import eu.iv4xr.framework.environments.W3DAgentState;
 import eu.iv4xr.framework.extensions.pathfinding.SurfaceNavGraph;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import eu.iv4xr.framework.spatial.Obstacle;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * Stores agent knowledge of the agent itself, the entities it has observed, what parts of the
  * world map have been explored and its current movement goals.
  */
-public class BeliefState extends State {
+public class BeliefState extends W3DAgentState {
 
 	/**
 	 * Threshold value of the distance between a point to a face to determine when
@@ -76,11 +77,6 @@ public class BeliefState extends State {
     public LabWorldModel worldmodel  = new LabWorldModel() ;
 
 
-    /**
-     * A 3D-surface pathfinder to guide agent to navigate over the game world.
-     */
-    public SurfaceNavGraph pathfinder ;
-
     public Boolean receivedPing = false;//store whether the agent has an unhandled ping
 
     /**
@@ -109,7 +105,16 @@ public class BeliefState extends State {
 
     public Collection<WorldEntity> knownEntities() { return worldmodel.elements.values(); }
 
-
+    /**
+     * A 3D-surface pathfinder to guide agent to navigate over the game world. This actually
+     * return navigation-graph held in this state. But this graph is an instance of 
+     * {@link eu.iv4xr.framework.extensions.pathfinding.SurfaceNavGraph}, which comes
+     * with a pathfinder.
+     */
+    public SurfaceNavGraph pathfinder() {
+    	return this.worldNavigation() ;
+    }
+    
     // lexicographically comparing e1 and e2 based on its age and distance:
     private int compareAgeDist(WorldEntity e1, WorldEntity e2) {
     	var c1 = Long.compare(age(e1),age(e2)) ;
@@ -285,10 +290,10 @@ public class BeliefState extends State {
     	}
     	// else we invoke the pathfinder to calculate a path:
     	// be careful with the threshold 0.05..
-    	var abstractpath = pathfinder.findPath(worldmodel.getFloorPosition(),q,BeliefState.DIST_TO_FACE_THRESHOLD) ;
+    	var abstractpath = pathfinder().findPath(worldmodel.getFloorPosition(),q,BeliefState.DIST_TO_FACE_THRESHOLD) ;
     	System.out.println("findPathTo " + abstractpath);
     	if (abstractpath == null) return null ;
-    	List<Vec3> path = abstractpath.stream().map(v -> pathfinder.vertices.get(v)).collect(Collectors.toList()) ;
+    	List<Vec3> path = abstractpath.stream().map(v -> pathfinder().vertices.get(v)).collect(Collectors.toList()) ;
     	// add the destination path too:
     	path.add(q) ;
     	return new Pair(q,path) ;
@@ -441,7 +446,7 @@ public class BeliefState extends State {
      * the class Obstacle). Else null is returned.
      */
     private Obstacle findThisObstacleInNavGraph(String id) {
-    	for (Obstacle o : pathfinder.obstacles) {
+    	for (Obstacle o : pathfinder().obstacles) {
     		LabEntity e = (LabEntity) o.obstacle ;
     		if (e.id.equals(id)) return o ;
     	}
@@ -467,13 +472,13 @@ public class BeliefState extends State {
     	if (observation == null) return ;
 
     	// update the navigation graph with nodes seen in the new observation
-    	pathfinder.markAsSeen(observation.visibleNavigationNodes) ;
+    	pathfinder().markAsSeen(observation.visibleNavigationNodes) ;
     	// HACK.. adding nearby vertices as seen:
-    	int NumOfvertices = pathfinder.vertices.size() ;
+    	int NumOfvertices = pathfinder().vertices.size() ;
     	if (worldmodel.position != null) {
     		for (int v=0; v<NumOfvertices; v++) {
-        		if (Vec3.dist(worldmodel.getFloorPosition(), pathfinder.vertices.get(v)) <= AUTOVIEW_HACK_DIST) {
-        			 pathfinder.seenVertices.set(v,true) ;
+        		if (Vec3.dist(worldmodel.getFloorPosition(), pathfinder().vertices.get(v)) <= AUTOVIEW_HACK_DIST) {
+        			 pathfinder().seenVertices.set(v,true) ;
         		}
         	}
     	}
@@ -513,9 +518,9 @@ public class BeliefState extends State {
 	       		if (o==null) {
 	       			 // e has not been added to the navgraph, so we add it, and retrieve its
 	       			 // Obstacle-wrapper:
-	       			 pathfinder.addObstacle((LabEntity) e);
-	       			 int N = pathfinder.obstacles.size();
-	       			 o = pathfinder.obstacles.get(N-1) ;
+	       			 pathfinder().addObstacle((LabEntity) e);
+	       			 int N = pathfinder().obstacles.size();
+	       			 o = pathfinder().obstacles.get(N-1) ;
 	       			 if (! e.type.equals(LabEntity.DOOR)) {
 	       				 // unless it is a door, the obstacle is always blocking:
 	       				 o.isBlocking = true ;
@@ -597,15 +602,17 @@ public class BeliefState extends State {
 
     /**
      * Link an environment to this Belief. It must be an instance of LabRecruitsEnvironment.
-     * This will also create an instance of SurafaceNavGraph from the navigation-mesh of the
+     * This will also create an instance of SurfaceNavGraph from the navigation-mesh of the
      * loaded LR-level stored in the env.
      */
     @Override
     public BeliefState setEnvironment(Environment e) {
-    	super.setEnvironment(e) ;
-        if (! (e instanceof LabRecruitsEnvironment)) throw new IllegalArgumentException("Expecting an instance of LabRecruitsEnvironment") ;
-        LabRecruitsEnvironment e_ = (LabRecruitsEnvironment) e ;
-        pathfinder = new SurfaceNavGraph(e_.worldNavigableMesh,0.5f) ; // area-size threshold 0.5 
+    	if (! (e instanceof LabRecruitsEnvironment)) throw new IllegalArgumentException("Expecting an instance of LabRecruitsEnvironment") ;
+        // this set the environment, and should also pull the nav-mesh from the env and 
+    	// convert it to SurfaceNavGraph:
+    	super.setEnvironment((LabRecruitsEnvironment) e, 0.5f) ;
+        // LabRecruitsEnvironment e_ = (LabRecruitsEnvironment) e ;
+        // pathfinder = new SurfaceNavGraph(e_.worldNavigableMesh,0.5f) ; // area-size threshold 0.5 
         return this;
     }
 

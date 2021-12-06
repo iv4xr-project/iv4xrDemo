@@ -93,7 +93,7 @@ public class MeshFromLabRecruitsTest {
     	var env = new LabRecruitsEnvironment(new LabRecruitsConfig(level));
     	var obs = env.observe("agent0") ;
     	System.out.println(">>> agent position:" + obs.position) ;
-    	var mesh = env.worldNavigableMesh ;
+    	var mesh = env.worldNavigableMesh() ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
     	var bottomleft = getBottomLeftCorner(mesh) ;
@@ -109,7 +109,7 @@ public class MeshFromLabRecruitsTest {
     	env = new LabRecruitsEnvironment(new LabRecruitsConfig(level));
     	obs = env.observe("agent0") ;
     	System.out.println(">>> agent position:" + obs.position) ;
-    	var meshHorzCorridor = env.worldNavigableMesh ;
+    	var meshHorzCorridor = env.worldNavigableMesh() ;
     	mesh = meshHorzCorridor ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
@@ -126,7 +126,7 @@ public class MeshFromLabRecruitsTest {
     	env = new LabRecruitsEnvironment(new LabRecruitsConfig(level));
     	obs = env.observe("agent0") ;
     	System.out.println(">>> agent position:" + obs.position) ;
-    	mesh = env.worldNavigableMesh ;
+    	mesh = env.worldNavigableMesh() ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
     	bottomleft = getBottomLeftCorner(mesh) ;
@@ -142,7 +142,7 @@ public class MeshFromLabRecruitsTest {
     	level = "longcorridorWithDoorBetween" ;
     	System.out.println(">>> level: " + level) ;
     	env = new LabRecruitsEnvironment(new LabRecruitsConfig(level));
-    	mesh = env.worldNavigableMesh ;
+    	mesh = env.worldNavigableMesh() ;
     	assertEquals(mesh.vertices.size(), meshHorzCorridor.vertices.size()) ;
     	assertEquals(mesh.faces.size(), meshHorzCorridor.faces.size()) ;
     	
@@ -172,7 +172,7 @@ public class MeshFromLabRecruitsTest {
     	var env = new LabRecruitsEnvironment(config);
     	var obs = env.observe("agent0") ;
     	System.out.println(">>> agent position:" + obs.position) ;
-    	var mesh = env.worldNavigableMesh ;
+    	var mesh = env.worldNavigableMesh() ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
     	var bottomleft = getBottomLeftCorner(mesh) ;
@@ -219,7 +219,7 @@ public class MeshFromLabRecruitsTest {
     	var config = new LabRecruitsConfig(level);
     	var env = new LabRecruitsEnvironment(config);
     	System.out.println(">>> Mesh information:") ;
-    	var mesh = env.worldNavigableMesh ;
+    	var mesh = env.worldNavigableMesh() ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
     	var bottomleft = getBottomLeftCorner(mesh) ;
@@ -345,7 +345,7 @@ public class MeshFromLabRecruitsTest {
     	var obs = env.observe("agent0") ;
     	System.out.println(">>> visibility range:" + config.view_distance) ;
     	System.out.println(">>> agent position:" + obs.position) ;
-    	var mesh = env.worldNavigableMesh ;
+    	var mesh = env.worldNavigableMesh() ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
     	var bottomleft = getBottomLeftCorner(mesh) ;
@@ -422,7 +422,7 @@ public class MeshFromLabRecruitsTest {
     	var env = new LabRecruitsEnvironment(config);
     	var obs = env.observe("agent0") ;
     	System.out.println(">>> agent position:" + obs.position) ;
-    	var mesh = env.worldNavigableMesh ;
+    	var mesh = env.worldNavigableMesh() ;
     	System.out.println(">>> #vertices: " + mesh.vertices.size()) ;
     	System.out.println(">>> #faces: " + mesh.faces.size()) ;
     	var bottomleft = getBottomLeftCorner(mesh) ;

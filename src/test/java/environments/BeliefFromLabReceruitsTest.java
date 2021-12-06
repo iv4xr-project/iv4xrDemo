@@ -134,9 +134,9 @@ public class BeliefFromLabReceruitsTest {
      	System.out.println("Door extent " + door.extent) ;
      	
     	// the door should be recognized as an obstacle
-    	assertTrue(belief.pathfinder.obstacles.size() == 1) ;
-     	assertTrue(belief.pathfinder.obstacles.get(0).isBlocking == true) ;
-     	assertTrue(belief.pathfinder.obstacles.get(0).obstacle == door) ;
+    	assertTrue(belief.pathfinder().obstacles.size() == 1) ;
+     	assertTrue(belief.pathfinder().obstacles.get(0).isBlocking == true) ;
+     	assertTrue(belief.pathfinder().obstacles.get(0).obstacle == door) ;
      	
     	// the button is reachable
     	var result = belief.findPathTo(button.position,true) ;
@@ -149,14 +149,14 @@ public class BeliefFromLabReceruitsTest {
      
      	// cheat; pretend all nodes are explored. Location (7,0,5) should
      	// not be reachable (blocked by the door):
-     	belief.pathfinder.perfect_memory_pathfinding = true ;
+     	belief.pathfinder().perfect_memory_pathfinding = true ;
      	result = belief.findPathTo(new Vec3(7f,0,5),true) ;
      	assertTrue(result == null) ;
      	//System.out.println(path) ;
      	
      	
      	// simulate that the door is open:
-     	belief.pathfinder.obstacles.get(0).isBlocking = false ;
+     	belief.pathfinder().obstacles.get(0).isBlocking = false ;
         	
      	// the door location should now be reachable:
      	result = belief.findPathTo(door.getFloorPosition(),true) ;
@@ -185,7 +185,7 @@ public class BeliefFromLabReceruitsTest {
     	agent.update();
     	
     	// override pathfinder to pretend all nodes are explored. 
-    	belief.pathfinder.perfect_memory_pathfinding = true ;
+    	belief.pathfinder().perfect_memory_pathfinding = true ;
 
     	// Location (5,0,5) should NOTE be reachable (blocked by the door):
     	var result = belief.findPathTo(new Vec3(5,0,5),true) ;
@@ -200,7 +200,7 @@ public class BeliefFromLabReceruitsTest {
     	
     	agent.update();
     	
-    	belief.pathfinder.perfect_memory_pathfinding = true ;
+    	belief.pathfinder().perfect_memory_pathfinding = true ;
     	result = belief.findPathTo(new Vec3(5,0,5),true) ;
      	assertTrue(result.snd.size()>0) ;
      	
@@ -220,7 +220,7 @@ public class BeliefFromLabReceruitsTest {
      	System.out.println("Door extent " + door.extent) ;
     	
         // override pathfinder to pretend all nodes are explored. 
-    	belief.pathfinder.perfect_memory_pathfinding = true ;
+    	belief.pathfinder().perfect_memory_pathfinding = true ;
 
     	// location (9,0,1) and the door should NOT be reachable:
     	result = belief.findPathTo(new Vec3(9,0,1),true) ;
@@ -230,7 +230,7 @@ public class BeliefFromLabReceruitsTest {
      	
      	
         // simulate that the door is open:
-     	belief.pathfinder.obstacles.get(0).isBlocking = false ;
+     	belief.pathfinder().obstacles.get(0).isBlocking = false ;
         	
      	// location (9,0,1) and the door location should now be reachable:
      	result = belief.findPathTo(new Vec3(9,0,1),true) ;

@@ -9,8 +9,8 @@ package environments;
 
 import logger.PrintColor;
 import nl.uu.cs.aplib.utils.Pair;
+import eu.iv4xr.framework.environments.W3DEnvironment;
 import eu.iv4xr.framework.exception.Iv4xrError;
-import eu.iv4xr.framework.mainConcepts.W3DEnvironment;
 import eu.iv4xr.framework.spatial.Vec3;
 import world.LabRecruitsRawNavMesh;
 import world.LabWorldModel;

@@ -81,7 +81,7 @@ public class UnstuckTactic_Test {
 	        
 	        environment.startSimulation(); // this will press the "Play" button in the game for you
 	        // we need all nav-nodes to be marked as seen:
-	        testAgent.getState().pathfinder.perfect_memory_pathfinding = true ;
+	        testAgent.getState().pathfinder().perfect_memory_pathfinding = true ;
 	        
 	        
 	        Tactic tactic = FIRSTof(
