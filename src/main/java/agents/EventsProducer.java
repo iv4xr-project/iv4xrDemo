@@ -2,6 +2,7 @@ package agents;
 
 import java.util.*;
 
+import eu.iv4xr.framework.mainConcepts.SyntheticEventsProducer;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.multiAgentSupport.ComNode;
@@ -16,7 +17,7 @@ import world.LabEntity;
  * instances will be placed in a list which can be inspected. They will also be
  * sent to a ComNode, if one is provided.
  */
-public class EventsProducer {
+public class EventsProducer extends SyntheticEventsProducer {
 	
     public static final String LabRecruits = "LabRecruits" ;
     
@@ -50,19 +51,6 @@ public class EventsProducer {
     public static Message levelCompletedEvent(){ return mkLabEvent(2,LevelCompletedEventName) ; }
 	public static boolean isLevelCompletedEvent(Message m) { return m.getMsgName().equals(LevelCompletedEventName) ; }
 
-
-	/**
-	 * Produced events will be placed here.
-	 */
-	public List<Message> currentEvents = new LinkedList<>() ;
-	
-	/**
-	 * If not null, produced events will also be sent to this communication node.
-	 * Agents registering to this node will then automatically receive the events.
-	 */
-	public ComNode communicationNode ;
-	
-	LabRecruitsTestAgent agent ;
 	
 	public EventsProducer() { }
 	
@@ -71,22 +59,27 @@ public class EventsProducer {
 	    return this ; 
 	}
 	
-	public EventsProducer attachTestAgent(LabRecruitsTestAgent agent) {
-		this.agent = agent ; return this ;
+	//public EventsProducer attachTestAgent(LabRecruitsTestAgent agent) {
+	//	this.agent = agent ; return this ;
+	//}
+	
+	LabRecruitsTestAgent agent() {
+		return (LabRecruitsTestAgent) agent ;
 	}
 	
+	@Override
 	public void generateCurrentEvents() {
 		currentEvents.clear() ;
-		if(agent.getState().worldmodel().healthLost>0) currentEvents.add(ouchEvent()) ;
-		if(agent.getState().worldmodel().scoreGained>0) currentEvents.add(getPointEvent()) ;
-		List<WorldEntity> z = agent.getState().changedEntities ;
-		Vec3 p = agent.getState().worldmodel.position ;
+		if(agent().getState().worldmodel().healthLost>0) currentEvents.add(ouchEvent()) ;
+		if(agent().getState().worldmodel().scoreGained>0) currentEvents.add(getPointEvent()) ;
+		List<WorldEntity> z = agent().getState().changedEntities ;
+		Vec3 p = agent().getState().worldmodel.position ;
 		
 		if(z!=null && z.stream().anyMatch(entity -> entity.type == LabEntity.DOOR && entity.getBooleanProperty("isOpen"))) {
 			currentEvents.add(openingADoorEvent()) ;
 		}	
 		
-		if(agent.getState().worldmodel.elements.values().stream().anyMatch(entity -> 
+		if(agent().getState().worldmodel.elements.values().stream().anyMatch(entity -> 
 		           entity.id.equals("levelEnd") 
 		           && Vec3.dist(entity.position,p) <= 1.5)) {
 			//System.out.println("@@@@@@ LEVEL END") ;

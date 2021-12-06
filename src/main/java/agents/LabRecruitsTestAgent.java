@@ -10,6 +10,7 @@ package agents;
 import environments.AgentCommand;
 import environments.LabRecruitsEnvironment;
 import environments.Request;
+import eu.iv4xr.framework.mainConcepts.SyntheticEventsProducer;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
@@ -47,6 +48,12 @@ public class LabRecruitsTestAgent extends TestAgent {
     
     public LabRecruitsTestAgent attachEnvironment(LabRecruitsEnvironment env) {
     	super.attachEnvironment(env) ;
+    	return this ;
+    }
+    
+    @Override
+    public LabRecruitsTestAgent attachSyntheticEventsProducer(SyntheticEventsProducer syntheticEventsProducer) {
+    	super.attachSyntheticEventsProducer(syntheticEventsProducer) ;
     	return this ;
     }
     

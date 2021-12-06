@@ -97,10 +97,11 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        // create a test agent
 	        var testAgent = new LabRecruitsTestAgent("agent1") // matches the ID in the CSV file
         		    . attachState(new BeliefState())
-        		    . attachEnvironment(environment);
+        		    . attachEnvironment(environment)
+        		    . attachSyntheticEventsProducer(new EventsProducer()) ;
 	        
-	        var eventProducer = new EventsProducer() ;
-	        eventProducer.attachTestAgent(testAgent) ;
+	        //var eventProducer = new EventsProducer() ;
+	        //eventProducer.attachTestAgent(testAgent) ;
 	        
 
 	        // define the testing-task:
@@ -146,7 +147,7 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();
-	        	eventProducer.generateCurrentEvents() ;
+	        	//eventProducer.generateCurrentEvents() ;
 	        	
 	        	// figure out which buttons/doors are new or changed state. Also signal if
 	        	// one door becomes open:
@@ -191,9 +192,8 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 		        }
 		        assertTrue(thereIs_one_door_that_becomes_open 
 		        		== 
-		        		eventProducer.currentEvents.stream().anyMatch(event -> EventsProducer.isOpeningADoorEvent(event))) ;
+		        		testAgent.getSyntheticEventsProducer().currentEvents.stream().anyMatch(event -> EventsProducer.isOpeningADoorEvent(event))) ;
 		        
-	        	
 	        	
 	        	if (i>1000) {
 	        		break ;
