@@ -70,27 +70,6 @@ public class LabWorldModel extends WorldModel {
 		return availableInteractionTypes_ ;
 	}
 
-    /**
-     * The agent can interact with e is e is a switch, and the agent is at e's location.
-     */
-    public boolean canInteract(String interactionType, WorldEntity e) {
-    	// since Lab Reruits so far only have one interaction type, we skip
-    	// checking interactionType.
-    	var target = (LabEntity) e ;
-
-    	// only switches/buttons can be interacted:
-    	if (target.type != LabEntity.SWITCH) return false ;
-    	    	
-		var target_onfloorPosition = target.getFloorPosition() ;
-        var agent_floorp = getFloorPosition() ;
-        // squared distance between the floor positions of the target and agent:
-        var distSq = Vec3.sub(target_onfloorPosition, agent_floorp).lengthSq() ;
-        
-        // LR's interaction distance threshold is set at 1.5, so its squared-value is 2.25, 
-        // using a more conservative distance:
-        return distSq <= 1.5 ;	
-	}
-
 	@Override
 	public boolean isBlocking(WorldEntity e) {
 		switch(e.type) {
@@ -99,27 +78,6 @@ public class LabWorldModel extends WorldModel {
 		   case LabEntity.GOAL : return true ;
 		   default : return false ;
 		}
-	}
-
-	public LabWorldModel interact(W3DEnvironment env, String interactionType, WorldEntity e) {
-		// For now, Lab Recruits only have one interaction type, so we are not going
-		// to check interactionType.
-		var target = (LabEntity) e ;
-		// using != should be ok in this case, as they should point to the same string as well:
-		if (target.type != LabEntity.SWITCH) return null ;
-		//return (LabWorldModel) super.interact(env, interactionType, e) ;
-		return (LabWorldModel) env.interact(agentId, e.id, interactionType) ;
-		
-	}
-
-	public LabWorldModel observe(W3DEnvironment env) {
-		//return (LabWorldModel) super.observe(env) ;
-		return (LabWorldModel) env.observe(agentId);
-	}
-
-	public LabWorldModel moveToward(W3DEnvironment env, Vec3 targetLocation) {
-		//return (LabWorldModel) super.moveToward(env, targetLocation) ;
-		return (LabWorldModel) env.moveToward(agentId, this.getFloorPosition(), targetLocation);
 	}
 
 }

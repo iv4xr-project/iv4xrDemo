@@ -87,13 +87,13 @@ public class UnstuckTactic_Test {
 	        Tactic tactic = FIRSTof(
 	        		TacticLib.tryToUnstuck(),
 	        		action("move").do1((BeliefState S) -> {
-	        			S.worldmodel.moveToward(environment, targetPosition) ;
+	        			S.env().moveToward(S.id, S.worldmodel().getFloorPosition(), targetPosition) ;
 	        			return S ;
 	        		}).lift()) ;
 
 	        var g = goal("to be at " + targetPosition)
 	        		.toSolve((BeliefState B) -> 
-	                      Vec3.dist(targetPosition,B.worldmodel.getFloorPosition()) <= 0.3)
+	                      Vec3.dist(targetPosition,B.worldmodel().getFloorPosition()) <= 0.3)
 	        		.withTactic(tactic)
 	        		.lift() ;
 

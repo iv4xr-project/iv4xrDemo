@@ -93,17 +93,17 @@ public class AgentSimpleMovementTest {
             }
         }
         System.out.println("*** Distance " + ta0.getState().id + " to dest:" 
-                           + Vec3.dist(ta0.getState().worldmodel.getFloorPosition(),p0)) ;
+                           + Vec3.dist(ta0.getState().worldmodel().getFloorPosition(),p0)) ;
         System.out.println("*** Distance " + ta1.getState().id + " to dest:" 
-                           + Vec3.dist(ta1.getState().worldmodel.getFloorPosition(),p1)) ;
+                           + Vec3.dist(ta1.getState().worldmodel().getFloorPosition(),p1)) ;
         System.out.println("*** Distance " + ta2.getState().id + " to dest:" 
-                           + Vec3.dist(ta2.getState().worldmodel.getFloorPosition(),p2)) ;
+                           + Vec3.dist(ta2.getState().worldmodel().getFloorPosition(),p2)) ;
         System.out.println("*** Distance " + ta3.getState().id + " to dest:" 
-                           + Vec3.dist(ta3.getState().worldmodel.getFloorPosition(),p3)) ;
-        assertTrue(Vec3.dist(ta0.getState().worldmodel.getFloorPosition(),p0) < 0.5) ;
-        assertTrue(Vec3.dist(ta1.getState().worldmodel.getFloorPosition(),p1) < 0.5) ;
-        assertTrue(Vec3.dist(ta2.getState().worldmodel.getFloorPosition(),p2) < 0.5) ;
-        assertTrue(Vec3.dist(ta3.getState().worldmodel.getFloorPosition(),p3) < 0.5) ;
+                           + Vec3.dist(ta3.getState().worldmodel().getFloorPosition(),p3)) ;
+        assertTrue(Vec3.dist(ta0.getState().worldmodel().getFloorPosition(),p0) < 0.5) ;
+        assertTrue(Vec3.dist(ta1.getState().worldmodel().getFloorPosition(),p1) < 0.5) ;
+        assertTrue(Vec3.dist(ta2.getState().worldmodel().getFloorPosition(),p2) < 0.5) ;
+        assertTrue(Vec3.dist(ta3.getState().worldmodel().getFloorPosition(),p3) < 0.5) ;
    
 	    if (!environment.close())
 	        throw new InterruptedException("Unity refuses to close the Simulation!");

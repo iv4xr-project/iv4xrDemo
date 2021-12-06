@@ -75,16 +75,16 @@ public class TraversingToPositionsTest {
         var g = SEQ(
         		    GoalLib.positionsVisited(p1),
         		    GoalLib.invariantChecked(agent,"p1 is reached", 
-        		    		(BeliefState s) -> Vec3.dist(s.worldmodel.getFloorPosition(),p1) < 0.5), 
+        		    		(BeliefState s) -> Vec3.dist(s.worldmodel().getFloorPosition(),p1) < 0.5), 
         		    GoalLib.positionsVisited(p2),
         		    GoalLib.invariantChecked(agent,"p2 is reached", 
-        		    		(BeliefState s) -> Vec3.dist(s.worldmodel.getFloorPosition(),p2) < 0.5), 
+        		    		(BeliefState s) -> Vec3.dist(s.worldmodel().getFloorPosition(),p2) < 0.5), 
         		    GoalLib.positionsVisited(p3),
         		    GoalLib.invariantChecked(agent,"p3 is reached", 
-        		    		(BeliefState s) -> Vec3.dist(s.worldmodel.getFloorPosition(),p3) < 0.5), 
+        		    		(BeliefState s) -> Vec3.dist(s.worldmodel().getFloorPosition(),p3) < 0.5), 
         		    GoalLib.positionsVisited(p4),
         		    GoalLib.invariantChecked(agent,"p4 is reached", 
-        		    		(BeliefState s) -> Vec3.dist(s.worldmodel.getFloorPosition(),p4) < 0.5) 
+        		    		(BeliefState s) -> Vec3.dist(s.worldmodel().getFloorPosition(),p4) < 0.5) 
         		);
         
         var dataCollector = new TestDataCollector() ;

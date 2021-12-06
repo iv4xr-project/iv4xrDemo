@@ -74,7 +74,7 @@ public class BeliefState extends W3DAgentState {
     /**
      * To keep track entities the agent has knowledge about (not necessarily up to date knowledge).
      */
-    public LabWorldModel worldmodel  = new LabWorldModel() ;
+    //public LabWorldModel worldmodel  = new LabWorldModel() ;
 
 
     public Boolean receivedPing = false;//store whether the agent has an unhandled ping
@@ -101,7 +101,9 @@ public class BeliefState extends W3DAgentState {
 
     List<Vec3> recentPositions = new LinkedList<>() ;
 
-    public BeliefState() { }
+    public BeliefState() { 
+    	worldmodel  = new LabWorldModel() ;
+    }
 
     public Collection<WorldEntity> knownEntities() { return worldmodel.elements.values(); }
 
@@ -113,6 +115,10 @@ public class BeliefState extends W3DAgentState {
      */
     public SurfaceNavGraph pathfinder() {
     	return this.worldNavigation() ;
+    }
+    
+    public LabWorldModel worldmodel() { 
+    	return (LabWorldModel) worldmodel  ;
     }
     
     // lexicographically comparing e1 and e2 based on its age and distance:
@@ -290,7 +296,7 @@ public class BeliefState extends W3DAgentState {
     	}
     	// else we invoke the pathfinder to calculate a path:
     	// be careful with the threshold 0.05..
-    	var abstractpath = pathfinder().findPath(worldmodel.getFloorPosition(),q,BeliefState.DIST_TO_FACE_THRESHOLD) ;
+    	var abstractpath = pathfinder().findPath(worldmodel().getFloorPosition(),q,BeliefState.DIST_TO_FACE_THRESHOLD) ;
     	System.out.println("findPathTo " + abstractpath);
     	if (abstractpath == null) return null ;
     	List<Vec3> path = abstractpath.stream().map(v -> pathfinder().vertices.get(v)).collect(Collectors.toList()) ;
@@ -387,7 +393,7 @@ public class BeliefState extends W3DAgentState {
      */
     private void updateCurrentWayPoint() {
     	if (memorizedGoalLocation == null) return ;
-    	var delta = Vec3.dist(worldmodel.getFloorPosition(), memorizedPath.get(currentWayPoint_)) ;
+    	var delta = Vec3.dist(worldmodel().getFloorPosition(), memorizedPath.get(currentWayPoint_)) ;
     	//System.out.println(">>> path" + memorizedPath) ;
     	//System.out.println(">>> currentwaypoint " + currentWayPoint + ", delta: " + delta) ;
 
@@ -430,7 +436,8 @@ public class BeliefState extends W3DAgentState {
      */
     @Override
     public void updateState(String agentId) {
-        super.updateState(agentId);
+    	// note: intentionally NOT calling super.updateState()
+        // super.updateState(agentId);
         var observation = this.env().observe(id) ;       
         mergeNewObservationIntoWOM(observation) ;
         // updating recent positions tracking (to detect stuck) here, rater than in mergeNewObservationIntoWOM,
@@ -477,7 +484,7 @@ public class BeliefState extends W3DAgentState {
     	int NumOfvertices = pathfinder().vertices.size() ;
     	if (worldmodel.position != null) {
     		for (int v=0; v<NumOfvertices; v++) {
-        		if (Vec3.dist(worldmodel.getFloorPosition(), pathfinder().vertices.get(v)) <= AUTOVIEW_HACK_DIST) {
+        		if (Vec3.dist(worldmodel().getFloorPosition(), pathfinder().vertices.get(v)) <= AUTOVIEW_HACK_DIST) {
         			 pathfinder().seenVertices.set(v,true) ;
         		}
         	}
@@ -547,9 +554,20 @@ public class BeliefState extends W3DAgentState {
      * @return whether the object is within reach of the agent.
      */
     public boolean canInteract(String id) {
-    	var e = worldmodel.getElement(id) ;
+    	var e = worldmodel().getElement(id) ;
     	if (e==null) return false ;
-   	    return worldmodel.canInteract(LabWorldModel.INTERACT, e) ;
+    	
+    	// only switches/buttons can be interacted:
+    	if (! e.type.equals(LabEntity.SWITCH)) return false ;
+    	    	
+		var target_onfloorPosition = e.getFloorPosition() ;
+        var agent_floorp = worldmodel().getFloorPosition() ;
+        // squared distance between the floor positions of the target and agent:
+        var distSq = Vec3.sub(target_onfloorPosition, agent_floorp).lengthSq() ;
+        
+        // LR's interaction distance threshold is set at 1.5, so its squared-value is 2.25, 
+        // using a more conservative distance:
+        return distSq <= 1.5 ;	
     }
 
     /**
@@ -568,7 +586,7 @@ public class BeliefState extends W3DAgentState {
     public boolean withinViewRange(Vec3 q){
     	float vd = getViewDistance() ;
     	return worldmodel.position != null
-    			&& Vec3.sub(worldmodel.getFloorPosition(),q).lengthSq() < vd*vd;
+    			&& Vec3.sub(worldmodel().getFloorPosition(),q).lengthSq() < vd*vd;
     }
 
     /**

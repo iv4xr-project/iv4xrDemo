@@ -107,7 +107,7 @@ public class VisibilityTest {
        // in the next room
        assertTrue(goal.getStatus().success()) ;
        
-       wom = agent.getState().worldmodel ; 
+       wom = agent.getState().worldmodel() ; 
        assertNotNull(wom.getElement("button0")) ;
        assertNotNull(wom.getElement("door0")) ;
        // checking if items in the next room are by now seen:

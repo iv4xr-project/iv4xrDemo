@@ -52,10 +52,10 @@ public class GoalLib {
         Goal goal = new Goal("This position is in-range: " + goalPosition.toString())
         		    . toSolve((BeliefState belief) -> {
                         //check if the agent is close to the goal position
-        		    	System.out.println("positionInCloseRange" +", "+ goalPosition +", "+ Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()));
+        		    	System.out.println("positionInCloseRange" +", "+ goalPosition +", "+ Vec3.dist(goalPosition,belief.worldmodel().getFloorPosition()));
         		    	
         		    	
-        		    	return Vec3.dist(goalPosition,belief.worldmodel.getFloorPosition()) < 0.4 ;
+        		    	return Vec3.dist(goalPosition,belief.worldmodel().getFloorPosition()) < 0.4 ;
                     });
         //define the goal structure
         Goal g = goal.withTactic(
@@ -104,9 +104,9 @@ public class GoalLib {
         Goal goal = new Goal("This entity is closeby: " + entityId)
         		    . toSolve((BeliefState belief) -> {
                         //check if the agent is close to the goal position
-        		    	var e = belief.worldmodel.getElement(entityId) ;
+        		    	var e = belief.worldmodel().getElement(entityId) ;
         		    	if (e == null) return false ;
-                        return Vec3.dist(belief.worldmodel.getFloorPosition(),e.getFloorPosition()) <= 1 ;
+                        return Vec3.dist(belief.worldmodel().getFloorPosition(),e.getFloorPosition()) <= 1 ;
                     });
         //define the goal structure
         return goal.withTactic(
@@ -140,7 +140,7 @@ public class GoalLib {
         		  // bug .. .should be distsq:
         		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
         		  // System.out.print("entityinteracted: navigate to" + e);
-        		  return e!=null && Vec3.sub(belief.worldmodel.getFloorPosition(), e.getFloorPosition()).lengthSq() <= 1 ;
+        		  return e!=null && Vec3.sub(belief.worldmodel().getFloorPosition(), e.getFloorPosition()).lengthSq() <= 1 ;
         	    })
         	  . withTactic(
                     FIRSTof( //the tactic used to solve the goal

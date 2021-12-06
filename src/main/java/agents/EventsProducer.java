@@ -77,8 +77,8 @@ public class EventsProducer {
 	
 	public void generateCurrentEvents() {
 		currentEvents.clear() ;
-		if(agent.getState().worldmodel.healthLost>0) currentEvents.add(ouchEvent()) ;
-		if(agent.getState().worldmodel.scoreGained>0) currentEvents.add(getPointEvent()) ;
+		if(agent.getState().worldmodel().healthLost>0) currentEvents.add(ouchEvent()) ;
+		if(agent.getState().worldmodel().scoreGained>0) currentEvents.add(getPointEvent()) ;
 		List<WorldEntity> z = agent.getState().changedEntities ;
 		Vec3 p = agent.getState().worldmodel.position ;
 		

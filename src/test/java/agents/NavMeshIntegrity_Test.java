@@ -124,7 +124,7 @@ public class NavMeshIntegrity_Test {
 	        assertTrue(testAgent.success());
 	        BeliefState belief = testAgent.getState() ;
 	        LabEntity treasure = (LabEntity) belief.worldmodel.getElement("treasure") ;
-	        assertTrue(Vec3.dist(belief.worldmodel.getFloorPosition(), treasure.getFloorPosition()) <= 1.2)  ;
+	        assertTrue(Vec3.dist(belief.worldmodel().getFloorPosition(), treasure.getFloorPosition()) <= 1.2)  ;
 	        // close
 	        testAgent.printStatus();
         }

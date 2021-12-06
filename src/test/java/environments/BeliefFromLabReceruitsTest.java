@@ -121,7 +121,7 @@ public class BeliefFromLabReceruitsTest {
     	System.out.println(">>> level: " + level) ;
     	var agent = deployAgent("agent0",level) ;
     	var belief = agent.getState() ;
-    	var wom = agent.getState().worldmodel ;
+    	var wom = agent.getState().worldmodel() ;
     	
     	agent.update();
     	
@@ -180,7 +180,7 @@ public class BeliefFromLabReceruitsTest {
     	System.out.println(">>> level: " + level) ;
     	var agent = deployAgent("agent0",level) ;
     	var belief = agent.getState() ;
-    	var wom = agent.getState().worldmodel ;
+    	var wom = agent.getState().worldmodel() ;
     	
     	agent.update();
     	
@@ -196,7 +196,7 @@ public class BeliefFromLabReceruitsTest {
     	System.out.println(">>> level: " + level) ;
     	agent = deployAgent("agent0",level) ;
     	belief = agent.getState() ;
-    	wom = agent.getState().worldmodel ;
+    	wom = agent.getState().worldmodel() ;
     	
     	agent.update();
     	
@@ -209,7 +209,7 @@ public class BeliefFromLabReceruitsTest {
     	System.out.println(">>> level: " + level) ;
     	agent = deployAgent("agent0",level) ;
     	belief = agent.getState() ;
-    	wom = agent.getState().worldmodel ;
+    	wom = agent.getState().worldmodel() ;
     	
     	agent.update();
     	

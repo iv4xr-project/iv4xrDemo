@@ -76,7 +76,7 @@ public class FireHazardTest {
         while (g.getStatus().inProgress()) {
             agent.update();
             System.out.println("*** " + i + ": " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
-            wom = agent.getState().worldmodel ;
+            wom = agent.getState().worldmodel() ;
             if (i==0) {
             	// check first observation:
             	System.out.println("** Checking initial observation...") ;

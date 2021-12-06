@@ -119,7 +119,7 @@ public class FireHazardLevel_1_Test {
 
             agent.update();
             if (tick==0) {
-            	health0 = agent.getState().worldmodel.health ;
+            	health0 = agent.getState().worldmodel().health ;
             }
              
             if (tick>2000) {
@@ -133,7 +133,7 @@ public class FireHazardLevel_1_Test {
         // check that the testing task is completed and that the agent still have 'enough'
         // health
         assertTrue(testingTask.getStatus().success()) ;
-        assertTrue(agent.getState().worldmodel.health >= health0/2) ;
+        assertTrue(agent.getState().worldmodel().health >= health0/2) ;
         
         if (!env.close())
             throw new InterruptedException("Unity refuses to close the Simulation!");

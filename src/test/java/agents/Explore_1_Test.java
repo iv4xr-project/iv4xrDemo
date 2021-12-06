@@ -97,7 +97,7 @@ public class Explore_1_Test {
         g.printGoalStructureStatus();
         
         assertTrue(g.getStatus().success()) ;
-        var agent_p  = agent.getState().worldmodel.getFloorPosition() ;
+        var agent_p  = agent.getState().worldmodel().getFloorPosition() ;
         var button = ((LabEntity) agent.getState().worldmodel.getElement("button1")) ;
         var button_p = button.getFloorPosition() ;
         assertTrue(Vec3.dist(agent_p,button_p) <= 1f) ;

@@ -217,7 +217,7 @@ public class TacticLib {
 
 				. on((BeliefState belief) -> {
 
-					LabEntity e = belief.worldmodel.getElement(id) ;
+					LabEntity e = belief.worldmodel().getElement(id) ;
 					
     			    if (e==null) return null ;
 
@@ -380,7 +380,7 @@ public class TacticLib {
                 	//System.out.println(">>> memorized dest: " + belief.getGoalLocation()) ;
                 	//System.out.println(">>> memorized path: " + belief.getMemorizedPath()) ;
                 	if (belief.getMemorizedPath() != null) {
-                		belief.worldmodel.moveToward(belief.env(),belief.getCurrentWayPoint());
+                		belief.env().moveToward(belief.id, belief.worldmodel().getFloorPosition(),belief.getCurrentWayPoint());
                 		return belief ;
                 	}
                 	else return null ;
@@ -495,7 +495,7 @@ public class TacticLib {
     	    			// unstuckPosition.y += belief.worldmodel.extent.y ;
     	    			System.out.println("#### forcing a move past the corner...to " + unstuckPosition) ;
     	    			//belief.mentalMap.insertNewWayPoint(unstuckPosition);
-    	    			belief.worldmodel.moveToward(belief.env(),unstuckPosition) ;
+    	    			belief.env().moveToward(belief.id, belief.worldmodel().getFloorPosition() ,unstuckPosition) ;
     	    		}
     	    		else {
     	    			// else .... for now do nothing :|
@@ -525,21 +525,21 @@ public class TacticLib {
      * current position.
      */
     public static Vec3 unstuck(BeliefState belief) {
-    	var agent_current_direction = Vec3.sub(belief.getCurrentWayPoint(), belief.worldmodel.getFloorPosition()) ;
+    	var agent_current_direction = Vec3.sub(belief.getCurrentWayPoint(), belief.worldmodel().getFloorPosition()) ;
 
     	var x_orientation = Math.signum(agent_current_direction.x) ;  // 1 if the agent is facing eastly, and -1 if westly
     	var z_orientation = Math.signum(agent_current_direction.z) ;  // 1 if the agent is facing northly, and -1 if southly
     	// System.out.println("#### calling unstuck()") ;
     	// try E/W unstuck first:
     	if (x_orientation != 0) {
-    		var p = belief.worldmodel.getFloorPosition() ;
+    		var p = belief.worldmodel().getFloorPosition() ;
     		p.x += TacticLib.UNSTUCK_DELTA * x_orientation ;
     		if (isPointInNavigableSurface(belief,p)) return p ;
         	//if (mentalMap.pathFinder.graph.vecToNode(p) != null) return p ;
     	}
     	// try N/S unstuck:
     	if (z_orientation != 0) {
-    		var p = belief.worldmodel.getFloorPosition() ;
+    		var p = belief.worldmodel().getFloorPosition() ;
     		p.z += TacticLib.UNSTUCK_DELTA * z_orientation ;
         	if (isPointInNavigableSurface(belief,p)) return p ;
         	//if (mentalMap.pathFinder.graph.vecToNode(p) != null) return p ;
@@ -570,7 +570,10 @@ public class TacticLib {
     public static Tactic interact(String objectID) {
         Tactic interact = action("Interact")
                . do2((BeliefState belief) -> (WorldEntity e) -> {
-                	  var obs = belief.worldmodel.interact(belief.env(), LabWorldModel.INTERACT, e)  ;
+            	   
+            	      var obs =  belief.env().interact(belief.id, e.id, LabWorldModel.INTERACT) ;
+            	   
+                	  // var obs = belief.worldmodel().interact(belief.env(), LabWorldModel.INTERACT, e)  ;
                 	  // force update to worldmodel:
                 	  //System.out.println("## interacted with " + objectID) ;
                 	  
@@ -596,7 +599,7 @@ public class TacticLib {
                 	if (e==null) return null ;
                 	// System.out.println(">>>>    dist: " + Vec3.dist(belief.worldmodel.getFloorPosition(),e.getFloorPosition())) ;
 
-                	if (belief.worldmodel.canInteract(LabWorldModel.INTERACT, e)) {
+                	if (belief.canInteract(e.id)) {
                 		return e ;
                 	}
                 	//System.out.println(">>> cannot interact with " + e.id) ;
@@ -649,7 +652,7 @@ public class TacticLib {
     public static Tactic shareObservation(String id){
         return action("Share map")
                 . do1((BeliefState belief)-> {
-                	var obs = belief.worldmodel.observe(belief.env());
+                	var obs = belief.env().observe(belief.id);
                 	// force wom update:
                 	belief.mergeNewObservationIntoWOM(obs) ;
                     Acknowledgement a = belief.messenger().send(id,0, Message.MsgCastType.BROADCAST, "","ObservationSharing",obs) ;
@@ -749,7 +752,7 @@ public class TacticLib {
     					 // in this state we must decide a new exploration target:
 
                          //get the location of the closest unexplored node
-        				 var position = belief.worldmodel.getFloorPosition() ;
+        				 var position = belief.worldmodel().getFloorPosition() ;
         				 //System.out.println(">>> #explored nodes:" + belief.pathfinder.numberOfSeen()) ;
         				 var path = belief.pathfinder().explore(position,BeliefState.DIST_TO_FACE_THRESHOLD) ;
 
@@ -775,7 +778,7 @@ public class TacticLib {
     					 Vec3 exploration_target = (Vec3) memo.memorized.get(0) ;
                          // note that exploration_target won't be null because we are in the state
                          // in-Transit
-                         Vec3 agentLocation = belief.worldmodel.getFloorPosition() ;
+                         Vec3 agentLocation = belief.worldmodel().getFloorPosition() ;
                          Vec3 currentDestination = belief.getGoalLocation() ;
                          var distToExplorationTarget = Vec3.dist(agentLocation,exploration_target) ;
                          if (distToExplorationTarget <= EXPLORATION_TARGET_DIST_THRESHOLD // current exploration target is reached
