@@ -216,8 +216,8 @@ public class SimpleUnityTest {
         int i = 0 ;
         while (goal.getStatus().inProgress()) {
             agent.update();
-            System.out.println("*** " + i + ": " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
-            System.out.println("Can interact: " + agent.getState().canInteract("button0"));
+            System.out.println("*** " + i + ": " + agent.state().id + " @" + agent.state().worldmodel.position) ;
+            System.out.println("Can interact: " + agent.state().canInteract("button0"));
             if (i>90) {
             	   break ;
             }

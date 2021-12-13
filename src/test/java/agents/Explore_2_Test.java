@@ -79,9 +79,9 @@ public class Explore_2_Test {
         int i = 0 ;
         while (g.getStatus().inProgress()) {
             agent.update();
-            System.out.println("*** " + i + ", " + agent.getState().id 
-            		           + " @" + agent.getState().worldmodel.position
-            		           + " V=" + agent.getState().derivedVelocity()) ;
+            System.out.println("*** " + i + ", " + agent.state().id 
+            		           + " @" + agent.state().worldmodel.position
+            		           + " V=" + agent.state().derivedVelocity()) ;
             Thread.sleep(30);
             i++ ;
             if (i>80) {
@@ -92,8 +92,8 @@ public class Explore_2_Test {
         g.printGoalStructureStatus();
         
         assertTrue(g.getStatus().success()) ;
-        var agent_p  = agent.getState().worldmodel().getFloorPosition() ; 
-        var button = ((LabEntity) agent.getState().worldmodel.getElement("button1")) ;
+        var agent_p  = agent.state().worldmodel().getFloorPosition() ; 
+        var button = ((LabEntity) agent.state().worldmodel.getElement("button1")) ;
         var button_p = button.getFloorPosition() ;
         System.out.println(">>> dist: " + Vec3.dist(agent_p,button_p)) ;
         assertTrue(Vec3.dist(agent_p,button_p) <= 1f) ;

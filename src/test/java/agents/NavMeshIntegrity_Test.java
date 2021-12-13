@@ -104,14 +104,14 @@ public class NavMeshIntegrity_Test {
 	        // do one update and explicitly check reachability between these two points (which was
 	        // unreachable before fixed):
 	        testAgent.update() ;
-	        testAgent.getState().pathfinder().perfect_memory_pathfinding = true ;
-	        assertTrue(testAgent.getState().pathfinder().findPath(new Vec3(3,0,70), new Vec3(3,0,77.5f), 0.1f) != null) ;
-            testAgent.getState().pathfinder().perfect_memory_pathfinding = false ;
+	        testAgent.state().pathfinder().perfect_memory_pathfinding = true ;
+	        assertTrue(testAgent.state().pathfinder().findPath(new Vec3(3,0,70), new Vec3(3,0,77.5f), 0.1f) != null) ;
+            testAgent.state().pathfinder().perfect_memory_pathfinding = false ;
 
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (testingTask.getStatus().inProgress()) {
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+	        	System.out.println("*** " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();
@@ -122,7 +122,7 @@ public class NavMeshIntegrity_Test {
 	        testingTask.printGoalStructureStatus();
 
 	        assertTrue(testAgent.success());
-	        BeliefState belief = testAgent.getState() ;
+	        BeliefState belief = testAgent.state() ;
 	        LabEntity treasure = (LabEntity) belief.worldmodel.getElement("treasure") ;
 	        assertTrue(Vec3.dist(belief.worldmodel().getFloorPosition(), treasure.getFloorPosition()) <= 1.2)  ;
 	        // close

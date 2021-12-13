@@ -94,7 +94,7 @@ public class TraversingToPositionsTest {
         while (g.getStatus().inProgress()) {
             agent.update();
             i++ ;
-            System.out.println("*** " + i + ", " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+            System.out.println("*** " + i + ", " + agent.state().id + " @" + agent.state().worldmodel.position) ;
             Thread.sleep(30);
             if (i>=150) break ;
         }

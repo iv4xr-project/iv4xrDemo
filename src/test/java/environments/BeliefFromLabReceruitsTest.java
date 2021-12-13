@@ -76,12 +76,12 @@ public class BeliefFromLabReceruitsTest {
     	System.out.println(">>> level: " + level) ;
     	var agent = deployAgent("agent0",level) ;
     	
-    	assertTrue(agent.getState().worldmodel != null) ;
-    	assertTrue(agent.getState().worldmodel.agentId.equals("agent0")) ;
+    	assertTrue(agent.state().worldmodel != null) ;
+    	assertTrue(agent.state().worldmodel.agentId.equals("agent0")) ;
     	
     	agent.update();
-    	assertTrue(agent.getState().worldmodel.getElement("button0") != null) ;
-    	assertTrue(agent.getState().isOn("button0") == false) ;
+    	assertTrue(agent.state().worldmodel.getElement("button0") != null) ;
+    	assertTrue(agent.state().isOn("button0") == false) ;
     }
     
     @Test
@@ -92,13 +92,13 @@ public class BeliefFromLabReceruitsTest {
     	System.out.println(">>> level: " + level) ;
     	var agent = deployAgent("agent0",level) ;
     	
-    	assertTrue(agent.getState().worldmodel != null) ;
-    	assertTrue(agent.getState().worldmodel.agentId.equals("agent0")) ;
+    	assertTrue(agent.state().worldmodel != null) ;
+    	assertTrue(agent.state().worldmodel.agentId.equals("agent0")) ;
     	
     	agent.update();
     	
-    	var belief = agent.getState() ;
-    	var wom = agent.getState().worldmodel ;
+    	var belief = agent.state() ;
+    	var wom = agent.state().worldmodel ;
     	
     	assertTrue(wom.getElement("button0") != null) ;
     	assertTrue(belief.isOn("button0") == false) ;
@@ -120,8 +120,8 @@ public class BeliefFromLabReceruitsTest {
     	var level = "squareWithDoorBetween" ;
     	System.out.println(">>> level: " + level) ;
     	var agent = deployAgent("agent0",level) ;
-    	var belief = agent.getState() ;
-    	var wom = agent.getState().worldmodel() ;
+    	var belief = agent.state() ;
+    	var wom = agent.state().worldmodel() ;
     	
     	agent.update();
     	
@@ -179,8 +179,8 @@ public class BeliefFromLabReceruitsTest {
     	var level = "squareWithOneButtonAndChairsBetween" ;
     	System.out.println(">>> level: " + level) ;
     	var agent = deployAgent("agent0",level) ;
-    	var belief = agent.getState() ;
-    	var wom = agent.getState().worldmodel() ;
+    	var belief = agent.state() ;
+    	var wom = agent.state().worldmodel() ;
     	
     	agent.update();
     	
@@ -195,8 +195,8 @@ public class BeliefFromLabReceruitsTest {
      	level = "squareWithOneButtonAndChairsBetween_andHole" ;
     	System.out.println(">>> level: " + level) ;
     	agent = deployAgent("agent0",level) ;
-    	belief = agent.getState() ;
-    	wom = agent.getState().worldmodel() ;
+    	belief = agent.state() ;
+    	wom = agent.state().worldmodel() ;
     	
     	agent.update();
     	
@@ -208,8 +208,8 @@ public class BeliefFromLabReceruitsTest {
      	level = "longcorridorWithDoorBetween" ;
     	System.out.println(">>> level: " + level) ;
     	agent = deployAgent("agent0",level) ;
-    	belief = agent.getState() ;
-    	wom = agent.getState().worldmodel() ;
+    	belief = agent.state() ;
+    	wom = agent.state().worldmodel() ;
     	
     	agent.update();
     	

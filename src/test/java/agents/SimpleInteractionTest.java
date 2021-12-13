@@ -97,10 +97,10 @@ public class SimpleInteractionTest {
         int i = 0 ;
         while (goal.getStatus().inProgress()) {
         	System.out.println("*** " + i + "/"
-                    + testAgent.getState().worldmodel.timestamp + ", "
-                    + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
-        	var d1 = testAgent.getState().worldmodel.getElement("door1") ;
-        	var b1 = testAgent.getState().worldmodel.getElement("button1") ;
+                    + testAgent.state().worldmodel.timestamp + ", "
+                    + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
+        	var d1 = testAgent.state().worldmodel.getElement("door1") ;
+        	var b1 = testAgent.state().worldmodel.getElement("button1") ;
         	if (d1 != null)
         	    System.out.println("*** door1 open: " + d1.getBooleanProperty("isOpen")) ;
         	if (b1 != null)

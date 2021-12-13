@@ -125,7 +125,7 @@ public class ColorSwitchLevelTest {
             System.out.print("** " + tick + ":");
             if (!butty.success()) {
             	butty.update();
-            	System.out.print(" agent Butty @" + butty.getState().worldmodel.position) ;
+            	System.out.print(" agent Butty @" + butty.state().worldmodel.position) ;
                 if (butty.success()) {
                 	System.out.print(" Butty DONE.") ;
                 	butty.printStatus() ;
@@ -134,7 +134,7 @@ public class ColorSwitchLevelTest {
 
             if (!screeny.success()) {
             	screeny.update();
-            	System.out.print(" agent Screeny sees " + screeny.getState().worldmodel.getElement("SCS1").getProperty("color")) ;
+            	System.out.print(" agent Screeny sees " + screeny.state().worldmodel.getElement("SCS1").getProperty("color")) ;
             	if (screeny.success()) {
             		System.out.print(" Screeny DONE.") ;
             		screeny.printStatus() ;

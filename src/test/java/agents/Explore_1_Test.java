@@ -85,8 +85,8 @@ public class Explore_1_Test {
         while (g.getStatus().inProgress()) {
             agent.update();
             System.out.println("*** " + i + "/" 
-               + agent.getState().worldmodel.timestamp + ", "
-               + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+               + agent.state().worldmodel.timestamp + ", "
+               + agent.state().id + " @" + agent.state().worldmodel.position) ;
             Thread.sleep(30);
             i++ ;
             if (i>120) {
@@ -97,8 +97,8 @@ public class Explore_1_Test {
         g.printGoalStructureStatus();
         
         assertTrue(g.getStatus().success()) ;
-        var agent_p  = agent.getState().worldmodel().getFloorPosition() ;
-        var button = ((LabEntity) agent.getState().worldmodel.getElement("button1")) ;
+        var agent_p  = agent.state().worldmodel().getFloorPosition() ;
+        var button = ((LabEntity) agent.state().worldmodel.getElement("button1")) ;
         var button_p = button.getFloorPosition() ;
         assertTrue(Vec3.dist(agent_p,button_p) <= 1f) ;
         assertTrue(button.getBooleanProperty("isOn")) ;

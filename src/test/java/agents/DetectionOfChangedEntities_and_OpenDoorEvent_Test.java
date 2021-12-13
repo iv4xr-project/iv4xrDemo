@@ -70,7 +70,22 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
     }
     
     
-    
+    // just defining a testing task
+    GoalStructure testingTaskSamira8doors() {
+    	return SEQ(
+	            GoalLib.entityInteracted("button3"), GoalLib.entityStateRefreshed("door1"),
+	            GoalLib.entityInteracted("button7"), GoalLib.entityStateRefreshed("door4"),
+	            GoalLib.entityInteracted("button9"), GoalLib.entityStateRefreshed("door5"),
+	            GoalLib.entityInteracted("button16"), GoalLib.entityStateRefreshed("door7"),
+	            GoalLib.entityInteracted("button17"), GoalLib.entityStateRefreshed("door9"),
+	            GoalLib.entityInteracted("button24"), GoalLib.entityStateRefreshed("door11"),
+	            GoalLib.entityInteracted("button27"), GoalLib.entityStateRefreshed("door14"),
+	            GoalLib.entityInteracted("button32"), GoalLib.entityStateRefreshed("door16"),
+	            GoalLib.entityInCloseRange("treasure"),
+	            GoalLib.entityStateRefreshed("button27"),
+	            GoalLib.entityInCloseRange("treasure")
+	        );
+    }
 
     /**
      * This test that the detection of changed-entities (entities that change state), in particular
@@ -82,7 +97,7 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
      * door-open event.
      */
     @Test
-    public void changedEntitiesDetection_and_OpenDoorEvent_Test() throws InterruptedException {
+    public void changedEntitiesDetection_and_EventsGeneration_Test1() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("samira_8room") ;
@@ -100,22 +115,9 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
         		    . attachEnvironment(environment)
         		    . attachSyntheticEventsProducer(new EventsProducer()) ;
 	        
-	        //var eventProducer = new EventsProducer() ;
-	        //eventProducer.attachTestAgent(testAgent) ;
-	        
 
 	        // define the testing-task:
-	        var testingTask = SEQ(
-	            GoalLib.entityInteracted("button3"), GoalLib.entityStateRefreshed("door1"),
-	            GoalLib.entityInteracted("button7"), GoalLib.entityStateRefreshed("door4"),
-	            GoalLib.entityInteracted("button9"), GoalLib.entityStateRefreshed("door5"),
-	            GoalLib.entityInteracted("button16"), GoalLib.entityStateRefreshed("door7"),
-	            GoalLib.entityInteracted("button17"), GoalLib.entityStateRefreshed("door9"),
-	            GoalLib.entityInteracted("button24"), GoalLib.entityStateRefreshed("door11"),
-	            GoalLib.entityInteracted("button27"), GoalLib.entityStateRefreshed("door14"),
-	            GoalLib.entityInteracted("button32"), GoalLib.entityStateRefreshed("door16"),
-	            GoalLib.entityInCloseRange("treasure") 
-	        );
+	        var testingTask = testingTaskSamira8doors() ;
 	        
 	        testAgent.setGoal(testingTask) ;
 
@@ -126,15 +128,15 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        // do one update and explicitly check reachability between these two points (which was
 	        // unreachable before fixed):
 	        testAgent.update() ;
-	        var buttonsAndDoorsState0 = getButtonsDoorsState(testAgent.getState()) ;
+	        var buttonsAndDoorsState0 = getButtonsDoorsState(testAgent.state()) ;
 	        System.out.println(">>> #buttons-and-doors seen intially: " + buttonsAndDoorsState0.size()) ;
-	        System.out.println(">>> #changed entities after first update: " + testAgent.getState().changedEntities.size()) ;
+	        System.out.println(">>> #changed entities after first update: " + testAgent.state().changedEntities.size()) ;
 	        
 	        // check:
 	        for(var eid : buttonsAndDoorsState0.keySet()) {
-	        	assertTrue(testAgent.getState().changedEntities.stream().anyMatch(d -> d.id.equals(eid))) ;
+	        	assertTrue(testAgent.state().changedEntities.stream().anyMatch(d -> d.id.equals(eid))) ;
 	        }
-	        for(var e : testAgent.getState().changedEntities) {
+	        for(var e : testAgent.state().changedEntities) {
 	        	assertTrue(buttonsAndDoorsState0.keySet().contains(e.id)) ;
 	        }
 	        
@@ -142,8 +144,8 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        int i = 1 ;
 	        // keep updating the agent
 	        while (testingTask.getStatus().inProgress()) {
-	        	buttonsAndDoorsState0 = getButtonsDoorsState(testAgent.getState()) ;
-	        	System.out.println("*** update nr " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+	        	buttonsAndDoorsState0 = getButtonsDoorsState(testAgent.state()) ;
+	        	System.out.println("*** update nr " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();
@@ -152,14 +154,14 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        	// figure out which buttons/doors are new or changed state. Also signal if
 	        	// one door becomes open:
 	        	
-	        	var buttonsAndDoorsState1 = getButtonsDoorsState(testAgent.getState()) ;
+	        	var buttonsAndDoorsState1 = getButtonsDoorsState(testAgent.state()) ;
 	        	List<String> changed = new LinkedList<>() ;
 	        	boolean thereIs_one_door_that_becomes_open = false ;
 	        	for(var e : buttonsAndDoorsState1.entrySet()) {
 	        		String e_id = e.getKey() ;
 	        		if(!buttonsAndDoorsState0.keySet().contains(e_id)) {
 	        			changed.add(e_id) ;
-	        			var f = testAgent.getState().worldmodel.getElement(e_id) ;
+	        			var f = testAgent.state().worldmodel.getElement(e_id) ;
 	        			if(f.type.equals(LabEntity.DOOR) && e.getValue().equals(true)) {
 	        				thereIs_one_door_that_becomes_open = true ;
 	        			}
@@ -169,7 +171,7 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        			Boolean v0 = buttonsAndDoorsState0.get(e_id) ;
 	        			if (! v0.equals(v1)) {
 	        				changed.add(e_id) ;
-	        				var f = testAgent.getState().worldmodel.getElement(e_id) ;
+	        				var f = testAgent.state().worldmodel.getElement(e_id) ;
 		        			if(f.type.equals(LabEntity.DOOR) && e.getValue().equals(true)) {
 		        				thereIs_one_door_that_becomes_open = true ;
 		        			}
@@ -181,9 +183,9 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        	}
 	        	// now check:
 	        	for(var eid : changed) {
-		        	assertTrue(testAgent.getState().changedEntities.stream().anyMatch(d -> d.id.equals(eid))) ;
+		        	assertTrue(testAgent.state().changedEntities.stream().anyMatch(d -> d.id.equals(eid))) ;
 		        }
-		        for(var e : testAgent.getState().changedEntities) {
+		        for(var e : testAgent.state().changedEntities) {
 		        	assertTrue(changed.contains(e.id)) ;
 		        }
 		        // check that open-door-event is produced
@@ -202,11 +204,89 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 	        testingTask.printGoalStructureStatus();
 
 	        assertTrue(testAgent.success());
-	        BeliefState belief = testAgent.getState() ;
+	        BeliefState belief = testAgent.state() ;
 	        LabEntity treasure = (LabEntity) belief.worldmodel.getElement("treasure") ;
 	        assertTrue(Vec3.dist(belief.worldmodel().getFloorPosition(), treasure.getFloorPosition()) <= 1.2)  ;
-	        // close
+	        
 	        testAgent.printStatus();
+	        
+	        var eventstrace = testAgent.getSyntheticEventsProducer().trace ;
+	        
+	        System.out.println("** Event-trace:" + testAgent.getSyntheticEventsProducer().showTrace()) ;
+	        
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isOpeningADoorEvent(m)).count() == 8) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isGetPointEvent(m)).count() > 0) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isOuchEvent(m)).count() == 0) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isLevelCompletionInSightEvent(m)).count() == 0) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isLevelCompletedEvent(m)).count() == 0) ;
+	                
+	        // close
+	        
+        }
+        finally { environment.close(); }
+    }
+    
+    @Test
+    public void oneOffEventsGeneration_Test() throws InterruptedException {
+
+        // Create an environment
+    	var config = new LabRecruitsConfig("samira_8room") ;
+    	var environment = new LabRecruitsEnvironment(config);
+        
+        try {
+        	if(TestSettings.USE_GRAPHICS) {
+        		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
+        		new Scanner(System.in) . nextLine() ;
+        	}
+
+	        // create a test agent
+	        var testAgent = new LabRecruitsTestAgent("agent1") // matches the ID in the CSV file
+        		    . attachState(new BeliefState())
+        		    . attachEnvironment(environment)
+        		    . attachSyntheticEventsProducer(new EventsProducer()) ;
+	        
+	        // set "treasure" as the level-end marker for the eventsProducer:
+	        testAgent.getSyntheticEventsProducer().idOfLevelEnd = "treasure" ;
+
+	        // define the testing-task:
+	        var testingTask = testingTaskSamira8doors() ;
+	        
+	        testAgent.setGoal(testingTask) ;
+
+	        environment.startSimulation(); // this will press the "Play" button in the game for you
+	        assertFalse(testAgent.success());
+	        int i = 0 ;
+	        // keep updating the agent
+	        while (testingTask.getStatus().inProgress()) {
+	        	System.out.println("*** update nr " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
+	            Thread.sleep(50);
+	            i++ ;
+	        	testAgent.update();	        	
+	        	if (i>1000) {
+	        		break ;
+	        	}
+	        }
+	        testingTask.printGoalStructureStatus();
+
+	        assertTrue(testAgent.success());
+	        BeliefState belief = testAgent.state() ;
+	        LabEntity treasure = (LabEntity) belief.worldmodel.getElement("treasure") ;
+	        assertTrue(Vec3.dist(belief.worldmodel().getFloorPosition(), treasure.getFloorPosition()) <= 1.2)  ;
+	        
+	        testAgent.printStatus();
+	        
+	        var eventstrace = testAgent.getSyntheticEventsProducer().trace ;
+	        
+	        System.out.println("** Event-trace:" + testAgent.getSyntheticEventsProducer().showTrace()) ;
+	        
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isOpeningADoorEvent(m)).count() == 8) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isGetPointEvent(m)).count() > 0) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isOuchEvent(m)).count() == 0) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isLevelCompletionInSightEvent(m)).count() == 1) ;
+	        assertTrue(eventstrace.stream().filter(m -> EventsProducer.isLevelCompletedEvent(m)).count() == 1) ;
+	                
+	        // close
+	        
         }
         finally { environment.close(); }
     }

@@ -123,7 +123,7 @@ public class Lab1Test {
             // keep updating the agent
             while (testingTask.getStatus().inProgress()) {
                 System.out.println(
-                        "*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position);
+                        "*** " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position);
                 Thread.sleep(50);
                 i++;
                 testAgent.update();

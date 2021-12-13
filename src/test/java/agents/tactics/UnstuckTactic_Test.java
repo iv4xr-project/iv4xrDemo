@@ -81,7 +81,7 @@ public class UnstuckTactic_Test {
 	        
 	        environment.startSimulation(); // this will press the "Play" button in the game for you
 	        // we need all nav-nodes to be marked as seen:
-	        testAgent.getState().pathfinder().perfect_memory_pathfinding = true ;
+	        testAgent.state().pathfinder().perfect_memory_pathfinding = true ;
 	        
 	        
 	        Tactic tactic = FIRSTof(
@@ -100,12 +100,12 @@ public class UnstuckTactic_Test {
 	        testAgent . setGoal(g) ;
 	        List<Vec3> path = new LinkedList<>() ;
 	        path.add(targetPosition) ;
-	        testAgent.getState().applyPath(0, targetPosition, path); 
+	        testAgent.state().applyPath(0, targetPosition, path); 
 	        
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (g.getStatus().inProgress()) {
-	        	System.out.println("*** " + i + ", " + testAgent.getState().id + " @" + testAgent.getState().worldmodel.position) ;
+	        	System.out.println("*** " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();

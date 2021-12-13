@@ -77,8 +77,8 @@ public class Test_SamiraLevels {
         while (g.getStatus().inProgress()) {
             agent.update();
             System.out.println("*** " + i + "/" 
-               + agent.getState().worldmodel.timestamp + ", "
-               + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+               + agent.state().worldmodel.timestamp + ", "
+               + agent.state().id + " @" + agent.state().worldmodel.position) ;
             Thread.sleep(30);
             i++ ;
             if (i>terminationThreshold) {

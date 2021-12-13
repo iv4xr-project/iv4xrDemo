@@ -102,11 +102,11 @@ public class FireHazardLevel_2_Test {
         // run the agent until it solves its goal:
         while (!agent.success()){
         	agent.update();
-        	System.out.println("*** " + tick + ": " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+        	System.out.println("*** " + tick + ": " + agent.state().id + " @" + agent.state().worldmodel.position) ;
             Thread.sleep(30);
 
             if (tick==0) {
-            	health0 = agent.getState().worldmodel().health ;
+            	health0 = agent.state().worldmodel().health ;
             }
             /*
         	System.out.println(">>> Seen vertices:") ;
@@ -128,7 +128,7 @@ public class FireHazardLevel_2_Test {
         // check that the testing task is completed and that the agent still have 'enough'
         // health
         assertTrue(agent.success()) ;
-        assertTrue(agent.getState().worldmodel().health >= health0/2) ;
+        assertTrue(agent.state().worldmodel().health >= health0/2) ;
 
         if (!env.close())
             throw new InterruptedException("Unity refuses to close the Simulation!");

@@ -75,16 +75,16 @@ public class FireHazardTest {
         LabWorldModel wom = null ;
         while (g.getStatus().inProgress()) {
             agent.update();
-            System.out.println("*** " + i + ": " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
-            wom = agent.getState().worldmodel() ;
+            System.out.println("*** " + i + ": " + agent.state().id + " @" + agent.state().worldmodel.position) ;
+            wom = agent.state().worldmodel() ;
             if (i==0) {
             	// check first observation:
             	System.out.println("** Checking initial observation...") ;
             	assertEquals(6,countDecoration(wom,"FireHazard")) ;
-            	assertNotNull(agent.getState().worldmodel.getElement("button0")) ;
+            	assertNotNull(agent.state().worldmodel.getElement("button0")) ;
             	initialHp = wom.health ;
             	assertEquals(100,initialHp) ;
-                assertFalse(agent.getState().isOn("button0")) ;
+                assertFalse(agent.state().isOn("button0")) ;
 
             }
             if (i==200) {
@@ -95,7 +95,7 @@ public class FireHazardTest {
         }
         g.printGoalStructureStatus();
         assertTrue(wom.health < initialHp) ;
-        assertTrue(agent.getState().isOn("button0")) ;
+        assertTrue(agent.state().isOn("button0")) ;
         assertTrue(g.getStatus().success()) ;
         
         if (!environment.close())

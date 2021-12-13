@@ -92,7 +92,7 @@ public class VisibilityTest {
        int i = 0 ;
        // keep updating the agent
        while (goal.getStatus().inProgress()) {
-       	System.out.println("*** " + i + ", " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+       	System.out.println("*** " + i + ", " + agent.state().id + " @" + agent.state().worldmodel.position) ;
            Thread.sleep(50);
            i++ ; 
        	agent.update();
@@ -107,7 +107,7 @@ public class VisibilityTest {
        // in the next room
        assertTrue(goal.getStatus().success()) ;
        
-       wom = agent.getState().worldmodel() ; 
+       wom = agent.state().worldmodel() ; 
        assertNotNull(wom.getElement("button0")) ;
        assertNotNull(wom.getElement("door0")) ;
        // checking if items in the next room are by now seen:

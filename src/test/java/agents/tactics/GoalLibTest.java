@@ -81,8 +81,8 @@ public class GoalLibTest {
         while (g.getStatus().inProgress()) {
             agent.update();
             System.out.println("*** " + i + "/" 
-               + agent.getState().worldmodel.timestamp + ", "
-               + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+               + agent.state().worldmodel.timestamp + ", "
+               + agent.state().id + " @" + agent.state().worldmodel.position) ;
             Thread.sleep(30);
             i++ ;
             if (i>terminationThreshold) {
@@ -121,7 +121,7 @@ public class GoalLibTest {
 		var desc = ", target entity: " + button1 ;
 		var agent = create_and_deploy_testagent("smallmaze","agent1",desc) ;
 		setgoal_and_run_agent(agent,g,120) ;
-		BeliefState state = (BeliefState) agent.getState() ;
+		BeliefState state = (BeliefState) agent.state() ;
 		assertTrue(state.worldmodel.getElement(button1) != null) ;
 		assertFalse(state.isOn(button1)) ;
 		
@@ -132,7 +132,7 @@ public class GoalLibTest {
 		desc = ", target entity: " + button1 + " then" + button2 ;
 		agent = create_and_deploy_testagent("buttons_doors_1","agent1",desc) ;
 		setgoal_and_run_agent(agent,g,150) ;
-		state = (BeliefState) agent.getState() ;
+		state = (BeliefState) agent.state() ;
 		assertTrue(state.worldmodel.getElement(button1) != null) ;
 		assertFalse(state.isOn(button1)) ;
 		assertTrue(state.worldmodel.getElement(button2) != null) ;
@@ -152,7 +152,7 @@ public class GoalLibTest {
 	            	"" + button1 + " should be on", 
 	            (WorldEntity e) -> e.getBooleanProperty("isOn")));
 		setgoal_and_run_agent(agent,g,120) ;
-		BeliefState state = (BeliefState) agent.getState() ;
+		BeliefState state = (BeliefState) agent.state() ;
 		assertTrue(state.worldmodel.getElement(button1) != null) ;
 		assertTrue(state.isOn(button1)) ;
 	    assertTrue(agent.getTestDataCollector().getNumberOfFailVerdictsSeen() == 0) ;
@@ -177,7 +177,7 @@ public class GoalLibTest {
 		            	(WorldEntity e) -> e.getBooleanProperty("isOn")))  ;
 		
 		setgoal_and_run_agent(agent,g,120) ;
-		state = (BeliefState) agent.getState() ;
+		state = (BeliefState) agent.state() ;
 		assertTrue(state.worldmodel.getElement(button1) != null) ;
 		assertTrue(state.isOn(button1)) ;
 		assertTrue(state.worldmodel.getElement(button2) != null) ;
@@ -211,7 +211,7 @@ public class GoalLibTest {
 				//GoalLib.entityStateRefreshed(door4), not needed
 				GoalLib.entityStateRefreshed(door6));
 		setgoal_and_run_agent(agent,g,120) ;
-		BeliefState state = (BeliefState) agent.getState() ;
+		BeliefState state = (BeliefState) agent.state() ;
 		assertTrue(state.worldmodel.getElement(door6) != null) ;
 		assertTrue(state.isOpen(door6)) ;
 	}

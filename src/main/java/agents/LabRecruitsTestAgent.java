@@ -101,11 +101,22 @@ public class LabRecruitsTestAgent extends TestAgent {
         //getState().updateBelief(env().observe(getState().id));
     //}
 
-    public BeliefState getState(){
+    @Override
+    public BeliefState state(){
         return (BeliefState) this.state;
     }
+    
+    @Override
+    public EventsProducer getSyntheticEventsProducer() {
+    	return (EventsProducer) this.syntheticEventsProducer ;
+    }
+    
+    //@Override
+    //public BeliefState state(){
+    //    return (BeliefState) this.state;
+    //}
 
     public LabRecruitsEnvironment env(){
-        return getState().env();
+        return state().env();
     }
 }

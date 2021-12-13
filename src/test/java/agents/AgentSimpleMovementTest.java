@@ -80,7 +80,7 @@ public class AgentSimpleMovementTest {
 
             // only updates in progress
             for(var agent : agents.where(agent -> !agent.success())){
-            	System.out.println("*** " + agent.getState().id + " @" + agent.getState().worldmodel.position) ;
+            	System.out.println("*** " + agent.state().id + " @" + agent.state().worldmodel.position) ;
                 agent.update();
                 if(agent.success()) agent.printStatus();
             }
@@ -92,18 +92,18 @@ public class AgentSimpleMovementTest {
             	break ;
             }
         }
-        System.out.println("*** Distance " + ta0.getState().id + " to dest:" 
-                           + Vec3.dist(ta0.getState().worldmodel().getFloorPosition(),p0)) ;
-        System.out.println("*** Distance " + ta1.getState().id + " to dest:" 
-                           + Vec3.dist(ta1.getState().worldmodel().getFloorPosition(),p1)) ;
-        System.out.println("*** Distance " + ta2.getState().id + " to dest:" 
-                           + Vec3.dist(ta2.getState().worldmodel().getFloorPosition(),p2)) ;
-        System.out.println("*** Distance " + ta3.getState().id + " to dest:" 
-                           + Vec3.dist(ta3.getState().worldmodel().getFloorPosition(),p3)) ;
-        assertTrue(Vec3.dist(ta0.getState().worldmodel().getFloorPosition(),p0) < 0.5) ;
-        assertTrue(Vec3.dist(ta1.getState().worldmodel().getFloorPosition(),p1) < 0.5) ;
-        assertTrue(Vec3.dist(ta2.getState().worldmodel().getFloorPosition(),p2) < 0.5) ;
-        assertTrue(Vec3.dist(ta3.getState().worldmodel().getFloorPosition(),p3) < 0.5) ;
+        System.out.println("*** Distance " + ta0.state().id + " to dest:" 
+                           + Vec3.dist(ta0.state().worldmodel().getFloorPosition(),p0)) ;
+        System.out.println("*** Distance " + ta1.state().id + " to dest:" 
+                           + Vec3.dist(ta1.state().worldmodel().getFloorPosition(),p1)) ;
+        System.out.println("*** Distance " + ta2.state().id + " to dest:" 
+                           + Vec3.dist(ta2.state().worldmodel().getFloorPosition(),p2)) ;
+        System.out.println("*** Distance " + ta3.state().id + " to dest:" 
+                           + Vec3.dist(ta3.state().worldmodel().getFloorPosition(),p3)) ;
+        assertTrue(Vec3.dist(ta0.state().worldmodel().getFloorPosition(),p0) < 0.5) ;
+        assertTrue(Vec3.dist(ta1.state().worldmodel().getFloorPosition(),p1) < 0.5) ;
+        assertTrue(Vec3.dist(ta2.state().worldmodel().getFloorPosition(),p2) < 0.5) ;
+        assertTrue(Vec3.dist(ta3.state().worldmodel().getFloorPosition(),p3) < 0.5) ;
    
 	    if (!environment.close())
 	        throw new InterruptedException("Unity refuses to close the Simulation!");

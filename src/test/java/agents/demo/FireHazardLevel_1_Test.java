@@ -114,12 +114,12 @@ public class FireHazardLevel_1_Test {
         while (testingTask.getStatus().inProgress()){
 
             System.out.println("** " + tick + ": agent @"
-            		+ agent.getState().worldmodel.position
-            		+ ", V=" + agent.getState().derivedVelocity());
+            		+ agent.state().worldmodel.position
+            		+ ", V=" + agent.state().derivedVelocity());
 
             agent.update();
             if (tick==0) {
-            	health0 = agent.getState().worldmodel().health ;
+            	health0 = agent.state().worldmodel().health ;
             }
              
             if (tick>2000) {
@@ -133,7 +133,7 @@ public class FireHazardLevel_1_Test {
         // check that the testing task is completed and that the agent still have 'enough'
         // health
         assertTrue(testingTask.getStatus().success()) ;
-        assertTrue(agent.getState().worldmodel().health >= health0/2) ;
+        assertTrue(agent.state().worldmodel().health >= health0/2) ;
         
         if (!env.close())
             throw new InterruptedException("Unity refuses to close the Simulation!");
