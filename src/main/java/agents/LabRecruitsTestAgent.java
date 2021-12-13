@@ -101,6 +101,13 @@ public class LabRecruitsTestAgent extends TestAgent {
         //getState().updateBelief(env().observe(getState().id));
     //}
 
+    /**
+     * Just another name of {@link #state()}. 
+     */
+    public BeliefState getState(){
+        return state() ;
+    }
+    
     @Override
     public BeliefState state(){
         return (BeliefState) this.state;
