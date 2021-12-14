@@ -10,6 +10,7 @@ package agents;
 import environments.AgentCommand;
 import environments.LabRecruitsEnvironment;
 import environments.Request;
+import eu.iv4xr.framework.mainConcepts.EmotiveTestAgent;
 import eu.iv4xr.framework.mainConcepts.SyntheticEventsProducer;
 import eu.iv4xr.framework.mainConcepts.TestAgent;
 import eu.iv4xr.framework.mainConcepts.TestDataCollector;
@@ -18,11 +19,16 @@ import nl.uu.cs.aplib.multiAgentSupport.ComNode;
 import world.BeliefState;
 
 /**
- * A subclass of {@link eu.iv4xr.framework.mainConcepts.TestAgent} to test
- * the Lab Recruits game. It provides some overriding of inherited methods,
- * but facilitating some convenience type casting.
+ * A subclass of {@link eu.iv4xr.framework.mainConcepts.EmotiveTestAgent}, which
+ * in turn is a subclass of {@link eu.iv4xr.framework.mainConcepts.TestAgent}.
+ * So it is a test-agent, which can be used to test the Lab Recruits game. It
+ * provides some overriding of inherited methods, but facilitating some
+ * convenience type casting.
+ * 
+ * <p>
+ * Being an emotive-agent means that we can also attach an emotion-state to it.
  */
-public class LabRecruitsTestAgent extends TestAgent {
+public class LabRecruitsTestAgent extends EmotiveTestAgent {
 
 	
     /**
