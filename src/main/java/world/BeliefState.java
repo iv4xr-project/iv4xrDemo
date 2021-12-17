@@ -331,6 +331,13 @@ public class BeliefState extends W3DAgentState {
     public void clearStuckTrackingInfo() {
     	recentPositions.clear();
     }
+    
+    /**
+     * Return the positions of the agent in its last four updates.
+     */
+    public List<Vec3> getRecentPositions() {
+    	return this.recentPositions.stream().toList() ;
+    }
 
 	/**
 	 * Return all close-by doors around the agent. Else an empty list is returned.
