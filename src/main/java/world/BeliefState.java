@@ -336,7 +336,7 @@ public class BeliefState extends W3DAgentState {
      * Return the positions of the agent in its last four updates.
      */
     public List<Vec3> getRecentPositions() {
-    	return this.recentPositions.stream().toList() ;
+    	return this.recentPositions.stream().map(p -> p.copy()).collect(Collectors.toList()) ;
     }
 
 	/**
