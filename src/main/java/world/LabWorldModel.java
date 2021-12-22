@@ -1,5 +1,6 @@
 package world;
 
+import java.io.Serializable;
 import java.util.*;
 import environments.LabRecruitsEnvironment;
 import eu.iv4xr.framework.environments.W3DEnvironment;
@@ -8,7 +9,7 @@ import eu.iv4xr.framework.mainConcepts.WorldModel;
 import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.mainConcepts.Environment;
 
-public class LabWorldModel extends WorldModel {
+public class LabWorldModel extends WorldModel implements Serializable {
 	
 	public int health ;
 	public int score ;
