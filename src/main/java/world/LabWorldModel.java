@@ -11,6 +11,8 @@ import nl.uu.cs.aplib.mainConcepts.Environment;
 
 public class LabWorldModel extends WorldModel implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+	
 	public int health ;
 	public int score ;
 	public int scoreGained ;

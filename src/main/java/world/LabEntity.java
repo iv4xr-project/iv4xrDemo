@@ -15,6 +15,8 @@ import nl.uu.cs.aplib.mainConcepts.Environment;
 
 public class LabEntity extends WorldEntity implements LineIntersectable, Serializable{
 	
+	private static final long serialVersionUID = 1L;
+	
 	// entity types
 	public static final String DOOR = "Door" ;
 	public static final String GOAL = "Goal" ;
