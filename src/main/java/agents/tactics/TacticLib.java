@@ -488,7 +488,10 @@ public class TacticLib {
     				System.out.println("#### STUCK, probably cannot get past a turn-corner: @"
     			           + belief.worldmodel.position
     			           + ", current way-point: "
-    			           + belief.getCurrentWayPoint()) ;
+    			           + belief.getCurrentWayPoint() +
+    			            ", path: "
+    			           +
+    			           belief.getMemorizedPath()) ;
     	    		var unstuckPosition = unstuck(belief) ;
     	    		if (unstuckPosition != null) {
     	    			// no need to do this anymore; as moveToward now uses the agent's floor-pos as reference
