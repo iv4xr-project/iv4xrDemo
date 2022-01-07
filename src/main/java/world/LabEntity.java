@@ -1,5 +1,6 @@
 package world;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -12,7 +13,9 @@ import eu.iv4xr.framework.spatial.LineIntersectable;
 import eu.iv4xr.framework.spatial.Vec3;
 import nl.uu.cs.aplib.mainConcepts.Environment;
 
-public class LabEntity extends WorldEntity implements LineIntersectable{
+public class LabEntity extends WorldEntity implements LineIntersectable, Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	// entity types
 	public static final String DOOR = "Door" ;

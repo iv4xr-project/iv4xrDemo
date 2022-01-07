@@ -195,7 +195,7 @@ public class TacticLib {
 	 */
     static Face getCoveringFaces(BeliefState S, Vec3 p) {
     	for(Face face : S.pathfinder().faces) {
-			if (face.distFromPoint(p, S.pathfinder().vertices) <= 0.1) {
+			if (face.distFromPoint(p, S.pathfinder().vertices) <= 0.12) {
 				// found it
 				return face ;
 			}
