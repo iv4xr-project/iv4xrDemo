@@ -116,7 +116,50 @@ public class GoalLib {
                    ABORT())) 
         	  . lift();
     }
-
+    
+    /**
+     * This method will construct a goal where the agent will go to the location of the given
+     * entity. It will try to get within the distance of the specified delta from the center
+     * position of the entity.
+     * 
+     * <p>If the flag addObserve is true, two additional update-cycles are added at the end 
+     * to ensure the agent's state is updated. E.g. if the target is a goal flag, this makes
+     * sure that the point obtained from reaching the goal flag (first time) is observed by
+     * the Java agent.
+     * 
+     * <p>The entity must be an entity that can be targeted by the pathfinder, such as button or
+     * goalflag. 
+     * 
+     * <p>Note that doors cannot be targeted with this goal. A door is an obstacle, so literally 
+     * its center point will always appear as unreachable to the pathfinder. Furniture like
+     * table and chair cannot be targetted either. They are put outside the navigation mesh, so
+     * the pathfinder won't be able to find a path to their center.
+     */
+    public static GoalStructure atBGF(String entityId, float delta, boolean addObserve) {
+        //the first goal is to navigate to the entity:
+    	float deltaSq = delta*delta ;
+        var g1 = 
+        	  goal(String.format("The agent is at: [%s]", entityId))
+        	  . toSolve((BeliefState belief) -> {
+        		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
+        		  // bug .. .should be distsq:
+        		  // return e!=null && Vec3.dist(belief.worldmodel.getFloorPosition(), e.getFloorPosition()) < 0.35 ;
+        		  // System.out.print("entityinteracted: navigate to" + e);
+        		  return e!=null && Vec3.sub(belief.worldmodel().getFloorPosition(), e.getFloorPosition()).lengthSq() <= deltaSq ;
+        	    })
+        	  . withTactic(
+                    FIRSTof( //the tactic used to solve the goal
+                    TacticLib.navigateTo(entityId), //try to move to the entity
+                    TacticLib.explore(), //find the entity
+                    ABORT())) 
+              ;
+        
+        if (addObserve) 
+        	return SEQ(g1.lift(), SUCCESS("just observing")) ;
+        else 
+        	return g1.lift() ;
+    }
+    
 
     /**
      * Construct a goal structure that will make an agent to move towards the given entity,

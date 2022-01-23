@@ -27,9 +27,9 @@ public class GoalLibTest {
 
     @BeforeAll
     static void start() {
-    	// TestSettings.USE_SERVER_FOR_TEST = false ;
+    	//TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-        // TestSettings.USE_GRAPHICS = true ;
+        //TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
        	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -111,6 +111,46 @@ public class GoalLibTest {
     	desc = ", targets: " + targetLocation1 + " then " + targetLocation2 ;
     	agent = create_and_deploy_testagent("buttons_doors_1","agent1",desc) ;
     	setgoal_and_run_agent(agent,g,120) ;    
+    }
+    
+    @Test
+    public void test_atBGF() throws InterruptedException {
+    	String target = "button1" ;
+    	float delta = 0.5f ;
+    	GoalStructure g = GoalLib.atBGF(target,delta,false) ;
+    	var desc = ", target entity: " + target ;
+    	var agent = create_and_deploy_testagent("buttons_doors_1","agent1",desc) ;
+    	setgoal_and_run_agent(agent,g,120) ;
+    	
+    	var targetPos = agent.getState().worldmodel().getElement(target).getFloorPosition() ;
+    	var agentPos = agent.getState().worldmodel().getFloorPosition() ;
+    	assertTrue(Vec3.dist(agentPos,targetPos) <= delta) ;
+    	
+    	target = "FLAG" ;
+    	g = GoalLib.atBGF(target,delta,true) ;
+    	desc = ", target entity: " + target ;
+    	agent = create_and_deploy_testagent("visibilitytest","BOSS",desc) ;
+    	setgoal_and_run_agent(agent,g,120) ;
+    	
+    	targetPos = agent.getState().worldmodel().getElement(target).getFloorPosition() ;
+    	agentPos = agent.getState().worldmodel().getFloorPosition() ;
+    	assertTrue(Vec3.dist(agentPos,targetPos) <= delta) ;
+    	assertTrue(agent.getState().worldmodel().score >= 100) ;
+    	
+    	target = "FLAG" ;
+    	g = SEQ(GoalLib.entityInteracted("button0"),
+    			GoalLib.atBGF(target,delta,true)) ;
+    	desc = ", target entity: " + target ;
+    	agent = create_and_deploy_testagent("visibilitytest","agent0",desc) ;
+    	setgoal_and_run_agent(agent,g,120) ;
+    	
+    	//var obs = agent.env().observe("agent0") ;
+    	//agent.update();
+    	//agent.update();
+    	targetPos = agent.getState().worldmodel().getElement(target).getFloorPosition() ;
+    	agentPos = agent.getState().worldmodel().getFloorPosition() ;
+    	assertTrue(Vec3.dist(agentPos,targetPos) <= delta) ;
+    	assertTrue(agent.getState().worldmodel().score >= 100) ;
     }
     
 	

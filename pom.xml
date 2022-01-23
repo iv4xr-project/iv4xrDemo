@@ -12,7 +12,7 @@
         <artifactId>lab-recruits-api</artifactId>
     -->   
     <artifactId>iv4xrDemo</artifactId>
-    <version>2.3.3d-SNAPSHOT</version>
+    <version>2.3.4-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
