@@ -1,5 +1,6 @@
 package agents.tactics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -151,6 +152,58 @@ public class GoalLibTest {
     	agentPos = agent.getState().worldmodel().getFloorPosition() ;
     	assertTrue(Vec3.dist(agentPos,targetPos) <= delta) ;
     	assertTrue(agent.getState().worldmodel().score >= 100) ;
+    }
+    
+    @Test
+    public void test_atBGF_on_FBKmediumlevel() throws InterruptedException {
+    	String goalflag = "gf0" ;
+    	float delta = 0.5f ;
+    	var desc = ", target entity: " + goalflag ;
+    	var agent = create_and_deploy_testagent("fbk_mediumlevel","Agent1",desc) ;
+    	agent.setTestDataCollector(new TestDataCollector()) ;
+    	
+    	GoalStructure g = SEQ(
+    			GoalLib.entityStateRefreshed("door0"),
+    			GoalLib.entityStateRefreshed("b0"),
+    			GoalLib.entityInteracted("b0"),
+    			GoalLib.entityStateRefreshed("door2"),
+    			GoalLib.entityStateRefreshed("door0"),
+    			GoalLib.entityStateRefreshed("door2"),
+    			GoalLib.entityStateRefreshed("door0"),
+    			GoalLib.entityStateRefreshed("b0"),
+    			GoalLib.entityStateRefreshed("door2"),
+    			GoalLib.atBGF(goalflag,delta,false),
+    			GoalLib.invariantChecked(agent, 
+    					"agent is close to " + goalflag, 
+    					S -> {
+    						var e = S.worldmodel().getElement(goalflag) ;
+    						return Vec3.dist(S.worldmodel().getFloorPosition(), e.getFloorPosition()) <= delta ;
+    					})
+        )
+    	;
+    	/*
+    	 b0-{explore[EXPLORE];}->d0m
+d0m-{explore[EXPLORE];}->b0
+b0-{toggle[TOGGLE];}->b0
+b0-{explore[EXPLORE];}->d2m
+d2m-{explore[EXPLORE];}->d0m
+d0m-{explore[EXPLORE];}->d2m
+d2m-{explore[EXPLORE];}->d0m
+d0m-{explore[EXPLORE];}->b0
+b0-{explore[EXPLORE];}->d2m
+d2m-{explore[EXPLORE];}->d2p
+d2p-{explore[EXPLORE];}->gf0
+gf0-{explore[EXPLORE];}->d1p
+d1p-{explore[EXPLORE];}->d2p
+d2p-{explore[EXPLORE];}->d2m
+d2m-{explore[EXPLORE];}->b0
+    	 */
+    	setgoal_and_run_agent(agent,g,600) ;
+    	
+    	var targetPos = agent.getState().worldmodel().getElement(goalflag).getFloorPosition() ;
+    	var agentPos = agent.getState().worldmodel().getFloorPosition() ;
+    	assertTrue(Vec3.dist(agentPos,targetPos) <= delta) ;
+    	assertEquals(0,agent.getTestDataCollector().getNumberOfFailVerdictsSeen()) ;
     }
     
 	
