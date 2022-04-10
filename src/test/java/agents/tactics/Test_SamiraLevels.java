@@ -33,64 +33,6 @@ public class Test_SamiraLevels {
     @AfterAll
     static void close() { if(labRecruitsTestServer != null) labRecruitsTestServer.close(); }
 
-	void hit_RETURN() {
-		if(TestSettings.USE_GRAPHICS) {
-    		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-    		new Scanner(System.in) . nextLine() ;
-    	}
-	}
-	
-	/**
-	 * A generic method to create a test-agent, and connect it to the LR game, and 
-	 * load the specified level.
-	 */
-	LabRecruitsTestAgent create_and_deploy_testagent(String levelName, String agentId, String testDescription) {
-        System.out.println("======= Level: " + levelName + ", " + testDescription) ;
-		
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig(levelName));
-        
-        LabRecruitsTestAgent agent = new LabRecruitsTestAgent(agentId)
-        		                     . attachState(new BeliefState())
-        		                     . attachEnvironment(environment) ;
-        return agent ;
-	}
-    
-	/**
-	 * A convenience method to assign a goal to a test agent, and run it on the LR instance
-	 * it is connected to.
-	 * At the end, the method checks if the goal is indeed achieved.
-	 */
-	void setgoal_and_run_agent(
-			LabRecruitsTestAgent agent, 
-			GoalStructure g, 
-			int terminationThreshold) throws InterruptedException {
-    	
-        // give the goal to the agent:
-        agent.setGoal(g) ;
-		hit_RETURN() ;
-
-        // press play in Unity
-        if (! agent.env().startSimulation()) throw new InterruptedException("Unity refuses to start the Simulation!");
-
-        // now run the agent:
-        int i = 0 ;
-        while (g.getStatus().inProgress()) {
-            agent.update();
-            System.out.println("*** " + i + "/" 
-               + agent.state().worldmodel.timestamp + ", "
-               + agent.state().id + " @" + agent.state().worldmodel.position) ;
-            Thread.sleep(30);
-            i++ ;
-            if (i>terminationThreshold) {
-            	break ;
-            }
-        }
-        g.printGoalStructureStatus();
-        // check that the given goal is solved:
-        //assertTrue(g.getStatus().success()) ;
-        hit_RETURN() ;
-
-	}
 	
 	/**
 	 * Using entityStateRefreshed to simply refresh the state of door-1
@@ -116,12 +58,11 @@ public class Test_SamiraLevels {
 				GoalLib.entityInspected("door1", e -> e.getBooleanProperty("isOpen")),
 				GoalLib.entityInteracted("button7")
 				)
-							
-				
+									
 				;
 		var desc = "blabla" ;
-		var agent = create_and_deploy_testagent("samiratest_2","agent1",desc) ;
-		setgoal_and_run_agent(agent,g,200) ;
+		var agent = SomeCommonTestUtils.create_and_deploy_testagent("samiratest_2","agent1",desc) ;
+		SomeCommonTestUtils.setgoal_and_run_agent(agent,g,30,200) ;
 	}
 	
 	/**
@@ -144,8 +85,8 @@ public class Test_SamiraLevels {
 				GoalLib.entityInteracted("button7")
 				) ;
 		var desc = "blabla" ;
-		var agent = create_and_deploy_testagent("samiratest_2","agent1",desc) ;
-		setgoal_and_run_agent(agent,g,200) ;
+		var agent = SomeCommonTestUtils.create_and_deploy_testagent("samiratest_2","agent1",desc) ;
+		SomeCommonTestUtils.setgoal_and_run_agent(agent,g,20,200) ;
 	}
 	
 	@Test
@@ -164,7 +105,7 @@ public class Test_SamiraLevels {
 				GoalLib.entityInspected("door2", e -> !e.getBooleanProperty("isOpen"))
 				) ;
 		var desc = "blabla" ;
-		var agent = create_and_deploy_testagent("samiratest_3","agent1",desc) ;
-		setgoal_and_run_agent(agent,g,200) ;
+		var agent = SomeCommonTestUtils.create_and_deploy_testagent("samiratest_3","agent1",desc) ;
+		SomeCommonTestUtils.setgoal_and_run_agent(agent,g,30,200) ;
 	}
 }

@@ -146,8 +146,6 @@ public class EventsProducer extends SyntheticEventsProducer {
 		// don't forget to clear this first! :
 		currentEvents.clear();
 
-		if (agent().state().worldmodel().healthLost > 0)
-			generateEvent(ouchEvent(), !ONEOFF);
 		if (agent().state().worldmodel().scoreGained > 0)
 			generateEvent(getPointEvent(), !ONEOFF);
 		List<WorldEntity> z = agent().state().changedEntities;
@@ -175,6 +173,11 @@ public class EventsProducer extends SyntheticEventsProducer {
 				generateEvent(levelCompletedEvent(), ONEOFF);
 			}
 		}
+		
+		// ouch event:
+		if (agent().state().worldmodel().healthLost > 0)
+			generateEvent(ouchEvent(), !ONEOFF);
+		
 	}
 	
 	public String showTrace() {
