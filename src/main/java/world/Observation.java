@@ -26,6 +26,8 @@ public class Observation {
 
         /** ISO 8601 timestamp of the data sent by the game */
         public String time;
+        
+        public Boolean gameover ;
     }
 
     /**
@@ -125,6 +127,7 @@ public class Observation {
     	wom.extent    = new Vec3(0.2f,0.75f,0.2f) ;
         wom.velocity  = obs.agent.velocity;
         wom.timestamp = obs.meta.tick;
+        wom.gameover =obs.meta.gameover;
 
         wom.didNothingPreviousGameTurn = obs.agent.didNothing;
         wom.visibleNavigationNodes = obs.navMeshIndices;
@@ -237,6 +240,9 @@ public class Observation {
         }
         else if (obj.tag.equals("NPC")) {
         	we_type = LabEntity.NPC ;
+        }
+        else if (obj.tag.equals("Enemy")) {
+        	we_type = LabEntity.ENEMY ;
         }
         else if (obj.FireHazard != null) {
             we_type = LabEntity.FIREHAZARD;

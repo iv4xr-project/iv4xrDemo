@@ -24,6 +24,7 @@ public class LabEntity extends WorldEntity implements LineIntersectable, Seriali
 	public static final String FIREHAZARD = "FireHazard" ;
 	public static final String SWITCH = "Switch" ;
 	public static final String NPC = "NPC" ;
+	public static final String ENEMY = "Enemy" ;
 	
 	
 	public LabEntity(String id, String type, boolean dynamic) {

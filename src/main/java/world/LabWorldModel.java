@@ -18,6 +18,7 @@ public class LabWorldModel extends WorldModel implements Serializable {
 	public int scoreGained ;
 	public int healthLost ;
 	public String mood ;
+	public boolean gameover;
 
 	/**
 	 * Describing the part of the static world that the agent currently sees.
@@ -52,6 +53,7 @@ public class LabWorldModel extends WorldModel implements Serializable {
 		this.scoreGained = observation_.score - this.score ;
 		this.score  = observation_.score ;
 		this.mood = observation_.mood ;
+		this.gameover = observation_.gameover ;
 		this.visibleNavigationNodes = observation_.visibleNavigationNodes ;
 		return super.mergeNewObservation(observation) ;
 	}

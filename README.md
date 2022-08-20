@@ -6,7 +6,9 @@ demonstrating that iv4XR test agents can control a game called _Lab Recruits_ to
 The game executable is no longer included in the repository. It might be included in certain releases, or else you need to build it yourself
 from its [repository](https://github.com/iv4xr-project/labrecruits).
 
-You will need correct versions of the iv4XR Framework and the game Lab Recruits, which are compatible with this version of Demo. Check the `pom.xml` to know which versions are needed.
+You will need correct versions of the iv4XR Framework and the game Lab Recruits, which are compatible with this version of Demo.
+For the game, you need version 2.2 (with monsters).
+Check the `pom.xml` to know which version of the iv4XR Framework is needed.
 
    <img src="./docs/LRSS1.png" width="48%"><img src="./docs/LRSS3.png" width="50%">
 

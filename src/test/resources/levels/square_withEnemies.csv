@@ -1,0 +1,11 @@
+button0,,,,,,,,,
+|w,w,w,w,w,w,w,w,w,w
+w,f:a^agent0,f,f,f,f,f,f,f:m^orc1,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f:b^button0,f,f,f,f,w
+w,f,f,f,f,f,f,f,f:g^Finish,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f,f,f,f,f,w
+w,f:npc^smith1,f,f,f,f:g^flag1,f,f,f:m^orc2,w
+w,w,w,w,w,w,w,w,w,w
