@@ -3,16 +3,16 @@
 
 This is a demo version 2.x for the [iv4XR Agent-based Testing Framework](https://github.com/iv4xr-project/aplib),
 demonstrating that iv4XR test agents can control a game called _Lab Recruits_ to perform testing tasks.
-The game executable is no longer included in the repository. It might be included in certain releases, or else you need to build it yourself
+The game executable is no longer included in the repository; you need to build it yourself
 from its [repository](https://github.com/iv4xr-project/labrecruits).
 
 You will need correct versions of the iv4XR Framework and the game Lab Recruits, which are compatible with this version of Demo.
-For the game, you need version 2.2 (with monsters).
-Check the `pom.xml` to know which version of the iv4XR Framework is needed.
+* _Which version of Lab Recruits game should be used?_ Demo version 2.3.x should use LR-game version 2.1.x (e.g. 2.1.5). This version has no monster.
+Demo version 2.4.x should use LR-game 2.2.x (with monsters).
+* _Which version of the iv4XR Framework is needed?_
+Check the `pom.xml` of this Demo project.
 
    <img src="./docs/LRSS1.png" width="48%"><img src="./docs/LRSS3.png" width="50%">
-
-**Work in progress notice.** Keep in mind that the work here is still in progress. Things may look ugly while we are working on them, and things may change.
 
 **What is the demo?** A set of JUnit test classes demonstrating how iv4xr test agents are used to implement a number of testing tasks for the game _Lab Recruits_. These classes are located in `src/test/java/agents/demo`. You can simply run them, or modify them yourself. When you run them you don't usually see anything because the tests run pretty fast. You can insert pause-points yourself (e.g. using console-read).
 
