@@ -44,14 +44,14 @@ public class TacticLib {
 	/**
 	 * Distance used to unstuck an agent.
 	 */
-	public static final float UNSTUCK_DELTA = 0.5f ;
+	public static float UNSTUCK_DELTA = 0.5f ;
 
 	/**
 	 * When the agent comes to this distance to the current exploration target,
 	 * the target is considered as achieved (and the agent may then move to
 	 * the next exploration target).
 	 */
-	public static final float EXPLORATION_TARGET_DIST_THRESHOLD = 0.5f ;
+	public static float EXPLORATION_TARGET_DIST_THRESHOLD = 0.5f ;
 
 
 	/**
@@ -59,7 +59,7 @@ public class TacticLib {
 	 * the point is on the surface. This is used by the unstuck tactic to check
 	 * that an unstucking proposal is still on the navigable surface,
 	 */
-	public static final float DIST_SURFACE_THRESHOLD_STUCK = 0.045f;
+	public static float DIST_SURFACE_THRESHOLD_STUCK = 0.045f;
 
 
 	/**
@@ -294,8 +294,17 @@ public class TacticLib {
 		                	var e = (LabEntity) belief.worldmodel.getElement(id) ;
 		    			    if (e==null) return null ;
 		    			    var p = e.getFloorPosition() ;
+		    			    
+		    			    //System.out.println(">>> target: " + id + " @" + e.position + ", floor: " + p) ;
+		    			    //System.out.println(">>> extent: " + e.extent) ;
+		    			    //System.out.println(">>> agent @" + belief.worldmodel().position + ", floor: " + belief.worldmodel().getFloorPosition()) ;
+		    			    //System.out.println(">>> agent extent" + belief.worldmodel().extent) ;
+		    			    
 		    			    // find path to p, but don't force re-calculation
-		    			    return belief.findPathTo(p,false) ;
+		    			    var path = belief.findPathTo(p,false) ; 
+		    			    System.out.println(">>> path:" + path) ;
+		    			    		    			    
+		    			    return path ;
 		                }) ;
     	
     	return move.lift() ;
@@ -422,15 +431,20 @@ public class TacticLib {
      * This method constructs a tactic T that tries to identify when recalculation of
      * path to the the goal position, namely when:
      *
-     *    the agent observes a door has a state which is different than the last time
+     *    (1) the agent observes a door has a state which is different than the last time
      *    it saw it.
+     *    
+     *    (2) the agent observes an NPC or another agent, and its position has changed 
+     *        by more than distance 2 from the last time the agent saw it.
+     *        
+     *        For now, we will not take enemies into account.
      *
      *  Path recalculation is forced by clearing the goal-position.
      */
     public static Tactic forceReplanPath() {
         Tactic clearTargetPosition = action("Force path recalculation.")
                 .do1((BeliefState belief) -> {
-                	System.out.println("####Detecting some doors change their state. Forcing path recalculation @" + belief.worldmodel.position) ;
+                	System.out.println("####Detecting some path-planning relevant state change. Forcing path recalculation @" + belief.worldmodel.position) ;
                 	belief.clearGoalLocation();
                 	try {
                 		Thread.sleep(700); // waiting for the door animation
@@ -454,7 +468,32 @@ public class TacticLib {
                     // replacing the above logic with this one that should be more reliable:
                 	var someDoorHasChangedState = belief.changedEntities.stream().anyMatch(e -> e.type == LabEntity.DOOR) ;
 
-                	return someDoorHasChangedState ;
+                	if (someDoorHasChangedState) return true ;
+                	
+                	// case 2: detecting that some other agent or an NPC has changed position by at least
+                	// 2 units:
+                	var mobiles = belief.worldmodel.elements.values().stream() 
+                			.filter(e -> e.type.equals(LabEntity.NPC)  
+                					     || (e.type.equals(LabEntity.PLAYER) && !e.id.equals(belief.id)))
+                			.collect(Collectors.toList()) ;
+                	for (var mob : mobiles) {
+                		if (mob.timestamp == belief.worldmodel.timestamp
+                				&& mob.hasPreviousState()
+                				&& Vec3.distSq(mob.position, mob.getPreviousState().position) > 4
+                				) {
+                    		return true ;
+                		}
+                		if (!mob.hasPreviousState() && mob.lastStutterTimestamp < 0) {
+                			System.out.println(">>>> noticing mob " + mob.id) ;
+                			System.out.println(">>>> tstamp " + mob.timestamp) ;
+                			System.out.println(">>>> lastStutterTimestamp " + mob.lastStutterTimestamp) ;
+                			System.out.println(">>>> has previous: " + mob.hasPreviousState()) ;
+                			
+                			// the mob was seen first time:
+                			return true ;
+                		}
+                	}
+                	return false ;
                 	/*
                 	if (belief.getGoalLocation() == null
                 		|| belief.worldmodel.timestamp - belief.getGoalLocationTimestamp() < 50) {

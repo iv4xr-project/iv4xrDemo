@@ -25,6 +25,7 @@ public class LabEntity extends WorldEntity implements LineIntersectable, Seriali
 	public static final String SWITCH = "Switch" ;
 	public static final String NPC = "NPC" ;
 	public static final String ENEMY = "Enemy" ;
+	public static final String PLAYER = "Player" ;
 	
 	
 	public LabEntity(String id, String type, boolean dynamic) {
@@ -60,7 +61,9 @@ public class LabEntity extends WorldEntity implements LineIntersectable, Seriali
 	@Override
 	public Collection<Vec3> intersect(Line l) {
 		// only these types can block movements:
-		if (type.equals(DOOR) || type.equals(COLORSCREEN)) {
+		if (type.equals(DOOR) || type.equals(COLORSCREEN) 
+			|| type.equals(PLAYER) 
+			|| type.equals(NPC)) {
 			// use a box to calculate the intersection with this door :D .. stretch the extent a bit larger
 			Box box = new Box(this.getFloorPosition(),Vec3.add(Vec3.mul(this.extent,2f), new Vec3(0.1f,0,0.1f))) ;
 			var intersections = box.intersect(l) ;

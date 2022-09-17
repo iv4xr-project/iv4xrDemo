@@ -32,7 +32,7 @@ import world.LabWorldModel;
 // Creates an agent that walks a preset route.
 
 
-public class GameOverStatus_Test {
+public class Monster_Test {
 	
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
@@ -52,9 +52,13 @@ public class GameOverStatus_Test {
     
 
     @Test
-    public void testGameOver() throws InterruptedException {
+    public void testMonster() throws InterruptedException {
         
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig("square_withEnemies"));
+    	var config = new LabRecruitsConfig("square_withEnemies") ;
+    	
+    	config.view_distance = 20f ;
+    	
+        var environment = new LabRecruitsEnvironment(config);
 
         LabRecruitsTestAgent agent = new LabRecruitsTestAgent("agent0")
         		                     . attachState(new BeliefState())
@@ -68,10 +72,10 @@ public class GameOverStatus_Test {
     		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
     		new Scanner(System.in) . nextLine() ;
     	}
-
+        
         var target = "Finish" ;
-        float delta = 0.5f ;
-        var g = GoalLib.atBGF(target,delta,true) ;
+        var g = GoalLib.atBGF("orc1",1f,true) ;
+        
         agent.setGoal(g) ;
         
 
@@ -89,13 +93,19 @@ public class GameOverStatus_Test {
             Thread.sleep(30);
             if (i>=150) break ;
         }
-        assertTrue(((LabWorldModel) agent.state().worldmodel).gameover == true)  ;
-        assertTrue(((LabWorldModel) agent.state().worldmodel).score == 500) ;
+        
+        //assertTrue(((LabWorldModel) agent.state().worldmodel).gameover == true)  ;
         
         var wom = (LabWorldModel) agent.state().worldmodel ;
-        var flag = wom.getElement("Finish") ;
-        assertTrue(flag.type == LabEntity.GOAL) ;
+        var orc1 = wom.getElement("orc1") ;
         
+        assertTrue(wom.elements.values().stream().filter(e -> e.type == LabEntity.ENEMY).count() == 2) ;
+        assertTrue(Vec3.dist(wom.position, orc1.position) <= 1.5f) ;
+        
+        // add few updates:
+        //Thread.sleep(1000);
+        //agent.update();
+        assertTrue(wom.health <= 90) ;  
         
         if (!environment.close())
             throw new InterruptedException("Unity refuses to close the Simulation!");

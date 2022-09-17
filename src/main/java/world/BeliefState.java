@@ -526,7 +526,10 @@ public class BeliefState extends W3DAgentState {
 //    	System.out.println("****end updateeee");	
     	boolean refreshNeeded = false ;
         for (var e : rawChangedEntities) {
-        	if (e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.COLORSCREEN)) {
+        	if (e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.COLORSCREEN) 
+        			|| (e.type.equals(LabEntity.NPC))
+        			|| (e.type.equals(LabEntity.PLAYER) && ! e.id.equals(this.id))
+        		) {
         		Obstacle o = findThisObstacleInNavGraph(e.id) ;
 	       		if (o==null) {
 	       			 // e has not been added to the navgraph, so we add it, and retrieve its

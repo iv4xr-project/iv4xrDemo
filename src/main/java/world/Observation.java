@@ -146,10 +146,12 @@ public class Observation {
     
     static String constructId(GameObject obj) {
     	switch(obj.tag) {
-    	   case "Door" : return obj.name ;
+    	   case "Door"   : return obj.name ;
     	   case "Switch" : return obj.name ;
     	   case "ColorScreen" : return obj.name ;
-    	   case "NPC" : return obj.name ;
+    	   case "NPC"    : return obj.name ;
+    	   case "Player" : return obj.name.substring(6) ;
+    	   case "Enemy"  : return obj.name ;
     	   case "Decoration" :
     		   // decorations are statics, so we can use their x,y,z coordinates to identify them
     		   int k = obj.name.indexOf("Prefab") ;
@@ -201,6 +203,22 @@ public class Observation {
                 		 ", this is currently not supported.", obj.name));
             }
         }
+        
+        // apply some extent and position adjustmet for enemy, npc, and other players:
+        builder = builder.andThen(we -> {
+        	// apply size adjustment for enemy and NPC:
+            if (we.type == LabEntity.ENEMY || we.type == LabEntity.NPC) {
+            	we.position.y += 0.47 ;
+            }
+        	 // adjustment for player-type:
+            if (we.type == LabEntity.PLAYER) {
+                we.position.y += 0.75 ;
+                // make it a bit wider to compensate for path planning around mob:
+            	//we.extent = new Vec3(0.2f,0.75f,0.2f) ;
+            	we.extent = new Vec3(0.5f,0.75f,0.5f) ;
+            }
+            return we ;
+        }) ;
 
         if (obj.tag.equals("Door") && obj.Toggleable != null) {
             we_type = LabEntity.DOOR;
@@ -243,6 +261,9 @@ public class Observation {
         }
         else if (obj.tag.equals("Enemy")) {
         	we_type = LabEntity.ENEMY ;
+        }
+        else if (obj.tag.equals("Player")) {
+        	we_type = LabEntity.PLAYER ;
         }
         else if (obj.FireHazard != null) {
             we_type = LabEntity.FIREHAZARD;

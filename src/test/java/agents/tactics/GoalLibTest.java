@@ -117,7 +117,7 @@ public class GoalLibTest {
     @Test
     public void test_atBGF() throws InterruptedException {
     	String target = "button1" ;
-    	float delta = 0.5f ;
+    	float delta = 0.6f ;
     	GoalStructure g = GoalLib.atBGF(target,delta,false) ;
     	var desc = ", target entity: " + target ;
     	var agent = create_and_deploy_testagent("buttons_doors_1","agent1",desc) ;

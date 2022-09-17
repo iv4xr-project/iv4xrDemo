@@ -7,6 +7,7 @@ import static agents.TestSettings.USE_SERVER_FOR_TEST;
 import game.LabRecruitsTestServer;
 import logger.JsonLoggerInstrument;
 import world.BeliefState;
+import world.LabEntity;
 import world.LabWorldModel;
 
 import static nl.uu.cs.aplib.AplibEDSL.*;
@@ -86,7 +87,8 @@ public class VisibilityTest {
        
        
        var goal = SEQ(GoalLib.entityInteracted("button0"),
-    		          GoalLib.entityInteracted("button1"));
+    		          GoalLib.entityInteracted("button1"),
+    		          GoalLib.atBGF("FLAG",0.5f,true));
        agent . setGoal(goal) ;
        
        int i = 0 ;
@@ -115,13 +117,19 @@ public class VisibilityTest {
        assertEquals(2,countDecoration(wom,"FireHazard")) ; // can see 2x fires
        assertNotNull(wom.getElement("guard")) ; // can see an NPC named "guard"
        assertNotNull(wom.getElement("FLAG")) ; // can see a goal named "FLAG"
+       assertNotNull(wom.getElement("BOSS")) ; // can see the other agent "BOSS" ;
+       
+       var boss = wom.getElement("BOSS") ;
+       assertTrue(boss.type == LabEntity.PLAYER) ;
+       var guard = wom.getElement("guard") ;
+	   assertTrue(guard.type == LabEntity.NPC) ;
        
        // let's also check that the two buttons are turned on:
        assertTrue(wom.getElement("button0").getBooleanProperty("isOn")) ;
        assertTrue(wom.getElement("button1").getBooleanProperty("isOn")) ;
 
        // can just as well check the score and mood :)
-       assertTrue(wom.score == 21 || wom.score == 22) ;
+       assertTrue(wom.score == 122) ;
        //assertTrue(wom.mood.equals("Hmm...")) ;
        
        if (!environment.close())
