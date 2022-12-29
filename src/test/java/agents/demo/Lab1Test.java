@@ -90,11 +90,7 @@ public class Lab1Test {
         var environment = new LabRecruitsEnvironment(config);
 
         try {
-            if (TestSettings.USE_GRAPHICS) {
-                System.out.println(
-                        "You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.");
-                new Scanner(System.in).nextLine();
-            }
+        	TestSettings.youCanRepositionWindow() ;
 
             // create a test agent
             var testAgent = new LabRecruitsTestAgent("agent0") // matches the ID in the CSV file

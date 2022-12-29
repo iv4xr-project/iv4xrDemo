@@ -78,10 +78,7 @@ public class ColorSwitchLevelTest {
         var env = new LabRecruitsEnvironment(new LabRecruitsConfig("CLRSWTCH"));
         if(USE_INSTRUMENT) instrument(env) ;
 
-        if(TestSettings.USE_GRAPHICS) {
-    		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-    		new Scanner(System.in) . nextLine() ;
-    	}
+        TestSettings.youCanRepositionWindow() ;
 
         // creating two test agents, Butty and Screeny:
         ComNode communication = new ComNode();

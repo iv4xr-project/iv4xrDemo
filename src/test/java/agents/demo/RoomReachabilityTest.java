@@ -77,10 +77,7 @@ public class RoomReachabilityTest {
         if(USE_INSTRUMENT) instrument(environment) ;
 
         try {
-        	if(TestSettings.USE_GRAPHICS) {
-        		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-        		new Scanner(System.in) . nextLine() ;
-        	}
+        	TestSettings.youCanRepositionWindow() ;
 
 	        // create a test agent
 	        var testAgent = new LabRecruitsTestAgent("agent1") // matches the ID in the CSV file
