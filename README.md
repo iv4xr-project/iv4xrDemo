@@ -22,7 +22,9 @@ Check the `pom.xml` of this Demo project.
 
 Build an executable of the [Lab Recruits](https://github.com/iv4xr-project/labrecruits). To do this you can clone or download the source code of this game. Open the project in Unity (note the specific version it needs) and build the executable from there.
 
-For Mac: put the produced `LabRecruits.app` in `gym/Mac/bin`. For Windows: put the produced files including `LabRecruits.exe` in `gym/Windows/bin`.
+  * Windows: put the produced files including `LabRecruits.exe` in `gym/Windows/bin`.
+  * Mac: put the produced `LabRecruits.app` in `gym/Mac/bin`.
+  * Linux: put the produced files including `LabRecruits` in `gym/Linux/bin`.
 
 The demo classes are in `src/test/java/agents/demo`. The demos are by default non-visual (you don't literally see the game runs). Set the variable `TestSettings.USE_GRAPHICS` in the corresponding demo-class to `true` if you want it to be visual.
 
@@ -33,7 +35,11 @@ The demo classes are in `src/test/java/agents/demo`. The demos are by default no
 * Maven
 
    This is if you just want to check that the project builds and that all its tests pass.
-   Just do `mvn compile` and `mvn test` at the project root.
+   Just do `mvn compile` and `mvn test` at the project root. Since the demo-classes are actually test-classes you can also use Maven to run them individually, e.g.:
+
+   ```mvn test -Dtest=agents.demo.R8FireTest```
+
+   See above how to turn on visualization.
 
 ### Other documentations
 
