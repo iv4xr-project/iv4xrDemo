@@ -132,13 +132,13 @@ public class TowerTest {
     /**
      * Debug that the agent can reach the tower=top
      */
-    //@Test
+    @Test
     public void test1() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("tower") ;
     	config.light_intensity = 0.3f ;
-    	config.view_distance = 6 ;
+    	config.view_distance = 10 ;
     	var environment = new LabRecruitsEnvironment(config);
 
         try {
@@ -157,12 +157,16 @@ public class TowerTest {
 	        		GoalLib.entityInteracted("b1k0"),
 	        		GoalLib.entityStateRefreshed("dNorth1"),
 	        		GoalLib.entityInteracted("b1k1"),
-	        		//GoalLib.entityStateRefreshed("dEast0"),
-	        		GoalLib.entityInCloseRange("dEast0")
-	        		//GoalLib.entityInteracted("b0k1")
-	        		//GoalLib.entityStateRefreshed("d0k0"),
-	        		//GoalLib.entityInteracted("b0k2"),
-	        		//GoalLib.entityStateRefreshed("d2k0")
+	        		GoalLib.entityStateRefreshed("dEast0"),
+	        		//GoalLib.entityInCloseRange("dEast0")
+	        		GoalLib.entityInteracted("b0k1"),
+	        		GoalLib.entityStateRefreshed("d0k0"),
+	        		GoalLib.entityInteracted("b0k2"),
+	        		GoalLib.entityStateRefreshed("dEast0"),
+	        		GoalLib.entityStateRefreshed("d2k0"),
+	        		GoalLib.entityInteracted("b3k0"),
+	        		GoalLib.entityStateRefreshed("dWest0"),
+	        		GoalLib.atBGF("Finish",0.3f,true)
 	        );
 
 	        
