@@ -30,7 +30,7 @@ public class LabRecruitsConfig {
     public float fire_spread = 0f;
     public float jump_force = 0.18f;
     public float view_distance = 10f;
-    public float light_intensity = 1f; // does not seem to work ... TODO
+    public float light_intensity = 0.6f; 
 
     /**
      *  Extra links between switches and doors that we want to explicitly
