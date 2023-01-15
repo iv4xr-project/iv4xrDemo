@@ -1,5 +1,7 @@
 /target/
 /gym/
+tmp/*
+!tmp/keepthis.txt
 .DS_Store
 .project
 .classpath

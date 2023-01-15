@@ -451,6 +451,12 @@ public class BeliefState extends W3DAgentState {
         // positions
         recentPositions.add(new Vec3(worldmodel.position.x, worldmodel.position.y, worldmodel.position.z)) ;
         if (recentPositions.size()>4) recentPositions.remove(0) ;
+        // ok well since this does NOT call super.updateState(), we put this
+        // logic from the super back, to do model learning:
+        if (gwmodel != null && gwmodelLearner !=null){
+			// if model learner is not null, invoke it:
+			gwmodelLearner.apply(this,gwmodel) ;
+		}
     }
 
     /**
