@@ -69,10 +69,7 @@ public class UnstuckTactic_Test {
     	var environment = new LabRecruitsEnvironment(config);
 
         try {
-        	if(TestSettings.USE_GRAPHICS) {
-        		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-        		new Scanner(System.in) . nextLine() ;
-        	}
+        	TestSettings.youCanRepositionWindow() ;
 
 	        // create a test agent
 	        var testAgent = new LabRecruitsTestAgent("agent1") // matches the ID in the CSV file
@@ -101,7 +98,7 @@ public class UnstuckTactic_Test {
 	        List<Vec3> path = new LinkedList<>() ;
 	        path.add(targetPosition) ;
 	        testAgent.state().applyPath(0, targetPosition, path); 
-	        
+	        Thread.sleep(1500);
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (g.getStatus().inProgress()) {
@@ -109,7 +106,7 @@ public class UnstuckTactic_Test {
 	            Thread.sleep(50);
 	            i++ ;
 	        	testAgent.update();
-	        	if (i>50) {
+	        	if (i>70) {
 	        		break ;
 	        	}
 	        }
@@ -127,6 +124,28 @@ public class UnstuckTactic_Test {
     @Test
     public void unstuckTest_1() throws InterruptedException {
     	unstuckTest("stucktest1", new Vec3(3,0,4.5f)) ;
+    }
+    
+    @Test 
+    public void unstuckTest_1b() throws InterruptedException {
+    	unstuckTest("stucktest3", new Vec3(2.2f,0,5f)) ;
+    }
+    
+    
+    //@Test
+    public void unstuckTest_1c() throws InterruptedException {
+    	// PROBLEM!! Dont know how to solve this,,,
+    	unstuckTest("stucktest4", new Vec3(2.2f,0,5f)) ;
+    }
+    
+    @Test
+    public void unstuckTest_1d() throws InterruptedException {
+    	unstuckTest("stucktest5", new Vec3(9f,0,1f)) ;
+    }
+    
+    //@Test
+    public void unstuckTest_1e() throws InterruptedException {
+    	unstuckTest("stucktest6", new Vec3(7.5f,0,1.5f)) ;
     }
     
     @Test

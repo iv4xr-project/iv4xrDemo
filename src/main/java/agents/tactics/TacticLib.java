@@ -15,6 +15,7 @@ import nl.uu.cs.aplib.multiAgentSupport.Message;
 import nl.uu.cs.aplib.agents.MiniMemory;
 import nl.uu.cs.aplib.utils.Pair;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
+import eu.iv4xr.framework.spatial.Matrix;
 import eu.iv4xr.framework.spatial.Vec3;
 import eu.iv4xr.framework.spatial.meshes.Face;
 
@@ -535,6 +536,11 @@ public class TacticLib {
     	    			System.out.println("#### forcing a move past the corner...to " + unstuckPosition) ;
     	    			//belief.mentalMap.insertNewWayPoint(unstuckPosition);
     	    			belief.env().moveToward(belief.id, belief.worldmodel().getFloorPosition() ,unstuckPosition) ;
+    	    			try {
+    	    				Thread.sleep(100) ;
+    	    			}
+    	    			catch(Exception e) { } 
+    	    			//belief.env().moveToward(belief.id, belief.worldmodel().getFloorPosition() ,unstuckPosition) ;
     	    		}
     	    		else {
     	    			// else .... for now do nothing :|
@@ -550,6 +556,20 @@ public class TacticLib {
     			.lift() ;
     	return unstuck ;
     }
+    
+    static Matrix rotationXZ(float degree) {
+       Matrix M	=  Matrix.mkM3x3(
+       		(float) Math.cos(Math.toRadians(degree)), 0 , (float) - Math.sin(Math.toRadians(degree)),
+       		0, 1, 0,
+       		(float) Math.sin(Math.toRadians(degree)), 0, (float) Math.cos(Math.toRadians(degree))
+       		);
+       return M ;
+    }
+    
+    static Matrix ROTxz75 = rotationXZ(75) ;
+    static Matrix ROTxzMin75 = rotationXZ(360-75) ;
+    
+    static Random rnd = new Random() ;
 
     /**
      * If the agent gets stuck in an bending corner (because the navigation algorithm does not
@@ -564,25 +584,62 @@ public class TacticLib {
      * current position.
      */
     public static Vec3 unstuck(BeliefState belief) {
-    	var agent_current_direction = Vec3.sub(belief.getCurrentWayPoint(), belief.worldmodel().getFloorPosition()) ;
+    	Vec3 p = belief.worldmodel().getFloorPosition() ;
+    	var agent_current_direction = Vec3.sub(belief.getCurrentWayPoint(), p) ;
 
+    	// let's try 90-degree to left or right:
+    	try {
+    		// expensive :(
+    		//System.out.println(">>> trying perpendicular...") ;
+    		
+    		// throw an exception if the length is 0:
+    		Vec3 direction =  agent_current_direction.normalized() ;
+    		List<Vec3> qs = new LinkedList<>() ;
+    		var v1 = Vec3.mul(Matrix.ROTxz90.apply(direction), 0.4f) ;
+    		var q1 = Vec3.add(p,v1) ;
+    		if (isPointInNavigableSurface(belief,q1)) {
+    			qs.add(q1) ;
+    		}
+    		var v2 = Vec3.mul(Matrix.ROTxz270.apply(direction), 0.4f) ;
+    		var q2 = Vec3.add(p,v2) ;
+    		if (isPointInNavigableSurface(belief,q2)) {
+    			qs.add(q2) ;
+    		}
+    		/*
+    		if (q1 != null && (q2==null || v1.lengthSq() < v2.lengthSq())) {
+    			return q1 ;
+    		}
+    		if (q2 != null && (q1 == null || v2.lengthSq() <= v1.lengthSq())) {
+    			return q2 ;
+    		}
+    		*/
+    		if (! qs.isEmpty()) {
+    			return qs.get(rnd.nextInt(qs.size())) ;
+    		}
+    	}
+    	catch(Exception e) {  }
+    	
+    	
+    	// try straight vertical or straight horizontal:
     	var x_orientation = Math.signum(agent_current_direction.x) ;  // 1 if the agent is facing eastly, and -1 if westly
     	var z_orientation = Math.signum(agent_current_direction.z) ;  // 1 if the agent is facing northly, and -1 if southly
     	// System.out.println("#### calling unstuck()") ;
     	// try E/W unstuck first:
     	if (x_orientation != 0) {
-    		var p = belief.worldmodel().getFloorPosition() ;
+    		p = p.copy() ;
     		p.x += TacticLib.UNSTUCK_DELTA * x_orientation ;
     		if (isPointInNavigableSurface(belief,p)) return p ;
         	//if (mentalMap.pathFinder.graph.vecToNode(p) != null) return p ;
     	}
     	// try N/S unstuck:
     	if (z_orientation != 0) {
-    		var p = belief.worldmodel().getFloorPosition() ;
+    		p = p.copy() ;
     		p.z += TacticLib.UNSTUCK_DELTA * z_orientation ;
         	if (isPointInNavigableSurface(belief,p)) return p ;
         	//if (mentalMap.pathFinder.graph.vecToNode(p) != null) return p ;
     	}
+    	
+    	
     	// can't find an unstuck option...
     	return null ;
     }

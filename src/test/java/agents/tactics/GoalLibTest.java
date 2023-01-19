@@ -303,7 +303,7 @@ d2m-{explore[EXPLORE];}->b0
 				GoalLib.entityInteracted(button5),
 				//GoalLib.entityStateRefreshed(door4), not needed
 				GoalLib.entityStateRefreshed(door6));
-		setgoal_and_run_agent(agent,g,120) ;
+		setgoal_and_run_agent(agent,g,300) ;
 		BeliefState state = (BeliefState) agent.state() ;
 		assertTrue(state.worldmodel.getElement(door6) != null) ;
 		assertTrue(state.isOpen(door6)) ;

@@ -21,12 +21,12 @@ w,f,f,f,f,f,f,w,f,f,f,f,w,f,f,f,f,f,f:t>e,w,f,w,w,w,f:dhf,w
 w,f,f,f,f,f,f,w,f:c>s,f,f,f:c>w,w,f,f,f,f,f,f:t>e,w,f,w,,w,f:dhf,w
 w,f,f,f:t>e,f,f,f:t>e,w,f,f:p2>s,f,f:p2>s,w,f:b^b_store,f,f,f,f,f,w,f,w,,w,f:dhf,w
 w,f,f,w,w,w,w,w,w,w,w,w,w,w,w,f:d>s^d_store_n,w,w,w,w,f,w,,w,f:dhf,w
-w,f,f,f:b^b_hall_1,f,f,f,f,f,f,f,f:b^b_hall_x:dhf,f:d>w^d_hall_1,f,f,f,w,w,f,f,f,w,w,w,f,w
+w,f,f,f:b^b_hall_1,f,f,f,f,f,f,f,f:b^b_hall_x:dhf,f:d>e^d_hall_1,f,f,f,w,w,f,f,f,w,w,w,f,w
 w,f,f:a^agent0,f,f,f,f,f,f,f,f,f,w,f:b^bintersection,f,f,f,f:d>w^d_sidehall,f,f:b^b_side,f,w,w,f,f,w
 w,f,f,f,f,f,f:t>s,f:t>s,f,f,f:t>s,f,f:d>w^d_hall_2,f,f,f,w,w,w,w,w,w,w,f,w,w
-w,w,w,w,w,w,w,w,w,f:d>s^d_lab_e,w,w,w,w,w,f:d>n^d_lab_w,w,w,w,f,f:bc>n,f,f:bc>n,f,w,
+w,w,w,w,w,w,w,w,w,f:d>s^d_lab_e,w,w,w,w,w,f:d>s^d_lab_w,w,w,w,f,f:bc>n,f,f:bc>n,f,w,
 ,,w,f,f,w,w,w,f,f,f,f,f,f,f,f,f,f,f:d>w^d_bcroom,f,f,f,f,f,w,
-w,w,f,f,f,f,w,w,f,f:dhf,f:dhf,f,f:dhf,f:dhf,f,f,f,f,w,f:bc>s,f,f:bc>s,f,w,w,
+w,w,f,f,f,f,w,w,f,f:dhf,f:dhf,f,f:dhf,f:dhf,f,f,f,f,w,w,f,f:bc>s,f,w,w,
 w,f,w,f,f,f,f,w,f:dhf,f,f:dhf,f:dhf,f:dhf,f:b^b_lab_x:dhf,f:dhf,f,f,f,w,w,w,w,w,w,,
 w,f:g^finish,f:d>e^d_finish,f,f:b^b_finish,wf>e,f,w,w,w,f,f,f,w,f,f,w,f:d>n^d_closet,w,,,,,,,
 w,f,w,f,f,f,f,w,,w,f:b^b_lab_e,f,w,f:t,w,f,w,f:b^b_closet,w,,,,,,,
@@ -57,7 +57,7 @@ w,,,,,,,,,,,,w,,,,,,,,,w,w,,,w
 w,,,,,,,,,,,,,,,,w,w,w,w,w,w,w,,w,w
 w,w,w,,,w,w,w,w,,w,w,w,w,w,,w,w,w,,,,,,w,
 ,,w,,,w,w,w,,,,,,,,,,,,,,,,,w,
-w,w,,,,,w,w,,,,,,,,,,,w,,,,,w,w,
+w,w,,,,,w,w,,,,,,,,,,,w,w,,,,w,w,
 ,,w,,,,,w,,,,,,,,,,,w,w,w,w,w,w,,
 ,,,,,w,,w,w,w,,,,,,,w,,w,,,,,,,
 ,,w,,,,,w,,w,,,,,,,w,,w,,,,,,,
@@ -88,7 +88,7 @@ w,,,,,,,,,,,w,w,,,,w,w,,,,w,w,,,w
 w,,,,,,,,,,w,w,w,,,,w,w,w,w,w,w,w,,w,w
 w,w,w,w,w,w,w,w,w,w,w,w,w,w,w,w,w,w,w,,,,,,w,
 ,,w,,,w,w,w,,,,,,,,,,,,,,,,,w,
-,w,w,,,,w,w,,,,,,,,,,,w,,,,,w,w,
+,w,w,,,,w,w,,,,,,,,,,,w,w,,,,w,w,
 ,,w,,,,,w,,,,,,,,,,,w,w,w,w,w,w,,
 ,,w,,,w,w,w,w,w,,,,,,,w,w,w,,,,,,,
 ,,w,,,,,w,,w,,,,,,,w,w,w,,,,,,,

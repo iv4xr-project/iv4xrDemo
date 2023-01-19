@@ -81,7 +81,7 @@ public class Lab1Test {
      * commenting out this test until we get a better un-stuck tactic. You can still
      * uncomment it to try it out.
      */
-    //@Test
+    @Test
     public void test_the_lab_is_finishable() throws InterruptedException {
 
         // Create an environment
@@ -90,7 +90,7 @@ public class Lab1Test {
         var environment = new LabRecruitsEnvironment(config);
 
         try {
-        	TestSettings.youCanRepositionWindow() ;
+        	//TestSettings.youCanRepositionWindow() ;
 
             // create a test agent
             var testAgent = new LabRecruitsTestAgent("agent0") // matches the ID in the CSV file

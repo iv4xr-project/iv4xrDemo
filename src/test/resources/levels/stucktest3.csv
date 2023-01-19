@@ -1,0 +1,17 @@
+button1,,,,,,,,,,
+|w,w,w,w,w,w,w,w,w,w,w
+w,f,w,f,f,f,f,f,f:bc,f:b^button1,w
+w,f:a^agent1,w,f,w,f,f,f,f,f,w
+w,f,w,f,w,f,f,f,f:bc,f,w
+w,f:od>s^door1,w,f,w,f,f,f,f,f,w
+w,f,f,f,w,f,f,f,f,f,w
+w,f,f,f,w,f,f,f,f,f,w
+w,w,w,w,w,w,w,w,w,w,w
+|w,w,w,w,w,w,w,w,w,w,w
+w,,w,,,,,,,,w
+w,,w,,w,,,,,,w
+w,,w,,w,,,,,,w
+w,,w,,w,,,,,,w
+w,,,,w,,,,,,w
+w,,,,w,,,,,,w
+w,w,w,w,w,w,w,w,w,w,w
