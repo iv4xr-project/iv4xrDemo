@@ -117,6 +117,25 @@ public class GoalLib {
         	  . lift();
     }
     
+    
+    public static GoalStructure entityInCloseRange2(String entityId) {
+    	//define the goal
+        Goal goal = new Goal("This entity is closeby: " + entityId)
+        		    . toSolve((BeliefState belief) -> {
+                        //check if the agent is close to the goal position
+        		    	var e = belief.worldmodel().getElement(entityId) ;
+        		    	if (e == null) return false ;
+                        return Vec3.distSq(belief.worldmodel().getFloorPosition(),e.getFloorPosition()) <= 1 ;
+                    });
+        //define the goal structure
+        return goal.withTactic(
+        		 FIRSTof(//the tactic used to solve the goal
+                   TacticLib.optimisticNavigateToEntity(entityId),//move to the goal position
+                   TacticLib.explore(), //explore if the goal position is unknown
+                   ABORT())) 
+        	  . lift();
+    }
+    
     /**
      * This method will construct a goal where the agent will go to the location of the given
      * entity. It will try to get within the distance of the specified delta from the center
@@ -211,7 +230,9 @@ public class GoalLib {
 	 * the agent has the latest observation of the entity. Getting the entity within
 	 * sight is enough to complete this goal.
 	 * 
-	 * This goal fails if the agent no longer believes that the entity is reachable.
+	 * <p>This goal fails if the agent no longer believes that the entity is reachable.
+	 * 
+	 * <p>
 	 */
     public static GoalStructure entityStateRefreshed(String id){
         var g =  goal("The belief on this entity is refreshed: " + id)
@@ -237,6 +258,25 @@ public class GoalLib {
        		 return g;
         	// g.maxbudget(8);
        		// return FIRSTof(g, SUCCESS()) ;
+    }
+    
+    public static GoalStructure entityStateRefreshed2(String id){
+        var g =  goal("The belief on this entity is refreshed: " + id)
+                .toSolve((BeliefState b) -> {
+                	
+                  var entity = b.worldmodel.getElement(id);
+                  return   (b.evaluateEntity(id, e -> b.age(e) == 0)
+                		  
+                		  );
+                  
+                })
+                .withTactic(FIRSTof(
+                        TacticLib.optimisticNavigateToEntity(id),    
+                        TacticLib.explore(),
+                        ABORT()))
+                .lift() ;
+        	
+       		 return g;
     }
 
     /**

@@ -106,12 +106,120 @@ public class TacticLib {
 				 rawNavigateTo(id)
 			   )  ;
 	}
+	
+	static Vec3 getDoorCenterPosition(LabEntity door) {
+		var entity_location = door.getFloorPosition() ;
+	    // Calculate the center of the square on which the target entity is located.
+	    // Note: the bottom-left position of the bottom-left corner is (0.5,-,0.5) so this need to be taken into
+	    // account.
+	    // First, substract 0.5 from (x,z) ... then round it down. Add 0.5 to get the center position.
+	    // Then add another 0.5 to compensate the 0.5 that we substracted earlier.
+	    var entity_sqcenter = new Vec3((float) Math.floor((double) entity_location.x - 0.5f) + 1f,
+	    		entity_location.y,
+	    		(float) Math.floor((double) entity_location.z - 0.5f) + 1f) ;
+	    return entity_sqcenter ; 
+	}
+	
+	
+	public static Pair<Vec3,List<Vec3>> calculatePathToDoor(BeliefState belief, LabEntity door, float delta) {
+		
+		boolean originalBlockingState = belief.pathfinder().getBlockingStatus(door) ;
+    	belief.pathfinder().setBlockingState(door,false) ;
+    	var door_center = getDoorCenterPosition(door) ;
+    	//var p = e.getFloorPosition() ;
+    	// System.out.println(">>> door " + id + " center:" + p) ;
+    	Pair<Vec3,List<Vec3>> path = belief.findPathTo(door_center,true) ; 
+    	
+    	if (path == null) {
+    		List<Vec3> candidates = new LinkedList<>() ;
+    		// adding North and south candidates
+    		candidates.add(Vec3.add(door_center, new Vec3(0,0,delta))) ;
+    		candidates.add(Vec3.add(door_center, new Vec3(0,0,-delta))) ;
+    		// adding east and west candidates:
+    		candidates.add(Vec3.add(door_center, new Vec3(delta,0,0))) ;
+    		candidates.add(Vec3.add(door_center, new Vec3(-delta,0,0))) ;
+
+    		// iterate over the candidates, if one would be reachable:
+    		for (var c : candidates) {
+    			// if c (a candidate point near the entity) is on the navigable,
+    			// we should ignore it:
+    			if (getCoveringFaces(belief,c) == null) continue ;
+    			path = belief.findPathTo(c, true) ; 
+    			if (path != null) {
+    				// found our target
+    				break ;
+    			}
+    		}
+    	}
+    	
+    	belief.pathfinder().setBlockingState(door,originalBlockingState) ;	 
+    	return path ;
+	}
+	
+	/**
+	 * Guiding to an entity. If it is a door, we assume the door is open.
+	 */
+	public static Tactic optimisticNavigateToEntity(String id) {
+		
+		MiniMemory memory = new MiniMemory("S0") ;
+		
+		Action move = unguardedNavigateTo("Navigate to " + id)
+			      // replacing its guard with this new one:
+	              . on((BeliefState belief) -> {
+	                	var e = (LabEntity) belief.worldmodel.getElement(id) ;
+	    			    if (e==null) return null ;
+	    			    
+	    			    Vec3 thisTacticMemorizedGoalLocation = null ;
+						if (!memory.memorized.isEmpty()) {
+							thisTacticMemorizedGoalLocation = (Vec3) memory.memorized.get(0) ;
+						}
+						Vec3 currentGoalLocation = belief.getGoalLocation() ;
+						
+						if (thisTacticMemorizedGoalLocation == null
+							    || currentGoalLocation == null
+							    || Vec3.dist(thisTacticMemorizedGoalLocation,currentGoalLocation) >= 0.05) {
+							
+							Pair<Vec3,List<Vec3>> path = null ;
+		    			    if (e.type.equals(LabEntity.DOOR)) {
+		    			    	boolean originalBlockingState = belief.pathfinder().getBlockingStatus(e) ;
+		    			    	belief.pathfinder().setBlockingState(e,true) ;
+		    			    	var p = getDoorCenterPosition(e) ;
+		    			    	//var p = e.getFloorPosition() ;
+		    			    	// System.out.println(">>> door " + id + " center:" + p) ;
+		    			    	path = calculatePathToDoor(belief,e,0.9f) ;
+		    			    	belief.pathfinder().setBlockingState(e,originalBlockingState) ;	 
+		    			    }
+		    			    else {
+		    			    	path = belief.findPathTo(e.getFloorPosition(),true) ; 
+		    			    }
+		    			    System.out.println(">>> path:" + path) ;
+		    			    memory.memorized.clear();
+	    			        if (path != null) memory.memorize(path.fst);
+		    			    return path ;
+						}
+						else {
+							return new Pair (thisTacticMemorizedGoalLocation,null) ;
+						}
+						
+	    			    
+	                }) ;
+		
+		return FIRSTof(
+				 forceReplanPath(),
+				 tryToUnstuck(),
+				 move.lift()
+			   )  ;
+	}
+	
+	static Tactic navigateToCloseByPosition(String id) {
+		return navigateToCloseByPosition(id,0.5f) ;
+	}
 
 	/**
 	 * Navigate to a location, nearby the given entity, if the location is reachable.
 	 * Locations east/west/south/north of the entity of distance 0.7 will be tried.
 	 */
-	static Tactic navigateToCloseByPosition(String id) {
+	static Tactic navigateToCloseByPosition(String id, float delta) {
 
 		MiniMemory memory = new MiniMemory("S0") ;
 
@@ -135,7 +243,8 @@ public class TacticLib {
 					    || Vec3.dist(closeByLocation,currentGoalLocation) >= 0.05
 					    || belief.getMemorizedPath() == null) {
 						// in all these cases we need to calculate the location to go
-
+                        
+						/*
 						//var agent_location = belief.worldmodel.getFloorPosition() ;
 	    			    var entity_location = e.getFloorPosition() ;
 	    			    // Calculate the center of the square on which the target entity is located.
@@ -146,9 +255,10 @@ public class TacticLib {
 	    			    var entity_sqcenter = new Vec3((float) Math.floor((double) entity_location.x - 0.5f) + 1f,
 	    			    		entity_location.y,
 	    			    		(float) Math.floor((double) entity_location.z - 0.5f) + 1f) ;
-	    			    
-	    			    List<Vec3> candidates = new LinkedList<>() ;
-	    			    float delta = 0.5f ;
+	    			    */
+						var entity_sqcenter = getDoorCenterPosition(e) ;
+						
+ 	    			    List<Vec3> candidates = new LinkedList<>() ;
 	    			    // adding North and south candidates
 	    			    candidates.add(Vec3.add(entity_sqcenter, new Vec3(0,0,delta))) ;
 	    			    candidates.add(Vec3.add(entity_sqcenter, new Vec3(0,0,-delta))) ;
@@ -470,6 +580,7 @@ public class TacticLib {
                 	var someDoorHasChangedState = belief.changedEntities.stream().anyMatch(e -> e.type == LabEntity.DOOR) ;
 
                 	if (someDoorHasChangedState) return true ;
+                	// System.out.println(">>> forcereplan: no door change state") ;
                 	
                 	// case 2: detecting that some other agent or an NPC has changed position by at least
                 	// 2 units:

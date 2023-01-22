@@ -67,10 +67,7 @@ public class Pathfinding_around_mobile_Test {
         if (! environment.startSimulation())
             throw new InterruptedException("Unity refuses to start the Simulation!");
 
-        if(TestSettings.USE_GRAPHICS) {
-    		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-    		new Scanner(System.in) . nextLine() ;
-    	}
+        TestSettings.youCanRepositionWindow() ;
 
         var target = "button0" ;
         var g = GoalLib.atBGF(target,0.5f,false) ;

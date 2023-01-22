@@ -179,10 +179,7 @@ public class R8FireTest {
     	//config.agent_speed = 0.2f ;
     	//config.view_distance = 6 ;
     	var environment = new LabRecruitsEnvironment(config);
-    	if(TestSettings.USE_GRAPHICS) {
-    		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-    		new Scanner(System.in) . nextLine() ;
-    	}
+    	TestSettings.youCanRepositionWindow() ;
     	var testAgent = new LabRecruitsTestAgent("Elono")  ;
     	
     	// configuring SA1-solver:		

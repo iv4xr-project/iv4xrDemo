@@ -3,6 +3,7 @@ package world;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import agents.tactics.TacticLib;
 import eu.iv4xr.framework.extensions.ltl.gameworldmodel.*;
 import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import eu.iv4xr.framework.spatial.LineIntersectable;
@@ -52,6 +53,10 @@ public class BehaviorModelLearner {
 		return o.type.equals(LabEntity.DOOR) ;
 	}
 	
+	public boolean isButton(GWObject o) {
+		return o.type.equals(LabEntity.SWITCH) ;
+	}
+	
 	boolean isDoor(WorldEntity e) {
 		return e.type.equals(LabEntity.DOOR) ;
 	}
@@ -97,7 +102,7 @@ public class BehaviorModelLearner {
 	}
 	
 	
-	GWObject getObj(GameWorldModel model, String id) {
+	public GWObject getObj(GameWorldModel model, String id) {
 		return model.defaultInitialState.objects.get(id) ;
 	}
 	
@@ -274,6 +279,51 @@ public class BehaviorModelLearner {
 		for(var oId : zone.members) {
 			GWObject o = getObj(model,oId) ;
 		    if (! isObstacle(o)) return o ;
+		}
+		return null ;
+	}
+	
+	public GWZone getCurrentZone(BeliefState S, GameWorldModel model) {
+		var openDoors = closeAllObstacles(S) ;
+		GWZone currentZone = null ;
+		for(var Z : model.zones) {
+			for (var oId : Z.members) {
+				GWObject o = getObj(model,oId) ;
+				if (isObstacle(o)) continue ;
+				var path = S.pathfinder().findPath(
+						S.worldmodel().getFloorPosition(), 
+						o.position,
+						BeliefState.DIST_TO_FACE_THRESHOLD) ;	
+				if (path != null && !path.isEmpty()) {
+					currentZone = Z ;
+					break ;
+				}
+					
+			}
+			if (currentZone != null) break ;
+		}
+		restoreObstaclesState(openDoors) ;
+		return currentZone ;
+	}
+	
+	public List<String> getCriticalDoors(BeliefState S, String targetEntity) {
+		List<String> critDoors = new LinkedList<>() ;
+		LabEntity target = S.worldmodel().getElement(targetEntity) ;
+		if (target==null) 
+			return null ;
+  		for (WorldEntity e : S.worldmodel().elements.values()) {
+  			var e_ = (LabEntity) e ;
+			if (!isDoor(e) || e.id.equals(targetEntity)) continue ;
+			if (! S.pathfinder().isBlocking(e_))
+				continue ;
+			
+			S.pathfinder().setBlockingState(e_,false);			
+		    var path = TacticLib.calculatePathToDoor(S, target, 0.9f) ;
+			if (path != null && !path.snd.isEmpty()) {
+				critDoors.add(e.id) ;
+			}
+			S.pathfinder().setBlockingState(e_,true);
+			if (critDoors.size()>0) return critDoors ;
 		}
 		return null ;
 	}
