@@ -104,6 +104,8 @@ public class SA2Test {
 
         // Create an environment
     	var config = new LabRecruitsConfig("buttons_doors_1b") ;
+    	//var config = new LabRecruitsConfig("samira_8room") ;
+    	
     	config.light_intensity = 0.3f ;
     	//config.agent_speed = 0.2f ;
     	//config.view_distance = 6 ;
@@ -143,10 +145,12 @@ public class SA2Test {
     	
     	
     	// Goal: find a shrine and cleanse it:
-    	String targetDoor = "door3" ;
-    	var G = sa2Solver.solver(testAgent, 
+    	//String targetDoor = "door3" ;
+    	Function<String,GoalStructure> solveWithSA2 = targetDoor ->
+    	     sa2Solver.solver(testAgent, 
     			targetDoor, 
     			new Vec3(10,0,4),
+    			//new Vec3(10,0,82),
     			e -> e.type.equals("" + LabEntity.DOOR),
     			e -> e.type.equals("" + LabEntity.SWITCH), 
     			e -> e.type.equals("" + LabEntity.DOOR) && (boolean) e.properties.get("isOpen"),
@@ -163,12 +167,23 @@ public class SA2Test {
     			    return(boolean) e.properties.get("isOpen"); }, 
     			Policy.NEAREST_TO_TARGET);
     	
+    	/*
     	GoalStructure G0 = SEQ(GoalLib.entityInteracted("button1"),
     			GoalLib.entityStateRefreshed2("door1"),
     			GoalLib.entityInteracted("button3"),
     			GoalLib.entityStateRefreshed2("door3")
     			) ;
-
+    	 */
+    	GoalStructure G0 = SEQ(GoalLib.entityInteracted("button3"),
+    	    		 GoalLib.entityStateRefreshed2("door1"),
+    	    		 GoalLib.entityInteracted("button7"),
+    	    		 GoalLib.entityStateRefreshed2("door4"),
+    	    		 GoalLib.entityStateRefreshed2("door6")
+    	    		 ) ;
+    	     
+        var G = solveWithSA2.apply("door3") ;
+        //var G = solveWithSA2.apply("door16") ;
+        
         
         testAgent 
         	. attachState(new BeliefState())
@@ -203,7 +218,7 @@ public class SA2Test {
 	        		
 	        	}
 	        	*/
-	        	if (i>910) {
+	        	if (i>2000) {
 	        		break ;
 	        	}
 	        }

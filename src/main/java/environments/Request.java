@@ -32,7 +32,8 @@ public class Request<ResponseType>  {
 	    START,
 	    INIT,
 	    UPDATE_ENVIRONMENT,
-	    AGENTCOMMAND
+	    AGENTCOMMAND,
+	    MAKE_SCREENSHOT
 	}
 
     /**
@@ -125,5 +126,13 @@ public class Request<ResponseType>  {
      */
     public static Request<Boolean> updateEnvironment(){
         return new Request<>(Boolean.class, RequestType.UPDATE_ENVIRONMENT);
+    }
+    
+    /**
+     * Request Lab Recruits to make a screenshot and saving it to the specified
+     * filename.
+     */
+    public static Request<Boolean> mkScreenShot(String filename) {
+    	return new Request<>(Boolean.class, RequestType.MAKE_SCREENSHOT, filename);
     }
 }

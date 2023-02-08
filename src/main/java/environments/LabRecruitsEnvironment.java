@@ -140,6 +140,21 @@ public class LabRecruitsEnvironment extends W3DEnvironment {
             return false;
         }
     }
+    
+    /**
+     * Send a command to Lab Recruits to make a screenshot, and saving it in the specified
+     * filename.
+     */
+    public Boolean mkScreenShot(String filename){
+    	try {
+    		return sendPackage(Request.mkScreenShot(filename));
+    	}
+    	catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println(String.format("%s: Sending a make-screenshot command fails.", PrintColor.FAILURE()));
+            return false;
+        }
+    }
 
     /**
      * Press the "pause-button" in Unity. This will pull the Unity-side paused.

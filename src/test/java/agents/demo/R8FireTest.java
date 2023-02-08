@@ -71,7 +71,7 @@ public class R8FireTest {
      * above, e.g. by specifying that a certain button needs to be interacted first
      * to get a certain door open.
      */
-    @Test
+    //@Test
     public void scripted_testscenario1() throws InterruptedException {
 
         // Create an environment

@@ -17,6 +17,9 @@ import nl.uu.cs.aplib.mainConcepts.Environment;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import static org.junit.jupiter.api.Assertions.* ;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.junit.jupiter.api.AfterAll;
@@ -25,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import game.Platform;
 import game.LabRecruitsTestServer;
 import world.BeliefState;
+import world.LabEntity;
 
 import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
@@ -40,7 +44,7 @@ public class TowerTest {
     static void start() {
     	// TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	// TestSettings.USE_GRAPHICS = true ;
+    	TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -137,15 +141,12 @@ public class TowerTest {
 
         // Create an environment
     	var config = new LabRecruitsConfig("tower") ;
-    	config.light_intensity = 0.3f ;
+    	config.light_intensity = 1f ;
     	config.view_distance = 10 ;
     	var environment = new LabRecruitsEnvironment(config);
 
         try {
-        	if(TestSettings.USE_GRAPHICS) {
-        		System.out.println("You can drag then game window elsewhere for beter viewing. Then hit RETURN to continue.") ;
-        		new Scanner(System.in) . nextLine() ;
-        	}
+        	TestSettings.youCanRepositionWindow();
 
 	        // create a test agent
 	        var testAgent = new LabRecruitsTestAgent("agent0") 
@@ -177,22 +178,42 @@ public class TowerTest {
 
 
 	        //environment.startSimulation(); 
+	        boolean mkScreenShot = true ;
+	        boolean toviewShotTaken = false ;
+	        String imgBaseFileName = System.getProperty("user.dir") + File.separator + "tmp"  + File.separator + "tower_" ;
+	        var time = System.currentTimeMillis() ;
 	        int i = 0 ;
 	        // keep updating the agent
 	        while (G.getStatus().inProgress()) {
 	        	System.out.println("*** " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
 	            Thread.sleep(50);
+	            var b3k0 = (LabEntity) testAgent.state().get("b3k0") ;
+	            if (mkScreenShot && i % 100 ==0) {
+	            	environment.mkScreenShot(imgBaseFileName + i + ".png") ;
+	            }
+	            if (mkScreenShot && b3k0 != null && !toviewShotTaken 
+	            		&& Vec3.distSq(testAgent.state().worldmodel().getFloorPosition(),
+	            				b3k0.getFloorPosition()) <= 1
+	            		&& i % 100 !=0) {
+	            	environment.mkScreenShot(imgBaseFileName + "top_" + i + ".png") ;
+	            	toviewShotTaken = true ;
+	            }
 	            i++ ;
 	        	testAgent.update();
 	        	if (i>3500) {
 	        		break ;
 	        	}
 	        }
+	        if (mkScreenShot) {
+            	environment.mkScreenShot(imgBaseFileName + i + ".png") ;
+            }
+	        time = System.currentTimeMillis() - time;
 	        
 	        // check that we have passed both tests above:
 	        //assertTrue(dataCollector.getNumberOfPassVerdictsSeen() == 4) ;
 	        // goal status should be success
 	        assertTrue(testAgent.success());
+	        System.out.println("** # turns=" + i + ", exectime="+ time+ "ms") ;
 	        // close
 	        //testAgent.printStatus();
         }
