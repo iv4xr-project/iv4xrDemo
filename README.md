@@ -8,7 +8,7 @@ from its [repository](https://github.com/iv4xr-project/labrecruits).
 
 You will need correct versions of the iv4XR Framework and the game Lab Recruits, which are compatible with this version of Demo.
 * _Which version of Lab Recruits game should be used?_ Demo version 2.3.x should use LR-game version 2.1.x (e.g. 2.1.5). This version has no monster.
-Demo version 2.4.x should use LR-game 2.2.x (with monsters).
+Demo version 2.4.x should use LR-game 2.2.x (with monsters); if you also want the feature to take screenshots use 2.3.x.
 * _Which version of the iv4XR Framework is needed?_
 Check the `pom.xml` of this Demo project.
 

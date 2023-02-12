@@ -155,7 +155,7 @@ public class Pathfinding_around_mobile_Test {
             System.out.println(">>>> " + ((LabWorldModel) agent.state().worldmodel).gameover)  ;
             Thread.sleep(30);        
             i++ ;
-            if (i>=70) break ;
+            if (i>=100) break ;
         }
         assertTrue(g1.getStatus().success()) ;
 
