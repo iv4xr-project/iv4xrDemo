@@ -1,0 +1,12 @@
+CB1,screen,,,,,,,,
+CB2,screen,,,,,,,,
+|w,w,w,w,w,w,w,w,w,w
+w,f:a^agent0,f,f,f,f,f,f,f,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f:cb#0000FF^CB1,f,f,f:cs>n^screen,f,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f:cb#D9D9D9^CB2,f,f,f,f,w
+w,f,f,f,f,f,f,f,f,w
+w,f,f,f,f,f,f,f,f,w
+w,w,w,w,w,w,w,w,w,w

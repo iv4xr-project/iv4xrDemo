@@ -1,15 +1,16 @@
 # <img src="./docs/iv4xr_logo_1200dpi.png" width="20%"> <img src="./docs/logo.png" width="8%"> iv4XR Demo
 
 
-This is a demo version 2.x for the [iv4XR Agent-based Testing Framework](https://github.com/iv4xr-project/aplib),
+This is a demo version 2.5.x for the [iv4XR Agent-based Testing Framework](https://github.com/iv4xr-project/aplib),
 demonstrating that iv4XR test agents can control a game called _Lab Recruits_ to perform testing tasks.
 The game executable is no longer included in the repository; you need to build it yourself
 from its [repository](https://github.com/iv4xr-project/labrecruits).
 
 You will need correct versions of the iv4XR Framework and the game Lab Recruits, which are compatible with this version of Demo.
 * _Which version of Lab Recruits game should be used?_ Demo version 2.3.x should use LR-game version 2.1.x (e.g. 2.1.5). This version has no monster.
-Demo version 2.4.x should use LR-game 2.2.x (with monsters); if you also want the feature to take screenshots use 2.3.x.
-* _Which version of the iv4XR Framework is needed?_
+Demo version 2.4.x can use LR-game 2.3.1 (with monsters, and can take screenshots).
+Demo version 2.5.x should use LR-game 2.3.2 (include important bug fixes).
+* _Which version of APLIB (aka the iv4XR Framework-core) is needed?_
 Check the `pom.xml` of this Demo project.
 
    <img src="./docs/LRSS1.png" width="48%"><img src="./docs/LRSS3.png" width="50%">
@@ -43,9 +44,10 @@ The demo classes are in `src/test/java/agents/demo`. The demos are by default no
 
 ### Other documentations
 
-* For iv4xr team: [World Object Model](./docs/Observation.md)
-* For iv4xr team: [where to find goals and tactic](./docs/LRtestingLib.md)
-* For others: [basic interface to control _Lab Recruits_](./docs/BasicInterface.md)
+* Basic interface to control _Lab Recruits_](./docs/BasicInterface.md)
+* [World Object Model](./docs/Observation.md)
+* [Where to find goals and tactics](./docs/LRtestingLib.md)
+
 
 ### What's in the package
 

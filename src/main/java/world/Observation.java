@@ -60,12 +60,12 @@ public class Observation {
 
         /** For colored buttons */
     	static public class Colorized {
-            public Color color;
+            public Color colorCode;
         }
 
         /** Colored screen */
     	static public class ColorScreen {
-            public Color color;
+            public Color colorCode;
         }
         
     	static public class Color implements Serializable {
@@ -73,6 +73,11 @@ public class Observation {
 			public float r;
         	public float g;
         	public float b;
+        	
+        	public Color(float r, float g, float b) {
+        		this.r = r ; this.g = g ; this.b = b ;
+        	}
+        	
         	@Override
         	public String toString() {
         		return("" + r + "/" + g + "/" + b) ;
@@ -242,7 +247,7 @@ public class Observation {
             }
             if (obj.Colorized != null) {
                 builder = builder.andThen(we ->{
-                    we.properties.put("color", obj.Colorized.color);
+                    we.properties.put("color", obj.Colorized.colorCode);
                     return we;
                 });
             }
@@ -250,7 +255,7 @@ public class Observation {
             we_type = LabEntity.COLORSCREEN;
             builder = builder.andThen(we -> {
             	//System.out.println("### org color: " + obj.ColorScreen.color) ;
-                we.properties.put("color", obj.ColorScreen.color);
+                we.properties.put("color", obj.ColorScreen.colorCode);
                 return we;
             });
         } else if (obj.tag.equals("Goal")) {
