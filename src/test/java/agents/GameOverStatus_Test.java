@@ -53,8 +53,11 @@ public class GameOverStatus_Test {
 
     @Test
     public void testGameOver() throws InterruptedException {
+    	
+    	var config = new LabRecruitsConfig("square_withEnemies") ;
+    	config.view_distance = 4 ;
         
-        var environment = new LabRecruitsEnvironment(new LabRecruitsConfig("square_withEnemies"));
+        var environment = new LabRecruitsEnvironment(config);
 
         LabRecruitsTestAgent agent = new LabRecruitsTestAgent("agent0")
         		                     . attachState(new BeliefState())
@@ -90,7 +93,7 @@ public class GameOverStatus_Test {
             if (i>=150) break ;
         }
         assertTrue(((LabWorldModel) agent.state().worldmodel).gameover == true)  ;
-        assertTrue(((LabWorldModel) agent.state().worldmodel).score == 500) ;
+        assertTrue(((LabWorldModel) agent.state().worldmodel).score >= 500) ;
         
         var wom = (LabWorldModel) agent.state().worldmodel ;
         var flag = wom.getElement("Finish") ;

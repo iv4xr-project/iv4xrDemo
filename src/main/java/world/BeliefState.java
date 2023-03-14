@@ -99,6 +99,9 @@ public class BeliefState extends W3DAgentState {
     private int currentWayPoint_ = -1;
 
     List<Vec3> recentPositions = new LinkedList<>() ;
+    
+    public int lastTimePathReplanDueToMobile = 0 ;
+    public int updateCount = 0 ;
 
     public BeliefState() { 
     	worldmodel  = new LabWorldModel() ;
@@ -457,6 +460,7 @@ public class BeliefState extends W3DAgentState {
 			// if model learner is not null, invoke it:
 			gwmodelLearner.apply(this,gwmodel) ;
 		}
+        this.updateCount++ ;
     }
 
     /**
@@ -530,10 +534,11 @@ public class BeliefState extends W3DAgentState {
 //    	
 //    	changedEntities.forEach(e -> System.out.println("khodesh" + e.id));
 //    	System.out.println("****end updateeee");	
-    	boolean refreshNeeded = false ;
+    	//boolean refreshNeeded = false ;
         for (var e : rawChangedEntities) {
         	if (e.type.equals(LabEntity.DOOR) || e.type.equals(LabEntity.COLORSCREEN) 
         			|| (e.type.equals(LabEntity.NPC))
+        			|| (e.type.equals(LabEntity.ENEMY))
         			|| (e.type.equals(LabEntity.PLAYER) && ! e.id.equals(this.id))
         		) {
         		Obstacle o = findThisObstacleInNavGraph(e.id) ;

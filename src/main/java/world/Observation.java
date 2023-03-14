@@ -214,6 +214,10 @@ public class Observation {
         	// apply size adjustment for enemy and NPC:
             if (we.type == LabEntity.ENEMY || we.type == LabEntity.NPC) {
             	we.position.y += 0.47 ;
+            	// adjusting size to make it appear a bit larger towards agent pathfinding
+            	if (we.type == LabEntity.ENEMY) {
+                  	we.extent = new Vec3(0.5f,0.65f,0.5f) ;
+            	}
             }
         	 // adjustment for player-type:
             if (we.type == LabEntity.PLAYER) {

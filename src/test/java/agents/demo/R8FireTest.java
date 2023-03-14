@@ -142,7 +142,7 @@ public class R8FireTest {
      * will never be achieved; we just use it to provide a bogus goal to trigger 
      * exploration work.
 ]    */
-    GoalStructure exploreG(int budget) {
+    public static GoalStructure exploreG(int budget) {
     	GoalStructure G = goal("exploring")
     			.toSolve((BeliefState S) -> false)
     			.withTactic(

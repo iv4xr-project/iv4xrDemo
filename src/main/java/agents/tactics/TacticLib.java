@@ -583,24 +583,34 @@ public class TacticLib {
                 	// System.out.println(">>> forcereplan: no door change state") ;
                 	
                 	// case 2: detecting that some other agent or an NPC has changed position by at least
-                	// 2 units:
+                	// 2 units wrt to last time it was seen.
+                	// Note that this does not account for moving NPC/agent that is currently within
+                	// observation range, as their delta-position would then be less than 2.
                 	var mobiles = belief.worldmodel.elements.values().stream() 
                 			.filter(e -> e.type.equals(LabEntity.NPC)  
+                						 || e.type.equals(LabEntity.ENEMY)  
                 					     || (e.type.equals(LabEntity.PLAYER) && !e.id.equals(belief.id)))
                 			.collect(Collectors.toList()) ;
                 	for (var mob : mobiles) {
                 		if (mob.timestamp == belief.worldmodel.timestamp
-                				&& mob.hasPreviousState()
-                				&& Vec3.distSq(mob.position, mob.getPreviousState().position) > 4
+                				&& mob.type.equals(LabEntity.ENEMY) 
                 				) {
+                			if (belief.updateCount > belief.lastTimePathReplanDueToMobile + 8) {
+                				belief.lastTimePathReplanDueToMobile = belief.updateCount+1 ;
+                				System.out.println(">>>> mob in vicinity, mob-replan-timeout. Mob:" + mob.id) ;
+                				return true ;
+                			}
+                			
+                		}
+                		if (mob.timestamp == belief.worldmodel.timestamp
+                				&& mob.hasPreviousState()
+                				&& Vec3.distSq(mob.position, mob.getPreviousState().position) > 4f
+                				) {
+                			System.out.println(">>>> mob noticed, with significant diff from its last seen pos. Mob:" + mob.id) ;
                     		return true ;
                 		}
-                		if (!mob.hasPreviousState() && mob.lastStutterTimestamp < 0) {
-                			System.out.println(">>>> noticing mob " + mob.id) ;
-                			System.out.println(">>>> tstamp " + mob.timestamp) ;
-                			System.out.println(">>>> lastStutterTimestamp " + mob.lastStutterTimestamp) ;
-                			System.out.println(">>>> has previous: " + mob.hasPreviousState()) ;
-                			
+                		if (!mob.hasPreviousState() && mob.timestamp == belief.worldmodel.timestamp) {
+                			System.out.println(">>>> noticing new mob " + mob.id) ;                			
                 			// the mob was seen first time:
                 			return true ;
                 		}
@@ -838,6 +848,14 @@ public class TacticLib {
                     return belief;
                 }).lift();
         return observe;
+    }
+    
+    public static Action mkScreenShot(String filename) {
+    	return action("MakeScreenShot")
+    	.do1((BeliefState belief) -> {
+    	   belief.env().mkScreenShot(filename) ;
+    	   return belief ;
+    	}) ;
     }
 
 /*

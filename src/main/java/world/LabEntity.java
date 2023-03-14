@@ -62,6 +62,7 @@ public class LabEntity extends WorldEntity implements LineIntersectable, Seriali
 	public Collection<Vec3> intersect(Line l) {
 		// only these types can block movements:
 		if (type.equals(DOOR) || type.equals(COLORSCREEN) 
+			|| type.equals(ENEMY)
 			|| type.equals(PLAYER) 
 			|| type.equals(NPC)) {
 			// use a box to calculate the intersection with this door :D .. stretch the extent a bit larger
