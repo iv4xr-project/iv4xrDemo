@@ -101,8 +101,10 @@ public class SimpleInteractionTest {
                     + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
         	var d1 = testAgent.state().worldmodel.getElement("door1") ;
         	var b1 = testAgent.state().worldmodel.getElement("button1") ;
-        	if (d1 != null)
+        	if (d1 != null) {
         	    System.out.println("*** door1 open: " + d1.getBooleanProperty("isOpen")) ;
+        	    System.out.println("***         d1: " + d1) ;        		
+        	}
         	if (b1 != null)
         	    System.out.println("*** button1 on: " + b1.getBooleanProperty("isOn")) ;
         	testAgent.update();

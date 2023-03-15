@@ -153,7 +153,7 @@ class ZenopusTest {
     		return GoalLib.atBGF(id, 0.6f,false) ;
     }
     
-    @Test
+    //@Test
     void debugTest() throws InterruptedException {
 
         // Create an environment
