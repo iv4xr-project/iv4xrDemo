@@ -9,6 +9,8 @@ package agents.tactics;
 
 import static nl.uu.cs.aplib.AplibEDSL.*;
 import static eu.iv4xr.framework.Iv4xrEDSL.* ;
+
+import nl.uu.cs.aplib.mainConcepts.Action;
 import nl.uu.cs.aplib.mainConcepts.Goal;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
 import nl.uu.cs.aplib.mainConcepts.Tactic;
@@ -20,6 +22,8 @@ import eu.iv4xr.framework.mainConcepts.WorldEntity;
 import world.BeliefState;
 import world.LabEntity;
 
+import java.io.File;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 
@@ -117,23 +121,68 @@ public class GoalLib {
         	  . lift();
     }
     
-    
+    /**
+     * An optimistic variant of {@link #entityInCloseRange(String)}. If the target is a door, it
+     * will assume it is open and just navigate to a position of distance 1 from the door's center
+     * location. Even if the door turns out to be closed, this should work.
+     * 
+     * <p> Also include a healing-tactic. It will use a nearby healing flag, if there is one,
+     * to heal up. It will only do this 1x during the entire goal.
+     */
     public static GoalStructure entityInCloseRange2(String entityId) {
     	//define the goal
-        Goal goal = new Goal("This entity is closeby: " + entityId)
+        Function<Void,Goal> getClose = dummy -> new Goal("This entity is closeby: " + entityId)
         		    . toSolve((BeliefState belief) -> {
                         //check if the agent is close to the goal position
         		    	var e = belief.worldmodel().getElement(entityId) ;
         		    	if (e == null) return false ;
                         return Vec3.distSq(belief.worldmodel().getFloorPosition(),e.getFloorPosition()) <= 1 ;
-                    });
-        //define the goal structure
-        return goal.withTactic(
-        		 FIRSTof(//the tactic used to solve the goal
-                   TacticLib.optimisticNavigateToEntity(entityId),//move to the goal position
-                   TacticLib.explore(), //explore if the goal position is unknown
-                   ABORT())) 
-        	  . lift();
+                      })
+        		    .withTactic(
+        		       FIRSTof(//the tactic used to solve the goal
+        		         healWhenSeeingAFlag(),  
+        		         TacticLib.optimisticNavigateToEntity(entityId),//move to the goal position
+        		         TacticLib.explore(), //explore if the goal position is unknown
+        		         ABORT())) ;
+        
+        // 2x attempts to get close; the first one might get interrupted by healing goal:
+        return FIRSTof(
+        		getClose.apply(null).lift(), 
+        		getClose.apply(null).lift()) ;
+    }
+    
+    /**
+     * A tactic to that deploy a new goal for the agent to heal up at a healing flag, if one 
+     * is close-by and if the agent health is below a certain threshold.
+     */
+    static private Tactic healWhenSeeingAFlag() {
+    	Action heal = action("healup").do2((BeliefState belief) -> (WorldEntity e) -> {
+    		     	belief.owner().addAfterWithAutoRemove(
+    		     			SEQ(atBGF(e.id,0.5f,false,false), // BGF, but turn off healing!
+    		     			    FAIL())
+    		     			) ;
+    				return null ;
+    			})
+    			.on((BeliefState belief) -> {
+    				if (belief.worldmodel().health > 75) return null ;
+    				// HP <= 75
+    				WorldEntity flag = null ;
+    				for (var e : belief.worldmodel.elements.values()) {
+    					var e_ = (LabEntity) e ;
+    					if (e.type.equals(LabEntity.GOAL) 
+    							&& ! belief.usedHealingFlags.contains(e.id)
+    							&& Vec3.distSq(belief.worldmodel.position, e.position) <= 400
+    							&& belief.pathfinder().findPath(belief.worldmodel().getFloorPosition(), 
+    									e_.getFloorPosition(), 
+    									BeliefState.DIST_TO_FACE_THRESHOLD) 
+    							   != null) {
+    						return e ;
+    					}
+    				}
+    				return null ;
+    			})
+    			;
+    	return SEQ(heal.lift(), Abort().lift()) ; // always abort at the end
     }
     
     /**
@@ -153,11 +202,18 @@ public class GoalLib {
      * its center point will always appear as unreachable to the pathfinder. Furniture like
      * table and chair cannot be targetted either. They are put outside the navigation mesh, so
      * the pathfinder won't be able to find a path to their center.
+     * 
+     * <p>More note: the goal also includes a healing tactic. It will use a nearby healing flag, 
+     * if there is one, to heal up. It will only do this 1x during the entire goal.
      */
     public static GoalStructure atBGF(String entityId, float delta, boolean addObserve) {
+    	return atBGF(entityId, delta, addObserve, true) ;
+    }
+    
+    public static GoalStructure atBGF(String entityId, float delta, boolean addObserve, boolean turnOnHealingTactic) {
         //the first goal is to navigate to the entity:
     	float deltaSq = delta*delta ;
-        var g1 = 
+        Function<Void,Goal> getClose = dummy -> 
         	  goal(String.format("The agent is at: [%s]", entityId))
         	  . toSolve((BeliefState belief) -> {
         		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
@@ -167,16 +223,27 @@ public class GoalLib {
         		  return e!=null && Vec3.sub(belief.worldmodel().getFloorPosition(), e.getFloorPosition()).lengthSq() <= deltaSq ;
         	    })
         	  . withTactic(
-                    FIRSTof( //the tactic used to solve the goal
-                    TacticLib.navigateTo(entityId), //try to move to the entity
-                    TacticLib.explore(), //find the entity
-                    ABORT())) 
+        			turnOnHealingTactic ?
+                       FIRSTof( //the tactic used to solve the goal
+                         healWhenSeeingAFlag(),  
+                         TacticLib.navigateTo(entityId), //try to move to the entity
+                         TacticLib.explore(), //find the entity
+                         ABORT()) 
+                       : 
+                       FIRSTof(
+                    	 TacticLib.navigateTo(entityId), //try to move to the entity
+                         TacticLib.explore(), //find the entity
+                         ABORT())) 
               ;
         
+        GoalStructure G = FIRSTof(
+        		getClose.apply(null).lift(), 
+        		getClose.apply(null).lift()) ;	  
+        	  
         if (addObserve) 
-        	return SEQ(g1.lift(), SUCCESS("just observing")) ;
+        	return SEQ(G, SUCCESS("just observing")) ;
         else 
-        	return g1.lift() ;
+        	return G ;
     }
     
 
@@ -231,8 +298,6 @@ public class GoalLib {
 	 * sight is enough to complete this goal.
 	 * 
 	 * <p>This goal fails if the agent no longer believes that the entity is reachable.
-	 * 
-	 * <p>
 	 */
     public static GoalStructure entityStateRefreshed(String id){
         var g =  goal("The belief on this entity is refreshed: " + id)
@@ -260,8 +325,16 @@ public class GoalLib {
        		// return FIRSTof(g, SUCCESS()) ;
     }
     
+    /**
+     * An optimistic variant of {@link GoalLib#entityStateRefreshed(String)} If the target is a door, it
+     * will assume it is open and just target the door's center to navigate to. The agent will stop
+     * as soon as the door becomes observable. Even if the door turns out to be closed, this should work.
+     * 
+     * <p> Also include a healing-tactic. It will use a nearby healing flag, if there is one,
+     * to heal up. It will only do this 1x during the entire goal.
+     */
     public static GoalStructure entityStateRefreshed2(String id){
-        var g =  goal("The belief on this entity is refreshed: " + id)
+        Function<Void,Goal> getClose = dummy -> goal("The belief on this entity is refreshed: " + id)
                 .toSolve((BeliefState b) -> {
                 	
                   var entity = b.worldmodel.getElement(id);
@@ -271,12 +344,16 @@ public class GoalLib {
                   
                 })
                 .withTactic(FIRSTof(
+                		healWhenSeeingAFlag(),  
                         TacticLib.optimisticNavigateToEntity(id),    
                         TacticLib.explore(),
                         ABORT()))
-                .lift() ;
+                ;
         	
-       		 return g;
+        // 2x attempts to get close; the first one might get interrupted by healing goal:
+        return FIRSTof(
+        		getClose.apply(null).lift(), 
+        		getClose.apply(null).lift()) ;
     }
 
     /**
@@ -378,5 +455,26 @@ public class GoalLib {
                 TacticLib.sendPing(idFrom, idTo)
         );
     }
+
+    /**
+     * Will cause LR to take a screenshot. This is actually an action that is lifted
+     * to a goal. As a goal, it is always solved. The taken picture will be saved
+     * in the given directory, and the file is name_timestamp.png.
+     * 
+     * <p>Note that the screenshot command currently has no means to control the camera
+     * angle nor zoom, so the picture you get is taken with whatever the current camera
+     * position is.
+     */
+	public static GoalStructure makeScreenShot(String imgDir, String name) {
+		String prefix = imgDir + File.separator + name + "_" ;
+		Action smile = action("mkScreenShot")
+				.do1((BeliefState S) -> {
+				   String filename = prefix + S.worldmodel.timestamp + ".png" ;
+				   return S.env().mkScreenShot(filename) ;	
+				})
+				
+				;
+		return lift("making screenshot",smile) ;
+	}
     
 }

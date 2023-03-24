@@ -102,6 +102,7 @@ public class BeliefState extends W3DAgentState {
     
     public int lastTimePathReplanDueToMobile = 0 ;
     public int updateCount = 0 ;
+    public Set<String> usedHealingFlags = new HashSet<String>() ;
 
     public BeliefState() { 
     	worldmodel  = new LabWorldModel() ;
@@ -461,6 +462,17 @@ public class BeliefState extends W3DAgentState {
 			gwmodelLearner.apply(this,gwmodel) ;
 		}
         this.updateCount++ ;
+        // keep track of healing flags that are used:
+        if (this.worldmodel().scoreGained >= 100) {
+        	for (var e : this.worldmodel.elements.values()) {
+            	if (e.type.equals(LabEntity.GOAL) 
+            			&& Vec3.distSq(this.worldmodel.position, e.position) <= 0.25f) {
+            		this.usedHealingFlags.add(e.id) ;
+            		break ;
+            	}
+            }
+        }
+        
     }
 
     /**
