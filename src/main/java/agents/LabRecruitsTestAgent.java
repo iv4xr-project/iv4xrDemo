@@ -82,25 +82,27 @@ public class LabRecruitsTestAgent extends EmotiveTestAgent {
     }
 
     public boolean success(){
-        if(currentGoal != null){
-            return currentGoal.getStatus().success();
-        }
-        if(lastHandledGoal != null){
-            return lastHandledGoal.getStatus().success();
+    	if (!goalstack.isEmpty())
+    		// if the goal-stack is not empty, then we are not done yet
+    		return false ;
+    	if(lastHandledRootGoalStructure != null){
+            return lastHandledRootGoalStructure.getStatus().success();
         }
         return false;
     }
 
     public void printStatus(){
-        if(currentGoal != null){
-            currentGoal.printGoalStructureStatus();
-            return;
+    	if (!goalstack.isEmpty()) {
+    		System.out.println("=== in progress, current root goal-structure:");
+    		goalstack.currentRootGoal().printGoalStructureStatus();
+    		return ;
+    	}
+        if(lastHandledRootGoalStructure != null){
+           System.out.println("=== goalstack is empty. Printing the last root goal-structure:") ;
+           lastHandledRootGoalStructure.printGoalStructureStatus();
+           return;
         }
-        if(lastHandledGoal != null){
-            lastHandledGoal.printGoalStructureStatus();
-            return;
-        }
-        System.out.println("NO GOAL COMPLETED");
+        // should not happen...
     }
 
     //public void refresh() {
