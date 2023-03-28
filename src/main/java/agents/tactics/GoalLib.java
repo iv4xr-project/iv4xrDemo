@@ -13,6 +13,7 @@ import static eu.iv4xr.framework.Iv4xrEDSL.* ;
 import nl.uu.cs.aplib.mainConcepts.Action;
 import nl.uu.cs.aplib.mainConcepts.Goal;
 import nl.uu.cs.aplib.mainConcepts.GoalStructure;
+import nl.uu.cs.aplib.mainConcepts.GoalStructure.PrimitiveGoal;
 import nl.uu.cs.aplib.mainConcepts.Tactic;
 import eu.iv4xr.framework.spatial.Vec3;
 import eu.iv4xr.framework.mainConcepts.ObservationEvent.VerdictEvent;
@@ -130,37 +131,26 @@ public class GoalLib {
      * to heal up. It will only do this 1x during the entire goal.
      */
     public static GoalStructure entityInCloseRange2(String entityId) {
-    	//define the goal
-        Function<Void,Goal> getClose = dummy -> new Goal("This entity is closeby: " + entityId)
-        		    . toSolve((BeliefState belief) -> {
-                        //check if the agent is close to the goal position
-        		    	var e = belief.worldmodel().getElement(entityId) ;
-        		    	if (e == null) return false ;
-                        return Vec3.distSq(belief.worldmodel().getFloorPosition(),e.getFloorPosition()) <= 1 ;
-                      })
-        		    .withTactic(
-        		       FIRSTof(//the tactic used to solve the goal
-        		         healWhenSeeingAFlag(),  
-        		         TacticLib.optimisticNavigateToEntity(entityId),//move to the goal position
-        		         TacticLib.explore(), //explore if the goal position is unknown
-        		         ABORT())) ;
-        
-        // 2x attempts to get close; the first one might get interrupted by healing goal:
-        return FIRSTof(
-        		getClose.apply(null).lift(), 
-        		getClose.apply(null).lift()) ;
+    	
+    	var G = (PrimitiveGoal) entityInCloseRange(entityId) ;
+    	
+    	return G.getGoal()
+    			.withTactic(
+        		   FIRSTof(//the tactic used to solve the goal
+        		     healWhenSeeingAFlag(),  
+        		     TacticLib.optimisticNavigateToEntity(entityId),//move to the goal position
+        		     TacticLib.explore(), //explore if the goal position is unknown
+        		     ABORT()))
+    			.lift() ;
     }
     
     /**
-     * A tactic to that deploy a new goal for the agent to heal up at a healing flag, if one 
+     * A tactic that pushes a new goal for the agent to heal up at a healing flag, if one 
      * is close-by and if the agent health is below a certain threshold.
      */
     static private Tactic healWhenSeeingAFlag() {
     	Action heal = action("healup").do2((BeliefState belief) -> (WorldEntity e) -> {
-    		     	belief.owner().addAfterWithAutoRemove(
-    		     			SEQ(atBGF(e.id,0.5f,false,false), // BGF, but turn off healing!
-    		     			    FAIL())
-    		     			) ;
+    		     	belief.owner().pushGoal(atBGF(e.id,0.5f,false,false)) ;
     				return null ;
     			})
     			.on((BeliefState belief) -> {
@@ -182,7 +172,7 @@ public class GoalLib {
     				return null ;
     			})
     			;
-    	return SEQ(heal.lift(), Abort().lift()) ; // always abort at the end
+    	return heal.lift() ; 
     }
     
     /**
@@ -213,7 +203,7 @@ public class GoalLib {
     public static GoalStructure atBGF(String entityId, float delta, boolean addObserve, boolean turnOnHealingTactic) {
         //the first goal is to navigate to the entity:
     	float deltaSq = delta*delta ;
-        Function<Void,Goal> getClose = dummy -> 
+        GoalStructure G = 
         	  goal(String.format("The agent is at: [%s]", entityId))
         	  . toSolve((BeliefState belief) -> {
         		  var e = (LabEntity) belief.worldmodel.getElement(entityId) ;
@@ -233,13 +223,10 @@ public class GoalLib {
                        FIRSTof(
                     	 TacticLib.navigateTo(entityId), //try to move to the entity
                          TacticLib.explore(), //find the entity
-                         ABORT())) 
+                         ABORT()))
+        	  .lift()
               ;
         
-        GoalStructure G = FIRSTof(
-        		getClose.apply(null).lift(), 
-        		getClose.apply(null).lift()) ;	  
-        	  
         if (addObserve) 
         	return SEQ(G, SUCCESS("just observing")) ;
         else 
@@ -334,26 +321,17 @@ public class GoalLib {
      * to heal up. It will only do this 1x during the entire goal.
      */
     public static GoalStructure entityStateRefreshed2(String id){
-        Function<Void,Goal> getClose = dummy -> goal("The belief on this entity is refreshed: " + id)
-                .toSolve((BeliefState b) -> {
-                	
-                  var entity = b.worldmodel.getElement(id);
-                  return   (b.evaluateEntity(id, e -> b.age(e) == 0)
-                		  
-                		  );
-                  
-                })
+    	
+    	var G = (PrimitiveGoal) entityStateRefreshed(id) ;
+    	
+        return G.getGoal()
                 .withTactic(FIRSTof(
                 		healWhenSeeingAFlag(),  
                         TacticLib.optimisticNavigateToEntity(id),    
                         TacticLib.explore(),
                         ABORT()))
+                .lift()
                 ;
-        	
-        // 2x attempts to get close; the first one might get interrupted by healing goal:
-        return FIRSTof(
-        		getClose.apply(null).lift(), 
-        		getClose.apply(null).lift()) ;
     }
 
     /**

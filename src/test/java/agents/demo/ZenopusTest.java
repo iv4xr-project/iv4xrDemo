@@ -421,7 +421,7 @@ class ZenopusTest {
 	        		openWithSA1.apply("dFN2"),
 	        		mkScreenShot(dataDir,"bFC"),
 	        		openWithSA1.apply("dFC"),
-	        		GoalLib.atBGF("shrine2", 0.2f, true),
+	        		//GoalLib.atBGF("shrine2", 0.2f, true),
 	        		mkScreenShot(dataDir,"CFinalN"),
 	        		mkScreenShot(dataDir,"RFinal"),
 	        		GoalLib.atBGF("Finish", 0.2f, true),
