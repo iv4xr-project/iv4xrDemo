@@ -35,7 +35,7 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 
 
-public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
+class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;
 
@@ -97,7 +97,7 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
      * door-open event.
      */
     @Test
-    public void changedEntitiesDetection_and_EventsGeneration_Test1() throws InterruptedException {
+    void changedEntitiesDetection_and_EventsGeneration_Test1() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("samira_8room") ;
@@ -227,7 +227,7 @@ public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
     }
     
     @Test
-    public void oneOffEventsGeneration_Test() throws InterruptedException {
+    void oneOffEventsGeneration_Test() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("samira_8room") ;

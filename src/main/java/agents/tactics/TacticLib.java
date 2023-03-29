@@ -192,7 +192,7 @@ public class TacticLib {
 		    			    else {
 		    			    	path = belief.findPathTo(e.getFloorPosition(),true) ; 
 		    			    }
-		    			    System.out.println(">>> path:" + path) ;
+		    			    //System.out.println(">>> path:" + path) ;
 		    			    memory.memorized.clear();
 	    			        if (path != null) memory.memorize(path.fst);
 		    			    return path ;
@@ -413,7 +413,7 @@ public class TacticLib {
 		    			    
 		    			    // find path to p, but don't force re-calculation
 		    			    var path = belief.findPathTo(p,false) ; 
-		    			    System.out.println(">>> path:" + path) ;
+		    			    //System.out.println(">>> path:" + path) ;
 		    			    		    			    
 		    			    return path ;
 		                }) ;
@@ -993,7 +993,7 @@ public class TacticLib {
         				 var target = explorationPath.get(explorationPath.size() - 1) ;
         				 System.out.println("### setting a new exploration target: " + target) ;
                          System.out.println("### abspath to exploration target: " + path) ;
-                         System.out.println("### path to exploration target: " + explorationPath) ;
+                         //System.out.println("### path to exploration target: " + explorationPath) ;
                          memo.memorized.clear();
                          memo.memorize(target);
                          memo.moveState("inTransit") ; // move the exploration state to inTransit...
