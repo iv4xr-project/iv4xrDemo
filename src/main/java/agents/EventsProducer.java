@@ -38,6 +38,7 @@ public class EventsProducer extends SyntheticEventsProducer {
 	public static final String OuchEventName = "Ouch";
 	public static final String OpeningADoorEventName = "Opening a door";
 	public static final String GetPointEventName = "Geting some point";
+	public static final String HealedEventName = "Healed" ;
 	public static final String LevelCompletedEventName = "Level is completed";
 	public static final String LevelCompletionInSightEventName = "Level completion in sight";
 	public static final String FireInSightEventName = "Fire in sight";
@@ -76,6 +77,17 @@ public class EventsProducer extends SyntheticEventsProducer {
 
 	public static boolean isGetPointEvent(Message m) {
 		return m.getMsgName().equals(GetPointEventName);
+	}
+	
+	/**
+	 * This event is generated whenever the agent is healed up back to its max-hp.
+	 */
+	public static Message healedEvent() {
+		return mkLabEvent(0, HealedEventName);
+	}
+
+	public static boolean isHealedEvent(Message m) {
+		return m.getMsgName().equals(HealedEventName);
 	}
 
 	/**
@@ -215,9 +227,13 @@ public class EventsProducer extends SyntheticEventsProducer {
 			}
 		}
 		
-		// ouch event:
+		// ouch and heal event:
 		if (wom.healthLost > 0)
 			generateEvent(ouchEvent(), !ONEOFF);
+		if (wom.healthLost < 0)
+			generateEvent(healedEvent(), !ONEOFF);
+		
+		
 		
 		// fire and monsters in sight events:
 		int numOfFire_insight = (int) wom.elements.values()
