@@ -99,6 +99,11 @@ public class EventsProducer extends SyntheticEventsProducer {
 		return m.getMsgName().equals(LevelCompletionInSightEventName);
 	}
 	
+	/**
+	 * We will use this event to signal that fire was seen by the agent, in quantity
+	 * more than the previous update cycle. Or that the quantity is 0, while it was
+	 * not zero in the previous cycle.
+	 */
 	public static Message fireInSightEvent(int numberOfFire) {
 		return mkLabEvent(1, FireInSightEventName, numberOfFire);
 	}
@@ -107,6 +112,11 @@ public class EventsProducer extends SyntheticEventsProducer {
 		return m.getMsgName().equals(FireInSightEventName);
 	}
 	
+	/**
+	 * We will use this event to signal that monsters were seen by the agent, in quantity
+	 * more than the previous update cycle. Or that the quantity is 0, while it was
+	 * not zero in the previous cycle.
+	 */
 	public static Message monstersInSightEvent(int numberOfMonsters) {
 		return mkLabEvent(1, MonstersInSightEventName, numberOfMonsters);
 	}
@@ -220,11 +230,15 @@ public class EventsProducer extends SyntheticEventsProducer {
 				.filter(e -> e.type.equals(LabEntity.ENEMY) && e.timestamp == wom.timestamp)
 				.count() ;
 		// only generate the fire/monster-event if there is fire in-sight, and it is more than
-		// what was seen in the previous update:
-		if (numOfFire_insight>0 && numOfFire_insight > numberOfFireSeen_previousUpdate) {
+		// what was seen in the previous update;
+		// 
+		if ((numOfFire_insight>0 && numOfFire_insight > numberOfFireSeen_previousUpdate)
+			|| (numOfFire_insight==0 && numberOfFireSeen_previousUpdate>0)
+				) {
 			generateEvent(fireInSightEvent(numOfFire_insight), !ONEOFF);
 		}
-		if (numOfMonsters_insight>0 && numOfMonsters_insight > numberOfMonstersSeen_previousUpdate) {
+		if ((numOfMonsters_insight>0 && numOfMonsters_insight > numberOfMonstersSeen_previousUpdate)
+			|| (numOfMonsters_insight == 0 && numberOfMonstersSeen_previousUpdate>0)) {
 			generateEvent(monstersInSightEvent(numOfMonsters_insight), !ONEOFF);
 		}
 		numberOfFireSeen_previousUpdate = numOfFire_insight ;
