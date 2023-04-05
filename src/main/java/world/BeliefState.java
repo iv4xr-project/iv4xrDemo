@@ -33,6 +33,8 @@ public class BeliefState extends W3DAgentState {
 	 * the point is "on" the face, or at least close enough to the face.
 	 */
 	public static final float DIST_TO_FACE_THRESHOLD = 0.2f ;
+	//public static final float DIST_TO_FACE_THRESHOLD = 0.5f ;
+	
 
 	/**
 	 * Distance between a location to the currently memorized goal location; if it
@@ -322,9 +324,11 @@ public class BeliefState extends W3DAgentState {
     	int N = recentPositions.size() ;
     	if(N<3) return false ;
     	Vec3 p0 = recentPositions.get(N-3) ;
-    	return Vec3.dist(p0,recentPositions.get(N-2)) <= 0.05
-    		   &&  Vec3.dist(p0,recentPositions.get(N-1)) <= 0.05 ;
-         //    && p0.distance(q) > 1.0 ;   should first translate p0 to the on-floor coordinate!
+    	return Vec3.distSq(p0,recentPositions.get(N-2)) <= 0.0025
+    		   &&  Vec3.distSq(p0,recentPositions.get(N-1)) <= 0.0025 ; // = 0.05 dist
+    	//return Vec3.dist(p0,recentPositions.get(N-2)) <= 0.15
+     	//	   &&  Vec3.dist(p0,recentPositions.get(N-1)) <= 0.15 ;
+        //    && p0.distance(q) > 1.0 ;   should first translate p0 to the on-floor coordinate!
     }
 
     /**
