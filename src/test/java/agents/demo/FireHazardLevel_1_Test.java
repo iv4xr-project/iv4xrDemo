@@ -65,7 +65,7 @@ public class FireHazardLevel_1_Test {
     }
     
     @Test
-    public void fireHazardDemo() throws InterruptedException{
+    public void fireHazardDemo_Test() throws InterruptedException{
     	
         //the goals are in order
         //add move goals with GoalStructureFactory.reachPositions(new Vec3(1,0,1)) it can take either a single or multiple vec3

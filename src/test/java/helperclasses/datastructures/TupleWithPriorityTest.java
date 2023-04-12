@@ -18,7 +18,7 @@ public class TupleWithPriorityTest {
     check if the defined objects are stored
     */
     @Test
-    public void checkStorage() {
+    public void checkStorageTest() {
         //create tuple
         TupleWithPriority<Boolean> t = new TupleWithPriority<Boolean>(true, 2);
 
@@ -31,7 +31,7 @@ public class TupleWithPriorityTest {
     check if the ordering between tuples is correct
     */
     @Test
-    public void checkPriority() {
+    public void checkPriorityTest() {
         //create tuple
         TupleWithPriority<Boolean> t1 = new TupleWithPriority<Boolean>(true, 2);
         TupleWithPriority<Boolean> t2 = new TupleWithPriority<Boolean>(true, 3);

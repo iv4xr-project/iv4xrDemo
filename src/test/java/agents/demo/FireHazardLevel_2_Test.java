@@ -78,7 +78,7 @@ public class FireHazardLevel_2_Test {
      * BROKEN fix this!
      */
     @Test
-    public void fireHazardDemo() throws InterruptedException{
+    public void fireHazardDemo_Test() throws InterruptedException{
         //Add the level to the resources and change the string in the environmentConfig on the next line from Ramps to the new level
         var config = new LabRecruitsConfig("HZRDIndirect")
         		. replaceAgentMovementSpeed(0.2f)

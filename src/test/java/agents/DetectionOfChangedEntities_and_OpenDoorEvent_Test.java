@@ -35,12 +35,12 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 
 
-class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
+public class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;
 
     @BeforeAll
-    static void start() {
+    public static void start() {
     	// TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
     	// TestSettings.USE_GRAPHICS = true ;
@@ -49,7 +49,7 @@ class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
     }
 
     @AfterAll
-    static void close() { if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
+    public static void close() { if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
 
     void instrument(Environment env) {
     	env.registerInstrumenter(new JsonLoggerInstrument()).turnOnDebugInstrumentation();
@@ -97,7 +97,7 @@ class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
      * door-open event.
      */
     @Test
-    void changedEntitiesDetection_and_EventsGeneration_Test1() throws InterruptedException {
+    public void changedEntitiesDetection_and_EventsGeneration_Test() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("samira_8room") ;
@@ -227,7 +227,7 @@ class DetectionOfChangedEntities_and_OpenDoorEvent_Test {
     }
     
     @Test
-    void oneOffEventsGeneration_Test() throws InterruptedException {
+    public void oneOffEventsGeneration_Test() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("samira_8room") ;

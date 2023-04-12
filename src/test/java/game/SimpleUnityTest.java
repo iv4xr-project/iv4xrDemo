@@ -140,7 +140,7 @@ public class SimpleUnityTest {
      * The agent should only be able to see 1 of the 5 switches. The other 4 are hidden behind walls..
      */
     @Test
-    public void observeVisibleSwitches() {
+    public void observeVisibleSwitchesTest() {
 
         var config = new LabRecruitsConfig("observeVisibleSwitches");
 
@@ -184,7 +184,7 @@ public class SimpleUnityTest {
     }
 
     @Test
-    public void moveToButton() throws InterruptedException {
+    public void moveToButtonTest() throws InterruptedException {
         var config = new LabRecruitsConfig("moveToButton");
 
         LabRecruitsEnvironment environment = new LabRecruitsEnvironment(config);

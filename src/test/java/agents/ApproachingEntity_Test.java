@@ -37,7 +37,7 @@ public class ApproachingEntity_Test {
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
     @BeforeAll
-    static void start() {
+    public static void start() {
     	// Uncomment this to make the game's graphic visible:
     	//TestSettings.USE_GRAPHICS = true ;
     	//SocketReaderWriter.debug = true ;
@@ -46,7 +46,7 @@ public class ApproachingEntity_Test {
     }
 
     @AfterAll
-    static void close() { 
+    public static void close() { 
     	if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); 
     }
     

@@ -35,7 +35,7 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 
 
-class Fire_andMonsters_sighted_Event_Test {
+public class Fire_andMonsters_sighted_Event_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;
 
@@ -52,7 +52,7 @@ class Fire_andMonsters_sighted_Event_Test {
     static void close() { if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
   
     @Test
-    void fireEventTest() throws InterruptedException {
+    public void fireEventTest() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("simple_withFireAnd Flag") ;
@@ -109,7 +109,7 @@ class Fire_andMonsters_sighted_Event_Test {
     }
     
     @Test
-    void monsterEventTest() throws InterruptedException {
+    public void monsterEventTest() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("square_withEnemies") ;
@@ -162,7 +162,7 @@ class Fire_andMonsters_sighted_Event_Test {
     }
     
     @Test
-    void monsterEventTest2() throws InterruptedException {
+    public void monsterEventTest2() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("simple_withEnemies") ;

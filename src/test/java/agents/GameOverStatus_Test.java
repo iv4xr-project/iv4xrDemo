@@ -32,7 +32,7 @@ import world.LabWorldModel;
 // Creates an agent that walks a preset route.
 
 
-class GameOverStatus_Test {
+public class GameOverStatus_Test {
 	
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
@@ -52,7 +52,7 @@ class GameOverStatus_Test {
     
 
     @Test
-    void testGameOver() throws InterruptedException {
+    public void testGameOver() throws InterruptedException {
     	
     	var config = new LabRecruitsConfig("square_withEnemies") ;
     	config.view_distance = 4 ;

@@ -33,7 +33,7 @@ import world.LabWorldModel;
 // Creates an agent that walks a preset route.
 
 
-class Monster_Test {
+public class Monster_Test {
 	
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
@@ -53,7 +53,7 @@ class Monster_Test {
     
 
     @Test
-    void testMonster() throws InterruptedException {
+    public void testMonster() throws InterruptedException {
         
     	var config = new LabRecruitsConfig("square_withEnemies") ;
     	
@@ -120,7 +120,7 @@ class Monster_Test {
     }
     
     @Test
-    void testMonsterBlockingLogic() {
+    public void testMonsterBlockingLogic() {
 
     	var config = new LabRecruitsConfig("simple2_withEnemies") ;   	
         var environment = new LabRecruitsEnvironment(config);
@@ -153,7 +153,7 @@ class Monster_Test {
     }
     
     @Test
-    void testNavigatingAroundMonster() throws InterruptedException {
+    public void testNavigatingAroundMonster() throws InterruptedException {
     	
     	var config = new LabRecruitsConfig("simple_withEnemies") ;   	
         var environment = new LabRecruitsEnvironment(config);

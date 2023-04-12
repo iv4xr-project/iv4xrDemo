@@ -18,7 +18,7 @@ public class TupleTest {
     check if the defined objects are stored
      */
     @Test
-    public void checkStorage() {
+    public void checkStorageTest() {
         //create tuple
         LegacyTuple<Integer, Boolean> t = new LegacyTuple<>(1, true);
 

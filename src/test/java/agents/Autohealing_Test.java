@@ -36,12 +36,12 @@ import world.LabWorldModel;
 // Creates an agent that walks a preset route.
 
 
-class Autohealing_Test {
+public class Autohealing_Test {
 	
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
     @BeforeAll
-    static void start() {
+    public static void start() {
     	// Uncomment this to make the game's graphic visible:
     	//TestSettings.USE_GRAPHICS = true ;
     	//SocketReaderWriter.debug = true ;
@@ -50,7 +50,7 @@ class Autohealing_Test {
     }
 
     @AfterAll
-    static void close() { 
+    public static void close() { 
     	SocketReaderWriter.debug = false ;
     	if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
     
@@ -71,7 +71,7 @@ class Autohealing_Test {
     }
     
     @Test
-    void test_entityInCloseRange2_heal() throws InterruptedException {
+    public void test_entityInCloseRange2_heal() throws InterruptedException {
         
     	var config = new LabRecruitsConfig("simple_withFireAnd Flag") ;
     	
@@ -106,7 +106,7 @@ class Autohealing_Test {
     }
     
     @Test
-    void test_BGF_heal() throws InterruptedException {
+    public void test_BGF_heal() throws InterruptedException {
         
     	var config = new LabRecruitsConfig("simple_withFireAnd Flag") ;
     	
@@ -141,7 +141,7 @@ class Autohealing_Test {
     }
     
     @Test
-    void test_entityStateRefreshed_heal() throws InterruptedException {
+    public void test_entityStateRefreshed_heal() throws InterruptedException {
         
     	var config = new LabRecruitsConfig("simple_withFireAnd Flag") ;
     	

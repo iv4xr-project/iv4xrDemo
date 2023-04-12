@@ -42,7 +42,7 @@ public class AgentSimpleMovementTest {
 	private static LabRecruitsTestServer labRecruitsTestServer = null ;
 
     @BeforeAll
-    static void start() {
+    public static void start() {
     	// Uncomment this to make the game's graphic visible:
     	// TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
@@ -50,7 +50,7 @@ public class AgentSimpleMovementTest {
     }
 
     @AfterAll
-    static void close() { if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
+    public static void close() { if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
     
     
     @Test

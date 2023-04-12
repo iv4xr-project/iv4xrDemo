@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 
-class ColoredButton_Test {
+public class ColoredButton_Test {
 	
 	private LabRecruitsTestServer labRecruitsTestServer ;
 
@@ -79,7 +79,7 @@ class ColoredButton_Test {
     }
     
     @Test
-    void interaction_with_colloredButton_test() throws InterruptedException {
+    public void interaction_with_colloredButton_test() throws InterruptedException {
     	
     	var env = new LabRecruitsEnvironment(new LabRecruitsConfig("square_withColorButton"));
     	

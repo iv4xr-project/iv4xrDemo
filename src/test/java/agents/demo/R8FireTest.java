@@ -171,7 +171,7 @@ public class R8FireTest {
      * can avoid explicitly scripting how to open some doors.
      */
     @Test
-    public void scenario2() throws InterruptedException {
+    public void scenario2_Test() throws InterruptedException {
 
         // Create an environment
     	var config = new LabRecruitsConfig("R8_fire3") ;
