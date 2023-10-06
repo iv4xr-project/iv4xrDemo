@@ -601,10 +601,8 @@ public class TacticLib {
                 		return 0 ;
                 	// System.out.println(">>> forcereplan: no door change state") ;
                 	
-                	// case 2: detecting that some other agent or an NPC has changed position by at least
-                	// 2 units wrt to last time it was seen.
-                	// Note that this does not account for moving NPC/agent that is currently within
-                	// observation range, as their delta-position would then be less than 2.
+                	// case 2: detecting monsters/NPC/other-agents ; they might be blocking the
+                	// agent's current path, or simply need to be avoided because dangerous (monsters)
                 	var mobiles = belief.worldmodel.elements.values().stream() 
                 			.filter(e -> e.type.equals(LabEntity.NPC)  
                 						 || e.type.equals(LabEntity.ENEMY)  
@@ -612,7 +610,7 @@ public class TacticLib {
                 			.collect(Collectors.toList()) ;
                 	for (var mob : mobiles) {
                 		if (mob.timestamp == belief.worldmodel.timestamp
-                				&& mob.type.equals(LabEntity.ENEMY) 
+                				//&& mob.type.equals(LabEntity.ENEMY) 
                 				) {
                 			if (belief.updateCount > belief.lastTimePathReplanDueToMobile + 8) {
                 				belief.lastTimePathReplanDueToMobile = belief.updateCount+1 ;
