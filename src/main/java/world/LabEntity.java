@@ -63,16 +63,16 @@ public class LabEntity extends WorldEntity implements LineIntersectable, Seriali
 		// only these types can block movements: DOOR, COLORSCREEN, ENEMY, other PLAYER, NPC
 		
 		Box box = null ;
-		if (type.equals(DOOR) || type.equals(COLORSCREEN) 
-			|| type.equals(PLAYER) 
-			|| type.equals(NPC)) {
+		if (type.equals(DOOR) || type.equals(COLORSCREEN)) {
 			// use a box to calculate the intersection with this door :D .. stretch the extent a bit larger
-			box = new Box(this.getFloorPosition(),Vec3.add(Vec3.mul(this.extent,2f), new Vec3(0.1f,0,0.1f))) ;
-			
+			box = new Box(this.getFloorPosition(),Vec3.add(Vec3.mul(this.extent,2f), new Vec3(0.1f,0,0.1f))) ;	
+		}
+		else if (type.equals(PLAYER) || type.equals(NPC)) {
+			box = new Box(this.getFloorPosition(),Vec3.add(Vec3.mul(this.extent,2f), new Vec3(0.2f,0.2f,0.2f))) ;				
 		}
 		else if (type.equals(ENEMY)) {
 			// use a larger box to represent danger zone around the monster:
-			box = new Box(this.getFloorPosition(),Vec3.add(Vec3.mul(this.extent,2f), new Vec3(0.1f,0,0.1f))) ;
+			box = new Box(this.getFloorPosition(),Vec3.add(Vec3.mul(this.extent,2f), new Vec3(0.1f,0.2f,0.1f))) ;
 			//box = new Box(this.getFloorPosition(),Vec3.mul(this.extent,2f)) ;
 			//System.out.println(">>>> " + box.width) ;
 		}

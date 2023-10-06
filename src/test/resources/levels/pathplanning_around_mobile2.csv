@@ -1,7 +1,7 @@
 button0,,,,,,,,,,,,
 button1,,,,,,,,,,,,
 |w,w,w,w,w,w,w,w,w,w,w,w,w
-w,f,f,f:a^agent0,f,f,f,f:b^button1,f,f,f,f:b^button0,w
+w,f:a^agent0,f,f,f,f,f,f:b^button1,f,f,f,f:b^button0,w
 w,f,w,w,w,w,w,f,w,w,w,f,w
 w,f,f,f,f,f,f:a^bob,f,f,f,f,f,w
 w,w,w,w,w,w,w,w,w,w,w,w,w

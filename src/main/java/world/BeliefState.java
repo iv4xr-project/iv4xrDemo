@@ -42,6 +42,8 @@ public class BeliefState extends W3DAgentState {
 	 */
 	public static final float DIST_TO_MEMORIZED_GOALLOCATION_SOFT_REPATH_THRESHOLD  = 0.05f ;
     
+	public static float PATH_BENDING_SQ_HORIZON = 36f ;
+	
 	/**
      * Those entities whose state is changed in the last cycle. This is lrawChangedEntitiesike 
      * which has been filtered to include buttons, doors, and screens, and only
@@ -80,6 +82,9 @@ public class BeliefState extends W3DAgentState {
 
     public Boolean receivedPing = false;//store whether the agent has an unhandled ping
 
+    
+    public int delayWhenBendingPath = -1 ;
+    
     /**
      * Since getting to some location may take multiple cycle, and we want to avoid invoking the
      * pathfinder at every cycle, the agent will memorize what the target location it is trying
@@ -678,7 +683,7 @@ public class BeliefState extends W3DAgentState {
      * calculated so as to evade monsters).
      */
     public boolean bendPathToEvadeMonsters() {
-         float sqDistanceThreshold = 36 ; // 6*6
+         float sqDistanceThreshold = PATH_BENDING_SQ_HORIZON ; 
          int N = memorizedPath.size() ;
          Vec3 intermediatePoint = null ;
          int k = currentWayPoint_ + 1 ;

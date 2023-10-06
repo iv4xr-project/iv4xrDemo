@@ -39,7 +39,7 @@ public class Pathfinding_around_mobile_Test {
     @BeforeAll
     static void start() {
     	// Uncomment this to make the game's graphic visible:
-    	TestSettings.USE_GRAPHICS = true ;
+    	//TestSettings.USE_GRAPHICS = true ;
     	//SocketReaderWriter.debug = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
@@ -51,7 +51,7 @@ public class Pathfinding_around_mobile_Test {
     	if(labRecruitsTestServer!=null) labRecruitsTestServer.close(); }
     
 
-    //@Test
+    @Test
     public void test_avoid_otheragent_and_npc() throws InterruptedException {
         
     	var config = new LabRecruitsConfig("pathplanning_around_mobile") ;
@@ -102,6 +102,9 @@ public class Pathfinding_around_mobile_Test {
         		                     . attachState(new BeliefState())
         		                     . attachEnvironment(environment) ;
         
+        //BeliefState.PATH_BENDING_SQ_HORIZON = 4 ;
+        //agent.getState().pathfinder().perfect_memory_pathfinding = true ;
+        
         LabRecruitsTestAgent agentBob = new LabRecruitsTestAgent("bob")
                 . attachState(new BeliefState())
                 . attachEnvironment(environment) ;
@@ -148,6 +151,7 @@ public class Pathfinding_around_mobile_Test {
             if (i>=30) break ;
         }
         assertTrue(g2.getStatus().success()) ;
+       
         
         while (g1.getStatus().inProgress()) {
         	agent.update();

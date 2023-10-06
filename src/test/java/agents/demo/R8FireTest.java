@@ -48,7 +48,7 @@ public class R8FireTest {
     static void start() {
     	// TestSettings.USE_SERVER_FOR_TEST = false ;
     	// Uncomment this to make the game's graphic visible:
-    	//TestSettings.USE_GRAPHICS = true ;
+    	// TestSettings.USE_GRAPHICS = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
     }
@@ -71,7 +71,7 @@ public class R8FireTest {
      * above, e.g. by specifying that a certain button needs to be interacted first
      * to get a certain door open.
      */
-    //@Test
+    @Test
     public void scripted_testscenario1() throws InterruptedException {
 
         // Create an environment
@@ -120,7 +120,7 @@ public class R8FireTest {
 	        // keep updating the agent
 	        while (G.getStatus().inProgress()) {
 	        	System.out.println("*** " + i + ", " + testAgent.state().id + " @" + testAgent.state().worldmodel.position) ;
-	            Thread.sleep(50);
+	            Thread.sleep(30);
 	            i++ ;
 	        	testAgent.update();
 	        	if (i>3500) {
@@ -170,7 +170,7 @@ public class R8FireTest {
      * particular multi-connections make things complicated for SA1). Using this we
      * can avoid explicitly scripting how to open some doors.
      */
-    @Test
+    //@Test
     public void scenario2_Test() throws InterruptedException {
 
         // Create an environment

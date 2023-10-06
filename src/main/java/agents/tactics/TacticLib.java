@@ -570,8 +570,16 @@ public class TacticLib {
                 	  		   break ;
                 	  case 1 : 	belief.clearGoalLocation() ; break ;
                 	  case 2 :  // monsters presence force path bending:
+                		  	    if (belief.delayWhenBendingPath>0) {
+                		  	    	try {
+                		  	    		Thread.sleep(belief.delayWhenBendingPath);
+                		  	    	}
+                		  	    	catch(Exception e) { 
+                		  	    		// swallow
+                		  	    	}
+                		  	    }
                 		        boolean success = belief.bendPathToEvadeMonsters() ;
-                		        //System.out.println(">>> bending success: " + success) ;
+                		        System.out.println(">>> bending success: " + success) ;
                 		        if (! success)
                 		        	 belief.clearGoalLocation();
                 	}
