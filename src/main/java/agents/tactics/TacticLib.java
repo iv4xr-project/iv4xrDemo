@@ -529,6 +529,10 @@ public class TacticLib {
 									*/
     	return move ;
     }
+    
+    private void adjustPath() {
+    	
+    }
 
 
     /**
@@ -553,17 +557,31 @@ public class TacticLib {
      *  Path recalculation is forced by clearing the goal-position.
      */
     public static Tactic forceReplanPath() {
-        Tactic clearTargetPosition = action("Force path recalculation.")
-                .do1((BeliefState belief) -> {
+        Tactic clearTargetPositionOrBendPath = action("Force path recalculation.")
+                .do2((BeliefState belief) -> (Integer flag) -> {
                 	System.out.println("####Detecting some path-planning relevant state change. Forcing path recalculation @" + belief.worldmodel.position) ;
-                	belief.clearGoalLocation();
-                	try {
-                		Thread.sleep(700); // waiting for the door animation
+                	switch (flag) {
+                	  case 0 : // replan-due to some door has changed state:
+                		       belief.clearGoalLocation();
+                	  		   try { 
+                	  				Thread.sleep(700); // waiting for the door animation
+                	  		   }
+                	  		   catch(Exception e) { }
+                	  		   break ;
+                	  case 1 : 	belief.clearGoalLocation() ; break ;
+                	  case 2 :  // monsters presence force path bending:
+                		        boolean success = belief.bendPathToEvadeMonsters() ;
+                		        //System.out.println(">>> bending success: " + success) ;
+                		        if (! success)
+                		        	 belief.clearGoalLocation();
                 	}
-                	catch(Exception e) { }
                 	return belief ;
-                })
-                .on_((BeliefState belief) -> {
+                })                
+                .on((BeliefState belief) -> {
+                	
+                	if (belief.getGoalLocation() == null) 
+                		return null ;
+                	
                 	// be careful with the threshold value (the "10" below);
                 	// if this is set too low, the agent may unnecessarily do re-plan
                 	// if it is set too high, the agent may get stuck longer
@@ -579,7 +597,8 @@ public class TacticLib {
                     // replacing the above logic with this one that should be more reliable:
                 	var someDoorHasChangedState = belief.changedEntities.stream().anyMatch(e -> e.type == LabEntity.DOOR) ;
 
-                	if (someDoorHasChangedState) return true ;
+                	if (someDoorHasChangedState) 
+                		return 0 ;
                 	// System.out.println(">>> forcereplan: no door change state") ;
                 	
                 	// case 2: detecting that some other agent or an NPC has changed position by at least
@@ -598,7 +617,7 @@ public class TacticLib {
                 			if (belief.updateCount > belief.lastTimePathReplanDueToMobile + 8) {
                 				belief.lastTimePathReplanDueToMobile = belief.updateCount+1 ;
                 				System.out.println(">>>> mob in vicinity, mob-replan-timeout. Mob:" + mob.id) ;
-                				return true ;
+                				return 2 ;
                 			}
                 			
                 		}
@@ -607,15 +626,15 @@ public class TacticLib {
                 				&& Vec3.distSq(mob.position, mob.getPreviousState().position) > 4f
                 				) {
                 			System.out.println(">>>> mob noticed, with significant diff from its last seen pos. Mob:" + mob.id) ;
-                    		return true ;
+                    		return 1  ;
                 		}
                 		if (!mob.hasPreviousState() && mob.timestamp == belief.worldmodel.timestamp) {
                 			System.out.println(">>>> noticing new mob " + mob.id) ;                			
                 			// the mob was seen first time:
-                			return true ;
+                			return 2 ;
                 		}
                 	}
-                	return false ;
+                	return null ;
                 	/*
                 	if (belief.getGoalLocation() == null
                 		|| belief.worldmodel.timestamp - belief.getGoalLocationTimestamp() < 50) {
@@ -634,7 +653,7 @@ public class TacticLib {
 
                 })
                 .lift() ;
-           return clearTargetPosition ;
+           return clearTargetPositionOrBendPath ;
     }
     /**
      * This tactic detects if the agent gets stuck (e.g. if the position turns out to be unreachable),

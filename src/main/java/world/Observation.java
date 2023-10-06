@@ -208,26 +208,6 @@ public class Observation {
                 		 ", this is currently not supported.", obj.name));
             }
         }
-        
-        // apply some extent and position adjustmet for enemy, npc, and other players:
-        builder = builder.andThen(we -> {
-        	// apply size adjustment for enemy and NPC:
-            if (we.type == LabEntity.ENEMY || we.type == LabEntity.NPC) {
-            	we.position.y += 0.47 ;
-            	// adjusting size to make it appear a bit larger towards agent pathfinding
-            	if (we.type == LabEntity.ENEMY) {
-                  	we.extent = new Vec3(0.5f,0.65f,0.5f) ;
-            	}
-            }
-        	 // adjustment for player-type:
-            if (we.type == LabEntity.PLAYER) {
-                we.position.y += 0.75 ;
-                // make it a bit wider to compensate for path planning around mob:
-            	//we.extent = new Vec3(0.2f,0.75f,0.2f) ;
-            	we.extent = new Vec3(0.5f,0.75f,0.5f) ;
-            }
-            return we ;
-        }) ;
 
         if (obj.tag.equals("Door") && obj.Toggleable != null) {
             we_type = LabEntity.DOOR;
@@ -277,6 +257,31 @@ public class Observation {
         else if (obj.FireHazard != null) {
             we_type = LabEntity.FIREHAZARD;
         }
+        
+        // apply some extent and position adjustmet for enemy, npc, and other players:
+        if (we_type == LabEntity.ENEMY || we_type == LabEntity.NPC) {
+        	// apply size adjustment for enemy and NPC:
+        	builder = builder.andThen(we -> {
+        		we.position.y += 0.47 ;
+            	// adjusting size to make it appear a bit larger towards agent pathfinding
+            	// update: don't do this here, we handle this 
+            	//if (we.type == LabEntity.ENEMY) {
+                //  	we.extent = new Vec3(0.5f,0.65f,0.5f) ;
+        		return we ;
+        		
+        	}) ;
+        }
+        // adjustment for player-type:
+        if (we_type == LabEntity.PLAYER) {
+        	builder = builder.andThen(we -> {
+        		// make it a bit wider to compensate for path planning around mob:
+            	//we.extent = new Vec3(0.2f,0.75f,0.2f) ;
+            	we.extent = new Vec3(0.5f,0.75f,0.5f) ;
+            	return we ;
+        	}) ;
+        	
+        }
+       
 
         LabEntity we_final = new LabEntity(
             //obj.name, // TODO: obj.id would be more appropriate, but some tests still use name.

@@ -173,13 +173,14 @@ public class SA2Test {
     			GoalLib.entityInteracted("button3"),
     			GoalLib.entityStateRefreshed2("door3")
     			) ;
-    	 */
+    	 
     	GoalStructure G0 = SEQ(GoalLib.entityInteracted("button3"),
     	    		 GoalLib.entityStateRefreshed2("door1"),
     	    		 GoalLib.entityInteracted("button7"),
     	    		 GoalLib.entityStateRefreshed2("door4"),
     	    		 GoalLib.entityStateRefreshed2("door6")
     	    		 ) ;
+    	*/
     	     
         var G = solveWithSA2.apply("door3") ;
         //var G = solveWithSA2.apply("door16") ;

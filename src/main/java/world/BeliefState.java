@@ -480,7 +480,7 @@ public class BeliefState extends W3DAgentState {
     }
 
     /**
-     * Check if a game entity identified by is is already registered as an obstacle in the
+     * Check if a game entity identified by id is already registered as an obstacle in the
      * navigation graph. If it is, the entity will be returned (wrapped as an instance of
      * the class Obstacle). Else null is returned.
      */
@@ -668,6 +668,45 @@ public class BeliefState extends W3DAgentState {
         // LabRecruitsEnvironment e_ = (LabRecruitsEnvironment) e ;
         // pathfinder = new SurfaceNavGraph(e_.worldNavigableMesh,0.5f) ; // area-size threshold 0.5 
         return this;
+    }
+    
+    
+    /**
+     * Bend the currently memorized path to evade monsters in the vicinity. This is
+     * done by taking a point p in the path, of some distance from the agent (6), and
+     * the to recalculate a new path to this p. (this new path will be automatically 
+     * calculated so as to evade monsters).
+     */
+    public boolean bendPathToEvadeMonsters() {
+         float sqDistanceThreshold = 36 ; // 6*6
+         int N = memorizedPath.size() ;
+         Vec3 intermediatePoint = null ;
+         int k = currentWayPoint_ + 1 ;
+         for ( ; k<N ; k++) {
+        	 Vec3 p = memorizedPath.get(k) ;
+        	 if (Vec3.distSq(this.worldmodel.position, p) > sqDistanceThreshold) {
+        		 intermediatePoint = p ;
+        		 break ;
+        	 }
+         }
+         if (intermediatePoint == null) {
+        	 // cannot find a bend-point
+        	 return false ;
+         }
+         else {
+        	 var path_ = findPathTo(intermediatePoint,true) ;
+        	 if (path_ == null) 
+        		 return false ;
+        	 
+        	 var bended = path_.snd ;
+        	 k++ ;
+        	 for ( ; k<N; k++) {
+        		 bended.add(memorizedPath.get(k)) ;
+        	 }
+        	 memorizedPath = bended ;
+        	 currentWayPoint_ = 0 ;
+        	 return true ;
+         } 
     }
 
 }
