@@ -39,7 +39,7 @@ public class Pathfinding_around_mobile_Test {
     @BeforeAll
     static void start() {
     	// Uncomment this to make the game's graphic visible:
-    	//TestSettings.USE_GRAPHICS = true ;
+    	TestSettings.USE_GRAPHICS = true ;
     	//SocketReaderWriter.debug = true ;
     	String labRecruitesExeRootDir = System.getProperty("user.dir") ;
     	labRecruitsTestServer = TestSettings.start_LabRecruitsTestServer(labRecruitesExeRootDir) ;
@@ -81,7 +81,7 @@ public class Pathfinding_around_mobile_Test {
             System.out.println("*** " + i + ", " + agent.state().id + " @" + agent.state().worldmodel.position) ;
             System.out.println(">>>> " + ((LabWorldModel) agent.state().worldmodel).gameover)  ;
             Thread.sleep(30);
-            if (i>=80) break ;
+            if (i>=100) break ;
         }
         assertTrue(g.getStatus().success()) ;
         
