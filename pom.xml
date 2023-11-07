@@ -12,7 +12,7 @@
         <artifactId>lab-recruits-api</artifactId>
     -->
     <artifactId>iv4xrDemo</artifactId>
-    <version>2.5.3-SNAPSHOT</version>
+    <version>2.5.4-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
@@ -71,10 +71,7 @@
         <dependency>
         <groupId>com.github.iv4xr-project</groupId>
         <artifactId>aplib</artifactId>
-        <!-- version range does not work in combination with jitpack :(
-        <version>[1.2.2,)</version>
-        -->
-        <version>1.8.0</version>
+        <version>1.8.3</version>
         </dependency>
 
 
