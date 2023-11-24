@@ -489,7 +489,7 @@ public class BeliefState extends W3DAgentState {
      * navigation graph. If it is, the entity will be returned (wrapped as an instance of
      * the class Obstacle). Else null is returned.
      */
-    private Obstacle findThisObstacleInNavGraph(String id) {
+    public Obstacle findThisObstacleInNavGraph(String id) {
     	for (Obstacle o : pathfinder().obstacles) {
     		LabEntity e = (LabEntity) o.obstacle ;
     		if (e.id.equals(id)) return o ;
