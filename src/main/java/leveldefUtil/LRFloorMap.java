@@ -205,10 +205,16 @@ public class LRFloorMap {
 	 */
 	public static LRTile[][] parseFirstFloor(String LRlevelDefinition) {
 		int elevation = 0 ;
-		var rows = LRlevelDefinition.lines().toList() ;
+		// can't use "lines()" ... that is Java-11
+		//var rows = LRlevelDefinition.lines().toList() ;
+		var rows = LRlevelDefinition.split("\\n") ;
+		
+		
 		// rows is an immutable list! Turn it to mutable:
 		List<String> rows_ = new LinkedList<>() ;
-		for (var r : rows) rows_.add(r) ;
+		//for (var r : rows) rows_.add(r) ;
+		for (var r=0; r<rows.length; r++) 
+			rows_.add(rows[r]) ;
 		return parseFloor(rows_, elevation) ;
 	}
 	

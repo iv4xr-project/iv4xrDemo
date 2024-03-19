@@ -17,9 +17,13 @@ public class LRconnectionLogic {
 	 */
 	public static Set<Pair<String,String>> parseConnections(String file) throws IOException {
 		var content = readTxtFile(file) ;
-		var rows = content.lines().toList() ;
+		// can't use lines() .. that is java 11:
+		// var rows = content.lines().toList() ;
+		var rows = content.split("\\n") ;
+		
 		Set<Pair<String,String>> connections = new HashSet<>() ;
-		for (var r : rows) {
+		for (var i=0; i<rows.length ; i++) {
+			String r = rows[i] ;
 			if (r.startsWith("|")) break ;
 			var components = r.split(",") ;
 			if (components.length >= 2) {
