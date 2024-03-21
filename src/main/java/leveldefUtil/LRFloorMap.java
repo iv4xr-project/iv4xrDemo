@@ -255,6 +255,35 @@ public class LRFloorMap {
 		return parseFirstFloor(content) ;
 	}
 	
+	/**
+	 * Return the walkable tiles of the first floor of the given level.
+	 */
+	public static Set<Pair<Integer,Integer>> firstFloorWalkableTiles(String file) throws IOException {
+		var tiles =parseFirstFloorFromFile(file) ;
+		Set<Pair<Integer,Integer>> walkables = new HashSet<>() ;
+		for (int x=0; x<tiles.length; x++) {
+			var ys = tiles[x] ;
+			for (int y=0; y<ys.length; y++) {
+				var t = ys[y] ;
+				if (t != null && (t.ty == TileType.FLOOR
+						|| t.ty == TileType.DOOR
+						|| t.ty == TileType.BUTTON
+						|| t.ty == TileType.GOALFLAG)
+						) {
+					walkables.add(new Pair<>(x,y)) ;
+				}
+			}
+		}
+		return walkables ;	
+	}
+	
+	/**
+	 * Return the number of tiles in the first floor of a level, that is walkable.
+	 */
+	public static int numberOfFirstFloorWalkableTiles(String file) throws IOException {
+		var walkables = firstFloorWalkableTiles(file) ;
+		return walkables.size() ;
+	}
 	
 	public static void main(String[] args) throws IOException {
 		String file = "./src/test/resources/levels/buttons_doors_1.csv" ;
