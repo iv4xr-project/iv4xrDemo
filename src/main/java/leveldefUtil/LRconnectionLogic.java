@@ -30,7 +30,8 @@ public class LRconnectionLogic {
 				String button = components[0] ;
 				for (int d=1; d<components.length; d++) {
 					String door = components[d] ;
-					connections.add(new Pair<String,String>(button,door)) ;
+					if (door.trim().length() > 0  )
+						connections.add(new Pair<String,String>(button,door)) ;
 				}
 			}
 		}

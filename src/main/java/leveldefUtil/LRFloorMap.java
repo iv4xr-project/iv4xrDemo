@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.*;
 
 import eu.iv4xr.framework.spatial.Vec3;
+import leveldefUtil.LRFloorMap.TileType;
 import nl.uu.cs.aplib.utils.Pair;
+
+import static leveldefUtil.LRFloorMap.parseFirstFloorFromFile;
 import static nl.uu.cs.aplib.utils.CSVUtility.* ;
 
 /**
@@ -285,9 +288,47 @@ public class LRFloorMap {
 		return walkables.size() ;
 	}
 	
+	/**
+	 * Get the id of all doors in an LR level definition. Currently will only extract from 
+	 * the level's first floor. 
+	 * @throws IOException 
+	 */
+	public static Set<String> getDoorsInFirstFloor(String file) throws IOException {
+		return getObjectsInFirstFloor(file, TileType.DOOR) ;
+	}
+
+	/**
+	 * Get the id of all buttons in an LR level definition. Currently will only extract from 
+	 * the level's first floor. 
+	 * @throws IOException 
+	 */
+	public static Set<String> getButtonsInFirstFloor(String file) throws IOException {
+		return getObjectsInFirstFloor(file, TileType.BUTTON) ;
+	}
+
+	
+	private static Set<String> getObjectsInFirstFloor(String file, TileType ty) throws IOException {
+		
+		var tiles = parseFirstFloorFromFile(file) ;
+		Set<String> doors = new HashSet<>() ;
+		for (int x=0; x<tiles.length; x++) {
+			var col = tiles[x] ;
+			for (int y=0; y<col.length; y++) {
+				var T = col[y] ;
+				if (T != null && T.ty == ty) {
+					doors.add(T.id) ;
+				}
+			}
+		}
+		return doors ;
+	}
+	
 	public static void main(String[] args) throws IOException {
 		String file = "./src/test/resources/levels/buttons_doors_1.csv" ;
 		var M = parseFirstFloorFromFile(file) ;
 		printLRTileMap(M,false) ;
+		
+		System.out.println(" Doors" + getDoorsInFirstFloor(file)) ;
+		System.out.println(" Buttons" + getButtonsInFirstFloor(file)) ;
 	}
 }
