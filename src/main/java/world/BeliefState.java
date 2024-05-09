@@ -40,7 +40,7 @@ public class BeliefState extends W3DAgentState {
 	 * Distance between a location to the currently memorized goal location; if it
 	 * is further, pathfinder is triggered to calculate a new path.
 	 */
-	public static final float DIST_TO_MEMORIZED_GOALLOCATION_SOFT_REPATH_THRESHOLD  = 0.05f ;
+	public static float DIST_TO_MEMORIZED_GOALLOCATION_SOFT_REPATH_THRESHOLD  = 0.05f ;
     
 	public static float PATH_BENDING_SQ_HORIZON = 36f ;
 	
@@ -61,7 +61,7 @@ public class BeliefState extends W3DAgentState {
 	 * When the distance of the agent to the current waypoint is less than this, the
 	 * waypoint is considered achieved, and we advance to next waypoint.
 	 */
-	public static final float DIST_TO_WAYPOINT_UPDATE_THRESHOLD = 0.5f ;
+	public static float DIST_TO_WAYPOINT_UPDATE_THRESHOLD = 0.5f ;
 
 	/**
 	 * All navigation vertices within this distance form the agent will be automatically

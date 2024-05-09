@@ -296,6 +296,15 @@ public class LRFloorMap {
 	public static Set<String> getDoorsInFirstFloor(String file) throws IOException {
 		return getObjectsInFirstFloor(file, TileType.DOOR) ;
 	}
+	
+	/**
+	 * Get the id of all goal-flags in an LR level definition. Currently will only extract from 
+	 * the level's first floor. 
+	 * @throws IOException 
+	 */
+	public static Set<String> getGoalFalgsInFirstFloor(String file) throws IOException {
+		return getObjectsInFirstFloor(file, TileType.GOALFLAG) ;
+	}
 
 	/**
 	 * Get the id of all buttons in an LR level definition. Currently will only extract from 
