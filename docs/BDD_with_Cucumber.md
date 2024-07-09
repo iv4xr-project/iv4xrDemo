@@ -1,18 +1,18 @@
 # Cucumber
 
-This Cucumber extension has been implemented following a similar structure to [cucumber-junit5-example](https://github.com/cronn/cucumber-junit5-example)
+This Cucumber extension has been implemented following a similar structure to [cucumber-junit5-example](https://github.com/cronn/cucumber-junit5-example)  
 
-├──  `src\test\`
-│   ├── `src\test\java`
-│   │
+├──  `src\test\`  
+│   ├── `src\test\java`  
+│   │  
 │   │   ├── `src\test\java\bdd\RunAllCucumberTests.java` JUnit Engine to indicate both the IDE and Gradle where to find the Cucumber tests.  
 │   │   ├── `src\test\java\bdd\state` Within the scenarios, we share state object and variables between steps.  
 │   │   ├──`src\test\java\bdd\steps` Within the scenarios, we associate Gherkin step definitions with Java functions.  
-│   │
-│   ├── `src\test\resources`
+│   │  
+│   ├── `src\test\resources`  
 │   │   ├──`src\test\resources\features` The folder that contains the Cucumber feature files with the LabRecruits test scenarios.  
-│
-└──
+│  
+└──  
 
 ## Cucumber dependencies
 
