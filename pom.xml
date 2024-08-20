@@ -93,8 +93,13 @@
         <version>1.8.4</version>
         </dependency>
 
-
         <!-- dependencies on iv4xr Agent Framework -->
+        
+        <dependency>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-java</artifactId>
+        <version>7.18.1</version>
+        </dependency>
 
     </dependencies>
     

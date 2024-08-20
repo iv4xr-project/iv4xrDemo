@@ -8,7 +8,7 @@ button2,,,,,,,,,,,,
 w,f:dhf,f:a^agent1,f,f,w,f,f,w,f:b^button1,w,,
 w,f,w,w,f:b^button2,w,f,f,w,f,w,,
 w,f,f,f,f,f,f,f,w,f,w,w,w
-w,w,f:d>n^door1,w,w,w,f,f,f,f,f:d>e^door3,f,w
+w,w,f:d>n^door1,w,w,w,f,f,f,f,f:d>w^door3,f,w
 w,w,f,w,f:b^button4,w,f,f,f,f,w,w,w
 w,f:b^button3,f,f:d>w^door2,f,w,f,f,f,f,w,,
 w,w,w,w,w,w,w,w,w,w,w,,
