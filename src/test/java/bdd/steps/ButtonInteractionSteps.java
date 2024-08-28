@@ -10,6 +10,8 @@ import bdd.state.ButtonInteractionState;
 import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
 import game.LabRecruitsTestServer;
+import io.cucumber.java.After;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -101,6 +103,17 @@ public class ButtonInteractionSteps {
 	@When("the agent is close to the entity {string}")
 	public void the_agent_is_close_to_the_entity(String e) throws InterruptedException {
 		System.out.println("@When: the agent is close to the entity: " + e);
+		
+		//GoalStructure goal = GoalLib.atBGF(e, 0.7f, true, false) ; // add some extra update rounds, don't do healing
+		GoalStructure goal = GoalLib.entityStateRefreshed2(e) ;
+		var status = executeGoal(button_state.getLabRecruitsTestAgent(),goal) ;
+		Assertions.assertTrue(status.success());
+	}
+	
+	@When("the agent is close to the flag {string}")
+	public void the_agent_is_close_to_the_flag(String e) throws InterruptedException {
+		System.out.println("@When: the agent is close to the flag: " + e);
+		
 		GoalStructure goal = GoalLib.atBGF(e, 0.7f, true, false) ; // add some extra update rounds, don't do healing
 		var status = executeGoal(button_state.getLabRecruitsTestAgent(),goal) ;
 		Assertions.assertTrue(status.success());
@@ -122,25 +135,39 @@ public class ButtonInteractionSteps {
 		Assertions.assertTrue(status.failed());
 	}
 
-	@Then("the agent health is minimum {string}")
-	public void the_agent_health_is_minimum(String health) {
+	@Then("the agent health is minimum {int}")
+	public void the_agent_health_is_minimum(int health) {
 		System.out.println("@Then: the agent health is minimum: " + health);
 		int test_agent_health = button_state.getLabRecruitsTestAgent().state().env().obs.agent.health;
-		Assertions.assertTrue(test_agent_health >= Integer.parseInt(health));
+		Assertions.assertTrue(test_agent_health >= health);
 	}
 	
-	@Then("the agent health is at most {string}")
-	public void the_agent_health_is_atmost(String health) {
+	@Then("the agent health is at most {int}")
+	public void the_agent_health_is_atmost(int health) {
 		System.out.println("@Then: the agent health is at most: " + health);
 		int test_agent_health = button_state.getLabRecruitsTestAgent().state().env().obs.agent.health;
-		Assertions.assertTrue(test_agent_health <= Integer.parseInt(health));
+		Assertions.assertTrue(test_agent_health <= health);
 	}
 	
-	@Then("the agent score is {string}")
-	public void the_agent_score_is(String score) {
-		System.out.println("@Then: the agent point is: " + score);
-		int test_agent_health = button_state.getLabRecruitsTestAgent().state().env().obs.agent.score;
-		Assertions.assertTrue(test_agent_health == Integer.parseInt(score));
+	@Then("the agent score is {int}")
+	public void the_agent_score_is(int score) {
+		System.out.println("@Then: the agent score is: " + score);
+		int agent_score = button_state.getLabRecruitsTestAgent().state().env().obs.agent.score;
+		Assertions.assertTrue(agent_score == score);
+	}
+	
+	@Then("the agent score is less than {int}")
+	public void the_agent_score_less_than(int score) {
+		System.out.println("@Then: the agent score is less than: " + score);
+		int agent_score = button_state.getLabRecruitsTestAgent().state().env().obs.agent.score;
+		Assertions.assertTrue(agent_score < score);
+	}
+	
+	@Then("the agent score is more than {int}")
+	public void the_agent_score_more_than(int score) {
+		System.out.println("@Then: the agent score is more than: " + score);
+		int agent_score = button_state.getLabRecruitsTestAgent().state().env().obs.agent.score;
+		Assertions.assertTrue(agent_score > score);
 	}
 	
 	@Then("entity {string} is observed")
@@ -153,15 +180,17 @@ public class ButtonInteractionSteps {
 	@Then("door {string} is open")
 	public void this_door_is_open(String door) {
 		System.out.println("@Then: door " + door + " is open");
-		var open = button_state.getLabRecruitsTestAgent().state().isOpen(door) ;
+		var open = button_state.getLabRecruitsTestAgent().state().get(door) != null				
+				   && button_state.getLabRecruitsTestAgent().state().isOpen(door) ;
 		Assertions.assertTrue(open);
 	}
 	
 	@Then("door {string} is closed")
 	public void this_door_is_closed(String door) {
 		System.out.println("@Then: door " + door + " is closed");
-		var open = button_state.getLabRecruitsTestAgent().state().isOpen(door) ;
-		Assertions.assertTrue(! open);
+		var closed = button_state.getLabRecruitsTestAgent().state() != null		
+				     && ! button_state.getLabRecruitsTestAgent().state().isOpen(door) ;
+		Assertions.assertTrue(closed);
 	}
 	
 	@Then("entity {string} is unreachable")
@@ -189,6 +218,13 @@ public class ButtonInteractionSteps {
 	@Then("the LabRecruits game stops")
 	public void the_labrecruits_game_stops() {
 		System.out.println("@Then: the LabRecruits game stops");
+		button_state.getLabRecruitsEnvironment().close();
+		button_state.getLabRecruitsTestServer().close();
+	}
+	
+	@After
+	public void close_the_labrecruits_game(Scenario scenario){
+		System.out.println("Closing the Lab Recruits game.");
 		button_state.getLabRecruitsEnvironment().close();
 		button_state.getLabRecruitsTestServer().close();
 	}
