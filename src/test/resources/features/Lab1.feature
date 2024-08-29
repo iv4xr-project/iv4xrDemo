@@ -1,22 +1,12 @@
 Feature: Testing the level Lab1
 
-
-#   var testingTask = SEQ(open_and_check_doors(testAgent, "b_hall_1", "d_store_e"),
-#                    open_and_check_doors(testAgent, "b_store", "d_store_n", "d_sidehall"),
-#                    GoalLib.entityInteracted("b_secret_1"),
-#                    open_and_check_doors(testAgent, "b_side", "d_sidehall", "d_lab_w", "d_bcroom"),
-#                    open_and_check_doors(testAgent, "b_secret_2", "d_closet"),
-#                    open_and_check_doors(testAgent, "b_closet", "d_theater_s", "d_theater_e"),
-#                    open_and_check_doors(testAgent, "b_lab_e", "d_tofinish"),
-#                    open_and_check_doors(testAgent, "b_finish", "d_finish"), GoalLib.entityInCloseRange("finish")
-
   Background:
     Given the LabRecruits game path ''
     And the LabRecruits game level 'lab1'
     And the LabRecruits graphics is 'true'
     And the agent-id is 'agent0'
 
-  Scenario: xxx
+  Scenario: play out to the end
     Given the LabRecruits game starts
     When  the agent interacts with the button 'b_hall_1'
     And   the agent is close to the entity "d_store_e"

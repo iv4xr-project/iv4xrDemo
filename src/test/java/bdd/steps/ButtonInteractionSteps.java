@@ -135,9 +135,16 @@ public class ButtonInteractionSteps {
 		Assertions.assertTrue(status.failed());
 	}
 
-	@Then("the agent health is minimum {int}")
-	public void the_agent_health_is_minimum(int health) {
-		System.out.println("@Then: the agent health is minimum: " + health);
+	@Then("the agent health is {int}")
+	public void the_agent_health_is(int health) {
+		System.out.println("@Then: the agent health is: " + health);
+		int test_agent_health = button_state.getLabRecruitsTestAgent().state().env().obs.agent.health;
+		Assertions.assertTrue(test_agent_health == health);
+	}
+	
+	@Then("the agent health is at least {int}")
+	public void the_agent_health_is_atleast(int health) {
+		System.out.println("@Then: the agent health is at least: " + health);
 		int test_agent_health = button_state.getLabRecruitsTestAgent().state().env().obs.agent.health;
 		Assertions.assertTrue(test_agent_health >= health);
 	}
