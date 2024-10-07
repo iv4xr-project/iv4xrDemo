@@ -11,6 +11,7 @@ import agents.tactics.TacticLib;
 import bdd.state.LR_ScenarioState;
 import environments.LabRecruitsConfig;
 import environments.LabRecruitsEnvironment;
+import eu.iv4xr.framework.spatial.Vec3;
 import game.LabRecruitsTestServer;
 import io.cucumber.java.After;
 import io.cucumber.java.Scenario;
@@ -134,6 +135,15 @@ public class LR_ScenarioStepsDefinition {
 		System.out.println("@When: the agent is close to the flag: " + e);
 		
 		GoalStructure goal = GoalLib.atBGF(e, 0.7f, true, false) ; // add some extra update rounds, don't do healing
+		var status = executeGoal(scenarioState.getLabRecruitsTestAgent(),goal) ;
+		Assertions.assertTrue(status.success());
+	}
+	
+	@When("the agent is at {float},{float},{float}")
+	public void the_agent_is_at(float x, float y, float z) throws InterruptedException {
+		Vec3 q = new Vec3(x,y,z); 	
+		System.out.println("@When: the agent is at: " + q);		
+		GoalStructure goal = GoalLib.positionInCloseRange(q).lift() ;
 		var status = executeGoal(scenarioState.getLabRecruitsTestAgent(),goal) ;
 		Assertions.assertTrue(status.success());
 	}
