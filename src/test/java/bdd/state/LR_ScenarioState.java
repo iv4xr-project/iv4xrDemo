@@ -4,13 +4,13 @@ import agents.LabRecruitsTestAgent;
 import environments.LabRecruitsEnvironment;
 import game.LabRecruitsTestServer;
 
-public class ButtonInteractionState {
+public class LR_ScenarioState {
 
 	private String labRecruitsPath;
 	private String labRecruitsLevel;
 	private String agentId ;
 	private boolean labRecruitsGraphics;
-	private LabRecruitsTestServer labRecruitsTestServer;
+	//private LabRecruitsTestServer labRecruitsTestServer;
 	private LabRecruitsEnvironment labRecruitsEnvironment;
 	private LabRecruitsTestAgent labRecruitsTestAgent;
 	
@@ -58,11 +58,11 @@ public class ButtonInteractionState {
 	}
 
 	public LabRecruitsTestServer getLabRecruitsTestServer() {
-		return labRecruitsTestServer;
+		return LRserverInstance.LRserver ;
 	}
 
 	public void setLabRecruitsTestServer(LabRecruitsTestServer labRecruitsTestServer) {
-		this.labRecruitsTestServer = labRecruitsTestServer;
+		LRserverInstance.LRserver = labRecruitsTestServer;
 	}
 
 	public LabRecruitsEnvironment getLabRecruitsEnvironment() {

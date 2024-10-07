@@ -2,12 +2,12 @@ Feature: Testing the level Lab1
 
   Background:
     Given the LabRecruits game path ''
-    And the LabRecruits game level 'lab1'
-    And the LabRecruits graphics is 'true'
+    And the game level 'lab1'
+    And the graphics is 'true'
     And the agent-id is 'agent0'
 
   Scenario: play out to the end
-    Given the LabRecruits game starts
+    Given the game starts
     When  the agent interacts with the button 'b_hall_1'
     And   the agent is close to the entity "d_store_e"
     Then  door "d_store_e" is open

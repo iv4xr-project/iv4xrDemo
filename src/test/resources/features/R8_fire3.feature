@@ -2,12 +2,13 @@ Feature: Testing the level R8_fire3
 
   Background:
     Given the LabRecruits game path ''
-    And the LabRecruits game level 'R8_fire3'
-    And the LabRecruits graphics is 'true'
+    And the game level 'R8_fire3'
+    And the graphics is 'true'
     And the agent-id is 'Elono'
+    And the delay between update is 50 ms
 
   Scenario: play out to reach the finish
-    Given the LabRecruits game starts
+    Given the game starts
     When  the agent interacts with the button 'b0'
     And   the agent is close to the entity "door3"
     Then  door "door3" is open
