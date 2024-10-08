@@ -1,4 +1,4 @@
-Feature: Testing the level R8_fire3
+Feature: Testing the level Tower
 
   Background:
     Given the LabRecruits game path ''
