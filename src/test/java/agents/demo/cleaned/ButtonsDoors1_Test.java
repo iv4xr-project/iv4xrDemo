@@ -53,6 +53,7 @@ public class ButtonsDoors1_Test {
 		testAgent.setGoal(testingTask);
 		
 		Utils.runGoal(testAgent, testingTask, 100, 50);
+		assertTrue(testingTask.getStatus().success()) ;
 		
 		BeliefState state = testAgent.state() ;
 		
@@ -84,6 +85,7 @@ public class ButtonsDoors1_Test {
 		testAgent.setGoal(testingTask);
 			
 		Utils.runGoal(testAgent, testingTask, 200, 50);
+		assertTrue(testingTask.getStatus().success()) ;
 		
 		BeliefState state = testAgent.state() ;
 		
@@ -116,6 +118,7 @@ public class ButtonsDoors1_Test {
 		testAgent.setGoal(testingTask);
 			
 		Utils.runGoal(testAgent, testingTask, 250, 50);
+		assertTrue(testingTask.getStatus().success()) ;
 		
 		BeliefState state = testAgent.state() ;
 		

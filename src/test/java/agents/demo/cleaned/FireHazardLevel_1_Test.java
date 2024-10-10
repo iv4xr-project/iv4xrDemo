@@ -38,7 +38,7 @@ public class FireHazardLevel_1_Test {
 
        
     @Test
-    public void test_loadlevel() throws InterruptedException {
+    public void playtest() throws InterruptedException {
 
 		var config = new LabRecruitsConfig("HZRDDirect");
 		var environment = new LabRecruitsEnvironment(config);
@@ -65,9 +65,9 @@ public class FireHazardLevel_1_Test {
 		testAgent.setGoal(testingTask);
 		
 		Utils.runGoal(testAgent, testingTask, 250, 50);
-		
-		BeliefState state = testAgent.state() ;
-		
+		assertTrue(testingTask.getStatus().success()) ;
+
+		BeliefState state = testAgent.state() ;		
 		assertTrue(state.worldmodel().health >= 50) ;
 		
 		environment.close();
