@@ -11,7 +11,6 @@ Feature: Find and Interact with a button
     Given the game starts
     When the agent interacts with the button '<button>'
     Then the agent health is at least <health>
-    #And the LabRecruits game stops
     
     Examples:
       | button  | health |
