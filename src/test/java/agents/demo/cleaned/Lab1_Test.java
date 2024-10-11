@@ -21,7 +21,9 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 import static agents.tactics.GoalLib.* ;
 
-
+/**
+ * A play-test of the level Lab-1, that it can be completed.
+ */
 public class Lab1_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

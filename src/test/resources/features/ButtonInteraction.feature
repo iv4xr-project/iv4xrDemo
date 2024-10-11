@@ -1,4 +1,7 @@
 Feature: Find and Interact with a button
+#
+# Testing few button interactions on a simple level
+#
 
   Background:
     #Given the LabRecruits game path 'C:/Users/username/labrecruits/path'

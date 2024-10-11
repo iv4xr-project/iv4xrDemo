@@ -1,11 +1,12 @@
 package bdd.steps;
 
-import static nl.uu.cs.aplib.AplibEDSL.goal;
+import static nl.uu.cs.aplib.AplibEDSL.*;
 
 import org.junit.jupiter.api.Assertions;
 
 import agents.LabRecruitsTestAgent;
 import agents.TestSettings;
+import agents.demo.cleaned.Utils;
 import agents.tactics.GoalLib;
 import agents.tactics.TacticLib;
 import bdd.state.LR_ScenarioState;
@@ -105,6 +106,7 @@ public class LR_ScenarioStepsDefinition {
 				&& belief.worldmodel().health > 0
 				) {
 			test_agent.update();
+			Utils.printShortStatus(test_agent, i) ;
 			i++;
 			if (scenarioState.getDelayBetweenUpdates() > 0)
 				Thread.sleep(scenarioState.getDelayBetweenUpdates());
@@ -151,8 +153,11 @@ public class LR_ScenarioStepsDefinition {
 	@When("the agent has waited {int} turns")
 	public void the_agent_has_waited(int k) throws InterruptedException {
 		System.out.println("@When: the agent has waited: " + k + " turns");
-		GoalStructure goal = AplibEDSL.FAIL() ; 
-		var status = executeGoal(scenarioState.getLabRecruitsTestAgent(), AplibEDSL.FAIL(), k) ;
+		GoalStructure[] skips = new GoalStructure[k] ;
+		for (int j=0; j<k; j++) {
+			skips[j] = SUCCESS() ;
+		}
+		executeGoal(scenarioState.getLabRecruitsTestAgent(), SEQ(skips)) ;
 	}
 	
 	GoalStructure exploredOut() {

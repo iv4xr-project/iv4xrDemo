@@ -21,7 +21,10 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 import static agents.tactics.GoalLib.* ;
 
-
+/**
+ * This is a play test for the level Zenopus, that it can be completed.
+ * The level has fire hazards and monsters.
+ */
 public class Zenopus_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

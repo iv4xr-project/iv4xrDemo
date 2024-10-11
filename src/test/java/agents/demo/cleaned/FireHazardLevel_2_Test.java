@@ -19,7 +19,9 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 import static agents.tactics.GoalLib.* ;
 
-
+/**
+ * A play-test of the level HZRDIndirect, that it can be completed.
+ */
 public class FireHazardLevel_2_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

@@ -1,4 +1,8 @@
 Feature: Testing the level Tower
+#
+# Play test of the level R8, that it can be completed. The level has
+# fire hazards and monsters. 
+#
 
   Background:
     Given the LabRecruits game path ''

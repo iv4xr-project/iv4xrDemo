@@ -22,6 +22,10 @@ import static nl.uu.cs.aplib.AplibEDSL.*;
 import static agents.tactics.GoalLib.* ;
 
 
+/**
+ * Play test the level Tower, that it can be completer. It is a rather big,
+ * multi-floor level.
+ */
 public class Tower_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

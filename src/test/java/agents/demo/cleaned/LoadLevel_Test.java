@@ -17,6 +17,9 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 
 
+/**
+ * Test that level loading works.
+ */
 public class LoadLevel_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

@@ -21,7 +21,10 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 import static agents.tactics.GoalLib.* ;
 
-
+/**
+ * Play test of the level R8, that it can be completed. The level has
+ * fire hazards and monsters. 
+ */
 public class R8Fire_3_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

@@ -1,4 +1,7 @@
 Feature: Testing the level button_doors_1
+#
+# Testing the logic of the Buttons-doors-1 level.
+#
 
   Background:
     Given the LabRecruits game path ''

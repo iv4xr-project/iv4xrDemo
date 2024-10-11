@@ -1,4 +1,8 @@
 Feature: Testing the level R8_fire3
+#
+# Play test the level Tower, that it can be completer. It is a rather big,
+# multi-floor level.
+#
 
   Background:
     Given the LabRecruits game path ''

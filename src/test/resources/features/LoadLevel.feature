@@ -1,4 +1,7 @@
 Feature: Load a LabRecruits level
+#
+# Test that level loading works.
+#
 
   Scenario: LabRecruits level can be loaded and monster observed
     #Given the path 'C:/Users/username/labrecruits/path'

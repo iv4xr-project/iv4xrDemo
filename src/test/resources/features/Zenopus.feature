@@ -1,4 +1,8 @@
 Feature: Testing the level Zenopus
+#
+# This is a play test for the level Zenopus, that it can be completed.
+# The level has fire hazards and monsters.
+#
 
   Background:
     Given the LabRecruits game path ''

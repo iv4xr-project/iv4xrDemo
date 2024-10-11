@@ -28,7 +28,9 @@ import static agents.TestSettings.*;
 import static nl.uu.cs.aplib.AplibEDSL.*;
 
 
-
+/**
+ * Testing few button interactions on a simple level.
+ */
 public class ButtonInteraction_Test {
 
     private static LabRecruitsTestServer labRecruitsTestServer;

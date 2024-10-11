@@ -1,4 +1,7 @@
 Feature: Testing the level FireHazard Level 1
+#
+# A play-test of the level HZRDDirect, that it can be completed.
+#
 
   Background:
     Given the LabRecruits game path ''

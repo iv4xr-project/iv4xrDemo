@@ -1,4 +1,7 @@
 Feature: Testing the level FireHazard Level 2
+#
+# A play-test of the level HZRDIndirect, that it can be completed.
+#
 
   Background:
     Given the LabRecruits game path ''

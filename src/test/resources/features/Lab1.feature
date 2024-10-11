@@ -1,4 +1,7 @@
 Feature: Testing the level Lab1
+#
+# A play-test of the level Lab-1, that it can be completed.
+#
 
   Background:
     Given the LabRecruits game path ''
